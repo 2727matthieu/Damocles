@@ -1,6 +1,7 @@
 package xyz.almia.accountsystem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.BlockIterator;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import xyz.almia.cardinalsystem.Cardinal;
+import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.itemsystem.Armor;
 import xyz.almia.itemsystem.ItemHandler;
 import xyz.almia.itemsystem.ItemTypes;
@@ -34,6 +36,75 @@ public class Tasks{
 	Plugin plugin = Cardinal.getPlugin();
 	
 	public Tasks() {}
+	
+	public int getDefaultArmor(Material material){
+		if(material.equals(Material.DIAMOND_HELMET)){
+			return 3;
+		}
+		if(material.equals(Material.DIAMOND_CHESTPLATE)){
+			return 8;
+		}
+		if(material.equals(Material.DIAMOND_LEGGINGS)){
+			return 6;
+		}
+		if(material.equals(Material.DIAMOND_BOOTS)){
+			return 3;
+		}
+		
+		if(material.equals(Material.LEATHER_HELMET)){
+			return 1;
+		}
+		if(material.equals(Material.LEATHER_CHESTPLATE)){
+			return 3;
+		}
+		if(material.equals(Material.LEATHER_LEGGINGS)){
+			return 2;
+		}
+		if(material.equals(Material.LEATHER_BOOTS)){
+			return 1;
+		}
+		
+		if(material.equals(Material.IRON_HELMET)){
+			return 2;
+		}
+		if(material.equals(Material.IRON_CHESTPLATE)){
+			return 6;
+		}
+		if(material.equals(Material.IRON_LEGGINGS)){
+			return 5;
+		}
+		if(material.equals(Material.IRON_BOOTS)){
+			return 2;
+		}
+		
+		if(material.equals(Material.CHAINMAIL_HELMET)){
+			return 2;
+		}
+		if(material.equals(Material.CHAINMAIL_CHESTPLATE)){
+			return 5;
+		}
+		if(material.equals(Material.CHAINMAIL_LEGGINGS)){
+			return 3;
+		}
+		if(material.equals(Material.CHAINMAIL_BOOTS)){
+			return 1;
+		}
+		
+		if(material.equals(Material.GOLD_HELMET)){
+			return 2;
+		}
+		if(material.equals(Material.GOLD_CHESTPLATE)){
+			return 5;
+		}
+		if(material.equals(Material.GOLD_LEGGINGS)){
+			return 3;
+		}
+		if(material.equals(Material.GOLD_BOOTS)){
+			return 1;
+		}
+		
+		return 1;
+	}
 	
 	public int getDefaultDamage(Material material){
 		if(material.equals(Material.DIAMOND_SWORD)){
@@ -140,8 +211,17 @@ public class Tasks{
 									int reforges = ThreadLocalRandom.current().nextInt(2);
 									int upgrades = ThreadLocalRandom.current().nextInt(4);
 									int weight = getDefaultWeight(ItemTypes.ARMOR);
-									int damage = getDefaultDamage(item.getType());
-									detailItem.setup(null, slots, 0, 0, 0, 0, damage, reforges, weight, upgrades, false, null);
+									int armor = getDefaultArmor(item.getType());
+									int maxdurability = ThreadLocalRandom.current().nextInt(143) + 100;
+									int durability = ThreadLocalRandom.current().nextInt(41) + 50;
+									detailItem.setup(new HashMap<Enchantments, Integer>(), slots, 0, 0, 0, 0, armor, reforges, weight, upgrades, false, durability, maxdurability);
+									for(int i = 0; i < 36; i++){
+										if(p.getInventory().getItem(i) != null){
+											if(p.getInventory().getItem(i).equals(item)){
+												p.getInventory().setItem(i, detailItem.getItemStack());
+											}
+										}
+									}
 									p.updateInventory();
 								}
 							}
@@ -152,10 +232,17 @@ public class Tasks{
 									int reforges = ThreadLocalRandom.current().nextInt(2);
 									int upgrades = ThreadLocalRandom.current().nextInt(4);
 									int maxdurability = ThreadLocalRandom.current().nextInt(143) + 100;
-									int durability = ThreadLocalRandom.current().nextInt(71) + 50;
+									int durability = ThreadLocalRandom.current().nextInt(41) + 50;
 									int weight = getDefaultWeight(ItemTypes.WEAPON);
 									int damage = getDefaultDamage(item.getType());
-									detailItem.setup(null, slots, 0, 0, 0, 0, damage, reforges, weight, upgrades, false, durability, maxdurability, null);
+									detailItem.setup(new HashMap<Enchantments, Integer>(), slots, 0, 0, 0, 0, damage, reforges, weight, upgrades, false, durability, maxdurability);
+									for(int i = 0; i < 36; i++){
+										if(p.getInventory().getItem(i) != null){
+											if(p.getInventory().getItem(i).equals(item)){
+												p.getInventory().setItem(i, detailItem.getItemStack());
+											}
+										}
+									}
 									p.updateInventory();
 								}
 							}

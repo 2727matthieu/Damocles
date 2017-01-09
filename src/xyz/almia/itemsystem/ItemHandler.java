@@ -1,6 +1,6 @@
 package xyz.almia.itemsystem;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -156,6 +156,7 @@ public class ItemHandler implements Listener{
 							if(!(detailItem.isProtected())){
 								event.setCancelled(true);
 								detailItem.protect();
+								event.setCurrentItem(detailItem.getItemStack());
 								event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
 					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have successfully Protected your equip!");
@@ -173,6 +174,7 @@ public class ItemHandler implements Listener{
 							if(!(detailItem.isProtected())){
 								event.setCancelled(true);
 								detailItem.protect();
+								event.setCurrentItem(detailItem.getItemStack());
 								event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
 					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have successfully Protected your equip!");
@@ -203,6 +205,7 @@ public class ItemHandler implements Listener{
 								event.setCancelled(true);
 								int slots = rune.getSlotsFromRune(event.getCursor());
 								detailItem.setSlots(detailItem.getSlots() + rune.getSlotsFromRune(event.getCursor()));
+								event.setCurrentItem(detailItem.getItemStack());
 								event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
 								String item = new FancyMessage("                     You added "+slots+" to ")
 										.color(ChatColor.YELLOW)
@@ -224,6 +227,7 @@ public class ItemHandler implements Listener{
 								event.setCancelled(true);
 								int slots = rune.getSlotsFromRune(event.getCursor());
 								detailItem.setSlots(detailItem.getSlots() + rune.getSlotsFromRune(event.getCursor()));
+								event.setCurrentItem(detailItem.getItemStack());
 								event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
 								String item = new FancyMessage("                     You added "+slots+" to ")
 										.color(ChatColor.YELLOW)
@@ -270,14 +274,12 @@ public class ItemHandler implements Listener{
 							enchantDestroy = values.get("destroy");
 							enchantLevel = values.get("level");
 							
-							if(detailItem.getEnchants() != null){
-								List<Enchantments> enchantments = detailItem.getEnchants();
-								if(enchantments.contains(enchantment)){
-						    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"This item already has an enchantment with the same name.");
-						    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-									return;
-								}
+							HashMap<Enchantments, Integer> enchants = detailItem.getEnchantsAndLevel();
+							if(enchants.containsKey(enchantment)){
+					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"This item already has an enchantment with the same name.");
+					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+								return;
 							}
 							
 							if(detailItem.getSlots()  <= 0){
@@ -352,15 +354,14 @@ public class ItemHandler implements Listener{
 							enchantDestroy = values.get("destroy");
 							enchantLevel = values.get("level");
 							
-							if(detailItem.getEnchants() != null){
-								List<Enchantments> enchantments = detailItem.getEnchants();
-								if(enchantments.contains(enchantment)){
-						    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"This item already has an enchantment with the same name.");
-						    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-									return;
-								}
+							HashMap<Enchantments, Integer> enchants = detailItem.getEnchantsAndLevel();
+							if(enchants.containsKey(enchantment)){
+					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"This item already has an enchantment with the same name.");
+					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+								return;
 							}
+							
 							
 							if(detailItem.getSlots()  <= 0){
 								return;
@@ -428,6 +429,7 @@ public class ItemHandler implements Listener{
 				source.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, source.getLocation(), 10);
 				detailItem.setSlots(detailItem.getSlots() - 1);
 				detailItem.addEnchant(enchant, level);
+				item = detailItem.getItemStack();
 			}else{
 				int randDestroy = new Random().nextInt(100);
 				if(randDestroy <= destroy){
@@ -446,6 +448,7 @@ public class ItemHandler implements Listener{
 					source.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, source.getLocation(), 10);
 					if(detailItem.isProtected()){
 						detailItem.unProtect();
+						item = detailItem.getItemStack();
 						return item;
 					}
 					return new ItemStack(Material.AIR, 1);
@@ -474,6 +477,7 @@ public class ItemHandler implements Listener{
 				source.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, source.getLocation(), 10);
 				detailItem.setSlots(detailItem.getSlots() - 1);
 				detailItem.addEnchant(enchant, level);
+				item = detailItem.getItemStack();
 			}else{
 				int randDestroy = new Random().nextInt(100);
 				if(randDestroy <= destroy){
@@ -492,6 +496,7 @@ public class ItemHandler implements Listener{
 					source.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, source.getLocation(), 10);
 					if(detailItem.isProtected()){
 						detailItem.unProtect();
+						item = detailItem.getItemStack();
 						return item;
 					}
 					return new ItemStack(Material.AIR, 1);

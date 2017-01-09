@@ -536,10 +536,6 @@ public class Cardinal extends JavaPlugin implements Listener{
 			return true;
 		}
 		
-		/*
-		 * http://www.xvideos.com/profiles/just-amber
-		 */
-		
 		if(cmd.getName().equalsIgnoreCase("rank")){
 			
 			if(player.isOp() || (new Account(player).getLoadedCharacter().getRank().equals(xyz.almia.accountsystem.Rank.GAMEMASTER))){

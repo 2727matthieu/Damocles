@@ -1,5 +1,5 @@
 package xyz.almia.itemsystem;
 
 public enum ArmorTypes {
-	HELMET, CHESTPLATE, LEGGINGS, BOOTS;
+	HEAD, CHEST, LEGS, FEET, NONE;
 }

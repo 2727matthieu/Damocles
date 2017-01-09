@@ -103,7 +103,9 @@ public class AnvilHandler implements Listener{
 						anvil.deleteShowItem();
 						return;
 					}
-					anvil.getWeapon().setDurability(anvil.getWeapon().getMaxDurability());
+					Weapon weapon = anvil.getWeapon();
+					weapon.setDurability(anvil.getWeapon().getMaxDurability());
+					event.getWhoClicked().getInventory().setItemInMainHand(weapon.getItemStack());
 					anvil.deleteShowItem();
 					event.getWhoClicked().closeInventory();
 				}else if(event.getCurrentItem().equals(no)){

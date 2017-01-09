@@ -34,22 +34,17 @@ public class BatVision {
 						
 						if(itemhandler.getEnchantType(item).equals(EnchantTypes.HELMET)){
 							Armor detailItem = new Armor(item);
-
-								if(detailItem.getEnchants() != null){
-									HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
-									if(enchantments.containsKey(Enchantments.BAT_VISION)){
-										int amp = 0;
-										int level = enchantments.get(Enchantments.BAT_VISION);
-										if(level == 1){
-											amp = 0;
-										}
-										player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20, amp));
-									}
+							HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
+							if(enchantments.containsKey(Enchantments.BAT_VISION)){
+								int amp = 0;
+								int level = enchantments.get(Enchantments.BAT_VISION);
+								if(level == 1){
+									amp = 0;
 								}
+								player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20, amp));
+							}
 
 						}
-						
-
 					}
 				}
 				

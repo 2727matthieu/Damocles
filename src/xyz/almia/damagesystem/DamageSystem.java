@@ -37,7 +37,6 @@ import xyz.almia.itemsystem.Armor;
 import xyz.almia.itemsystem.ItemHandler;
 import xyz.almia.itemsystem.ItemTypes;
 import xyz.almia.itemsystem.Weapon;
-import xyz.almia.utils.RomanNumerals;
 
 public class DamageSystem implements Listener{
 	
@@ -777,17 +776,10 @@ public class DamageSystem implements Listener{
 		
 		if(helmet != null){
 			Armor detailItem = new Armor(helmet);
-			if(detailItem.getEnchants() != null){
-				List<Enchantments> enchantments = detailItem.getEnchants();
-				if(enchantments.contains(Enchantments.PROTECTION)){
-					ItemMeta im = helmet.getItemMeta();
-					String[] enchantAndDamage = null;
-					for(String s : im.getLore()){
-						if(s.contains(ChatColor.GRAY + "Protection ")){
-							enchantAndDamage = s.split(" ");
-						}
-					}
-					int level = RomanNumerals.romanToInt(enchantAndDamage[1]);
+			if(detailItem.getEnchantsAndLevel() != null){
+				HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
+				if(enchantments.containsKey(Enchantments.PROTECTION)){
+					int level = enchantments.get(Enchantments.PROTECTION);
 					if(level == 1){
 						helmEPF = 1;
 					}else if(level == 2){
@@ -804,17 +796,9 @@ public class DamageSystem implements Listener{
 		
 		if(chestplate != null){
 			Armor detailItem = new Armor(chestplate);
-			if(detailItem.getEnchants() != null){
-				List<Enchantments> enchantments = detailItem.getEnchants();
-				if(enchantments.contains(Enchantments.PROTECTION)){
-					ItemMeta im = helmet.getItemMeta();
-					String[] enchantAndDamage = null;
-					for(String s : im.getLore()){
-						if(s.contains(ChatColor.GRAY + "Protection ")){
-							enchantAndDamage = s.split(" ");
-						}
-					}
-					int level = RomanNumerals.romanToInt(enchantAndDamage[1]);
+				HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
+				if(enchantments.containsKey(Enchantments.PROTECTION)){
+					int level = enchantments.get(Enchantments.PROTECTION);
 					if(level == 1){
 						chestEPF = 1;
 					}else if(level == 2){
@@ -826,22 +810,15 @@ public class DamageSystem implements Listener{
 					}
 						
 				}
-			}
 		}
 		
 		if(leggings != null){
 			Armor detailItem = new Armor(leggings);
-			if(detailItem.getEnchants() != null){
-				List<Enchantments> enchantments = detailItem.getEnchants();
-				if(enchantments.contains(Enchantments.PROTECTION)){
+				HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
+				if(enchantments.containsKey(Enchantments.PROTECTION)){
 					ItemMeta im = helmet.getItemMeta();
 					String[] enchantAndDamage = null;
-					for(String s : im.getLore()){
-						if(s.contains(ChatColor.GRAY + "Protection ")){
-							enchantAndDamage = s.split(" ");
-						}
-					}
-					int level = RomanNumerals.romanToInt(enchantAndDamage[1]);
+					int level = enchantments.get(Enchantments.PROTECTION);
 					if(level == 1){
 						legEPF = 1;
 					}else if(level == 2){
@@ -853,22 +830,13 @@ public class DamageSystem implements Listener{
 					}
 						
 				}
-			}
 		}
 		
 		if(boots != null){
 			Armor detailItem = new Armor(boots);
-			if(detailItem.getEnchants() != null){
-				List<Enchantments> enchantments = detailItem.getEnchants();
-				if(enchantments.contains(Enchantments.PROTECTION)){
-					ItemMeta im = helmet.getItemMeta();
-					String[] enchantAndDamage = null;
-					for(String s : im.getLore()){
-						if(s.contains(ChatColor.GRAY + "Protection ")){
-							enchantAndDamage = s.split(" ");
-						}
-					}
-					int level = RomanNumerals.romanToInt(enchantAndDamage[1]);
+				HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
+				if(enchantments.containsKey(Enchantments.PROTECTION)){
+					int level = enchantments.get(Enchantments.PROTECTION);
 					if(level == 1){
 						bootsEPF = 1;
 					}else if(level == 2){
@@ -880,7 +848,6 @@ public class DamageSystem implements Listener{
 					}
 						
 				}
-			}
 		}
 		
 		

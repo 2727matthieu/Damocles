@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.utils.RomanNumerals;
@@ -29,8 +28,8 @@ public class Weapon{
 		this.item = item;
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void setup(HashMap<Enchantments, Integer> enchants, int slots, int intel, int str, int hp, int agi ,int damage, int reforges, int weight, int upgrades, boolean isprotected, int durability, int maxdurability, List<String> flavortext){
+	public void setup(HashMap<Enchantments, Integer> enchants, int slots, int intel, int str, int hp, int agi ,int damage, int reforges, int weight, int upgrades, boolean isprotected, int durability, int maxdurability){
+		
 		ItemMeta im = this.item.getItemMeta();
 		List<String> lore = new ArrayList<String>();
 		lore.add("");
@@ -43,10 +42,8 @@ public class Weapon{
 		lore.add(ChatColor.GOLD+""+slots+" Slots");
 		lore.add("");
 		
-		lore.add(ChatColor.GRAY+"Int: +"+ intel);
-		lore.add(ChatColor.GRAY+"Str: +"+ str);
-		lore.add(ChatColor.GRAY+"Hp: +"+ hp);
-		lore.add(ChatColor.GRAY+"Agi: +"+ agi);
+		lore.add(ChatColor.GRAY+"Int: +"+ intel + " | " + ChatColor.GRAY+"Hp: +"+ hp);
+		lore.add(ChatColor.GRAY+"Str: +"+ str + " | " + ChatColor.GRAY+"Agi: +"+ agi);
 		lore.add("");
 		lore.add(ChatColor.BLUE+"+"+damage+" Damage");
 		lore.add("");
@@ -57,21 +54,34 @@ public class Weapon{
 		lore.add(ChatColor.DARK_GRAY+"Durability: " + durability + "/" + maxdurability);
 		
 		if(isprotected){
-			lore.add(ChatColor.WHITE + "" + ChatColor.BOLD + "PROTECTED");
 			lore.add("");
-		}
-		
-		if(!(flavortext == null)){
-			for(String s : flavortext){
-				lore.add(s);
-			}
+			lore.add(ChatColor.WHITE + "" + ChatColor.BOLD + "PROTECTED");
 		}
 		
 		im.setLore(lore);
-		im.spigot().setUnbreakable(true);
-		im.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(im);
+		
+		ItemStack nbt = this.item;
+		
+		nbt = new NBTHandler(nbt).setListEmpty("enchants");
+			for(Enchantments enchant : enchants.keySet()){
+				nbt = new NBTHandler(nbt).addEnchant(enchant, enchants.get(enchant));
+			}
+		nbt = new NBTHandler(nbt).setIntTag("slots", slots);
+		nbt = new NBTHandler(nbt).setIntTag("int", intel);
+		nbt = new NBTHandler(nbt).setIntTag("str", str);
+		nbt = new NBTHandler(nbt).setIntTag("hp", hp);
+		nbt = new NBTHandler(nbt).setIntTag("agi", agi);
+		nbt = new NBTHandler(nbt).setIntTag("damage", damage);
+		nbt = new NBTHandler(nbt).setIntTag("reforges", reforges);
+		nbt = new NBTHandler(nbt).setIntTag("weight", weight);
+		nbt = new NBTHandler(nbt).setIntTag("upgrades", upgrades);
+		nbt = new NBTHandler(nbt).setBoolean("protected", isprotected);
+		nbt = new NBTHandler(nbt).setIntTag("durability", durability);
+		nbt = new NBTHandler(nbt).setIntTag("maxdurability", maxdurability);
+		
+		this.item = nbt;
 		
 	}
 	
@@ -93,191 +103,59 @@ public class Weapon{
 	}
 	
 	public void setMaxDurability(int maxdurability){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), maxdurability, getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), maxdurability);
 	}
 	
 	public void setDurability(int durability){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), durability, getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), durability, getMaxDurability());
 	}
 	
 	public int getMaxDurability(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] amount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Durability:")){
-						s = s.replace("/", " ");
-						amount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(amount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(amount[2]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("maxdurability");
 	}
 	
 	public int getDurability(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] amount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Durability:")){
-						s = s.replace("/", " ");
-						amount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(amount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(amount[1]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("durability");
 	}
 	
 	public int getInt(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] amount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Int")){
-						s = s.replace("+", "");
-						amount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(amount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(amount[1]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("int");
 	}
 	
 	public int getStr(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] amount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Str")){
-						s = s.replace("+", "");
-						amount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(amount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(amount[1]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("str");
 	}
 	
 	public int getHp(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] amount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Hp")){
-						s = s.replace("+", "");
-						amount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(amount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(amount[1]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("hp");
 	}
 	
 	public int getAgi(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] amount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Agi")){
-						s = s.replace("+", "");
-						amount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(amount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(amount[1]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("agi");
 	}
 	
 	public int getUpgrades(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] amount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("upgrades")){
-						amount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(amount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(amount[4]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("upgrades");
 	}
 	
 	public void setInt(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), amount, getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), amount, getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public void setStr(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), amount, getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), amount, getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public void setHp(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), amount, getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), amount, getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public void setAgi(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), amount, getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), amount, getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public void setUpgrades(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), amount, isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), amount, isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public ItemStack getItemStack(){
@@ -286,183 +164,58 @@ public class Weapon{
 	
 	public void addEnchant(Enchantments enchant, int level){
 		HashMap<Enchantments, Integer> enchantments = getEnchantsAndLevel();
-		if(enchantments == null)
-			enchantments = new HashMap<Enchantments, Integer>();
 		enchantments.put(enchant, level);
-		setup(enchantments, getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(enchantments, getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public void removeEnchant(Enchantments enchant){
 		HashMap<Enchantments, Integer> enchantments = getEnchantsAndLevel();
 		enchantments.remove(enchant);
-		setup(enchantments, getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
-	}
-	
-	public List<String> getFlavorText(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				
-				int pos1 = 0;
-				int pos2 = item.getItemMeta().getLore().size() - 1;
-				
-				for(String s : item.getItemMeta().getLore()){
-					
-					if(isProtected()){
-						if(s.equals(ChatColor.WHITE+""+ChatColor.BOLD+"PROTECTED")){
-							pos1 = item.getItemMeta().getLore().indexOf(s) + 2;
-							break;
-						}
-					}else{
-						if(s.contains("Durability")){
-							pos1 = item.getItemMeta().getLore().indexOf(s) + 2;
-							break;
-						}
-					}
-					
-				}
-				
-				List<String> flavortext = new ArrayList<String>();
-				for(int i = pos1; i<=pos2; i++){
-					flavortext.add(item.getItemMeta().getLore().get(i));
-				}
-				
-				return flavortext;
-			}
-		}
-		return null;
+		setup(enchantments, getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 
-	public void setFlavorText(List<String> flavortext){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), flavortext);
-	}
-	
 	public int getWeight(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] slotAmount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Weight")){
-						slotAmount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(slotAmount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(slotAmount[1]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("weight");
 	}
 
 	public void setWeight(int weight){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), weight, getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), weight, getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public void setReforges(int reforges){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), reforges, getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), reforges, getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public int getReforges(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] slotAmount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("reforges")){
-						slotAmount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(slotAmount == null){
-					return 0;
-				}else{
-					return Integer.valueOf(slotAmount[4]);
-				}
-			}else{
-				return 0;
-			}
-		}else{
-			return 0;
-		}
+		return new NBTHandler(item).getIntTag("reforges");
 	}
 	
 	public void setDamage(int damage){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), damage, getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), damage, getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public int getDamage(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] slotAmount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Damage")){
-						s = s.replace("+", "");
-						slotAmount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(slotAmount == null){
-					return 1;
-				}else{
-					return Integer.valueOf(slotAmount[0]);
-				}
-			}else{
-				return 1;
-			}
-		}else{
-			return 1;
-		}
+		return new NBTHandler(item).getIntTag("damage");
 	}
 	
 	public void setSlots(int slots){
-		setup(getEnchantsAndLevel(), slots, getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), slots, getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
 	}
 	
 	public int getSlots(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				String[] slotAmount = null;
-				for(String s : item.getItemMeta().getLore()){
-					if(ChatColor.stripColor(s).contains("Slots")){
-						slotAmount = ChatColor.stripColor(s).split(" ");
-					}
-				}
-				if(slotAmount == null){
-					return -1;
-				}else{
-					return Integer.valueOf(slotAmount[0]);
-				}
-			}else{
-				return -1;
-			}
-		}else{
-			return -1;
-		}
+		return new NBTHandler(item).getIntTag("slots");
 	}
 	
 	public void unProtect(){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), false, getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), false, getDurability(), getMaxDurability());
 	}
 	
 	public void protect(){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), true, getDurability(), getMaxDurability(), getFlavorText());
+		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), true, getDurability(), getMaxDurability());
 	}
 	
 	public boolean isProtected(){
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				if(item.getItemMeta().getLore().contains("PROTECTED")){
-					return true;
-				}else{
-					return false;
-				}
-			}else{
-				return false;
-			}
-		}else{
-			return false;
-		}
+		return new NBTHandler(item).isProtected();
 	}
 	
 	public boolean isItemSet(){
@@ -474,55 +227,7 @@ public class Weapon{
 	}
 	
 	public HashMap<Enchantments, Integer> getEnchantsAndLevel(){
-		HashMap<Enchantments, Integer> enchants = new HashMap<Enchantments, Integer>();
-		
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				
-				List<String> lore = item.getItemMeta().getLore();
-				for(String s : lore){
-					for(Enchantments enchant : Enchantments.values()){
-						String enchantString = ChatColor.stripColor(s);
-						if(enchantString.contains(enchantclass.getName(enchant))){
-							String[] enchantAndDamage = null;
-							enchantAndDamage = s.split(" ");
-							int value = enchantclass.getValue(enchant);
-							
-							int level = RomanNumerals.romanToInt(enchantAndDamage[value]);
-							
-							enchants.put(enchant, level);
-							
-						}
-					}
-				}
-				
-				return enchants;
-				
-			}
-		}
-		
-		return null;
-	}
-	
-	public List<Enchantments> getEnchants(){
-		List<Enchantments> enchants = new ArrayList<Enchantments>();
-		if(item.hasItemMeta()){
-			if(item.getItemMeta().hasLore()){
-				List<String> lore = item.getItemMeta().getLore();
-				for(String s : lore){
-					for(Enchantments enchant : Enchantments.values()){
-						String enchantString = ChatColor.stripColor(s);
-						if(enchantString.toLowerCase().contains(enchant.name().toLowerCase())){
-							enchants.add(enchant);
-						}
-					}
-				}
-				return enchants;
-			}else{
-				return null;
-			}
-		}
-		return null;
+		return new NBTHandler(item).getEnchants();
 	}
 	
 }

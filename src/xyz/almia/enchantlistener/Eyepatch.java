@@ -1,11 +1,9 @@
 package xyz.almia.enchantlistener;
 
-import java.util.List;
+import java.util.HashMap;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -35,22 +33,12 @@ public class Eyepatch {
 						ItemStack item = player.getInventory().getHelmet();
 						if(itemhandler.getEnchantType(item).equals(EnchantTypes.HELMET)){
 							Armor detailItem = new Armor(item);
-							if(detailItem.getEnchants() != null){
-								List<Enchantments> enchantments = detailItem.getEnchants();
-								if(enchantments.contains(Enchantments.EYEPATCH)){
-									ItemMeta im = item.getItemMeta();
-									@SuppressWarnings("unused")
-									String[] enchantAndDamage = null;
-									for(String s : im.getLore()){
-										if(s.contains(ChatColor.GRAY + "Eyepatch ")){
-											enchantAndDamage = s.split(" ");
-										}
-									}
+								HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
+								if(enchantments.containsKey(Enchantments.EYEPATCH)){
 									if(player.getActivePotionEffects().contains(PotionEffectType.BLINDNESS)){
 										player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 0, 0));
 									}
 								}
-							}
 						}
 					}
 				}
