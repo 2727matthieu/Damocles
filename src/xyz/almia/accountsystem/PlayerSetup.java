@@ -109,7 +109,6 @@ public class PlayerSetup implements Listener{
 		}
 		return offlineCharacters;
 	}
-
 	
 	public Character getCharacterFromUsername(String username){
 		if(username.equalsIgnoreCase("unknown"))
@@ -341,6 +340,5 @@ public class PlayerSetup implements Listener{
 		Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Please choose a character.");
 		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 	}
-	
 	
 }

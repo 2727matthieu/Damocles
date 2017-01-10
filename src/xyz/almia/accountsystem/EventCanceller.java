@@ -36,7 +36,9 @@ public class EventCanceller implements Listener{
 	@EventHandler
 	public void respawnEvent(PlayerRespawnEvent event){
 		Account account = new Account(event.getPlayer());
-		account.getLoadedCharacter().setHealth(account.getLoadedCharacter().getMaxHealth());
+		try{
+			account.getLoadedCharacter().setHealth(account.getLoadedCharacter().getMaxHealth());
+		}catch(Exception e) {}
 	}
 	
 	@EventHandler
@@ -130,6 +132,11 @@ public class EventCanceller implements Listener{
 			event.getDrops().add(createMoney(ThreadLocalRandom.current().nextInt(12)));
 			return;
 		}
+		
+		if(event.getEntity() instanceof Player){
+			
+		}
+		
 		return;
 	}
 	

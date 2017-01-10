@@ -194,6 +194,7 @@ public class Cardinal extends JavaPlugin implements Listener{
 		registerEvents();
 		registerEnchants();
 		new Tasks().runTasks();
+		
 		registerGlow();
 	}
 	

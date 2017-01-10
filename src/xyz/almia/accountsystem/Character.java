@@ -377,6 +377,9 @@ public class Character {
 		}
 	}
 	
+	public void kill(){
+	}
+			
 	public void remove(){
 		new Account(player).logout();
 		config.set("username", "UNKNOWN");

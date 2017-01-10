@@ -277,6 +277,9 @@ public class Tasks{
 
 	public void runTasks(){
 		
+		new Selection().promoteToKing();
+		addSlotsToItem();
+		
 		new BukkitRunnable(){
 			@Override
 			public void run() {
@@ -284,14 +287,13 @@ public class Tasks{
 					Account account = new Account(player);
 					if(account.getStatus().equals(AccountStatus.LOGGINGIN)){
 						Inventory inv = AccountMenu.getAccountMenu(player);
-						player.openInventory(inv);
+						if(!(player.isDead())){
+							player.openInventory(inv);
+						}
 					}		
 				}	
 			}
 		}.runTaskTimer(plugin, 0, 20);
-		
-		addSlotsToItem();
-		new Selection().promoteToKing();
 		
 		new BukkitRunnable(){
 			@Override
