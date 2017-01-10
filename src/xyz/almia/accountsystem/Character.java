@@ -13,8 +13,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
+import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.messagesystem.Messages;
-import xyz.almia.utils.ConfigManager;
 import xyz.almia.utils.LocationSerializer;
 
 public class Character {
@@ -23,11 +23,12 @@ public class Character {
 	private Player player;
 	int characterID = 0;
 	FileConfiguration config;
+	Players players = new Players();
 	
 	public Character(Player player, int characterID){
 		this.player = player;
 		this.characterID = characterID;
-		ConfigManager.load(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.load(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 		this.config = ConfigManager.get(player.getUniqueId()+";char;"+characterID+".yml");
 	}
 	
@@ -41,7 +42,7 @@ public class Character {
 	
 	public void setSouls(int amount){
 		config.set("soul", amount);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getBankBalance(){
@@ -50,7 +51,7 @@ public class Character {
 	
 	public void setBankBalance(int i){
 		config.set("money", i);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public void deposit(int amount){
@@ -99,7 +100,7 @@ public class Character {
 		}
 		inventories.add(hashInventory);
 		config.set("inventory", inventories);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public Inventory getInventory(){
@@ -112,7 +113,7 @@ public class Character {
 	
 	public void setLastLocation(Location loc){
 		config.set("location", LocationSerializer.locationToString(loc));
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getPLevel(Profession prof){
@@ -121,7 +122,7 @@ public class Character {
 	
 	public void setPLevel(Profession prof, int level){
 		config.set("profession."+prof.toString().toLowerCase()+".level", level);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public boolean getRegening(){
@@ -130,7 +131,7 @@ public class Character {
 	
 	public void setRegening(boolean state){
 		config.set("regening", state);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public void addPExp(Profession prof, int value){
@@ -148,7 +149,7 @@ public class Character {
 	
 	public void setPExp(Profession prof, int value){
 		config.set("profession."+prof.toString().toLowerCase()+".exp", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public CharacterStatus getCharacterStatus(){
@@ -157,7 +158,7 @@ public class Character {
 	
 	public void setCharacterStatus(CharacterStatus cs){
 		config.set("status", cs.toString());
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getID(){
@@ -177,7 +178,7 @@ public class Character {
 	
 	public void setUsername(String username){
 		config.set("username", username);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public double getHealth(){
@@ -187,15 +188,15 @@ public class Character {
 	public void setHealth(double value){
 		if(value < 0){
 			config.set("health", 0);
-			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 			return;
 		}else if(value <= getMaxHealth()){
 			config.set("health", value);
-			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 			return;
 		}else{
 			config.set("health", getMaxHealth());
-			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 			return;
 		}
 	}
@@ -206,7 +207,7 @@ public class Character {
 	
 	public void setMaxHealth(double value){
 		config.set("maxhealth", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getMana(){
@@ -215,7 +216,7 @@ public class Character {
 	
 	public void setMana(int value){
 		config.set("mana", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getMaxMana(){
@@ -224,7 +225,7 @@ public class Character {
 	
 	public void setMaxMana(int value){
 		config.set("maxmana", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public void regenMana(){
@@ -243,7 +244,7 @@ public class Character {
 	
 	public void setSpeed(double value){
 		config.set("speed", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public double getDefaultSpeed(){
@@ -260,7 +261,7 @@ public class Character {
 	
 	public void setRank(Rank rank){
 		config.set("rank", rank.toString());
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public String getTitle(){
@@ -273,7 +274,7 @@ public class Character {
 	
 	public void setPhysicalDamage(int value){
 		config.set("physicaldamage", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getMagicalDamage(){
@@ -282,7 +283,7 @@ public class Character {
 	
 	public void setMagicalDamage(int value){
 		config.set("magicaldamage", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getStat(Stat stat){
@@ -291,12 +292,12 @@ public class Character {
 	
 	public void setStat(Stat stat, int value){
 		config.set("stats."+stat.toString().toLowerCase(), value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public void levelUp(){
 		config.set("level", getLevel()+1);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 		setAbilityPoints(getAbilityPoints() + 4);
 		Messages.levelUp(player);
 		calcSkillSlots();
@@ -306,7 +307,7 @@ public class Character {
 	
 	public void setLevel(int level){
 		config.set("level", level);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getLevel(){
@@ -319,7 +320,7 @@ public class Character {
 	
 	public void addExp(int value){
 		config.set("exp", getExp()+value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 		if(getExp() >= (getLevel() * 1024)){
 			setExp(getExp() - (getLevel() * 1024));
 			levelUp();
@@ -329,12 +330,12 @@ public class Character {
 	
 	public void setExp(int value){
 		config.set("exp", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public void setAbilityPoints(int value){
 		config.set("ap", value);
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public int getAbilityPoints(){
@@ -348,26 +349,26 @@ public class Character {
 	public void calcSkillSlots(){
 		if(getLevel() == 1){
 			config.set("skillslots", 2);
-			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 			return;
 		}else if(getLevel() == 6){
 			config.set("skillslots", 3);
-			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 			return;
 		}else if(getLevel() == 12){
 			config.set("skillslots", 4);
-			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 			return;
 		}else if(getLevel() == 20){
 			config.set("skillslots", 5);
-			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+			ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 			return;
 		}else if(getLevel() > 20){
 			double i = getLevel() - 20;
 			i = i/10;
 			if(i >= 1.0){
 				config.set("skillslots", 5 + ((int)i));
-				ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+				ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 				return;
 			}
 			return;
@@ -413,7 +414,7 @@ public class Character {
 		config.set("stats.intelligence", 0);
 		config.set("location", LocationSerializer.locationToString(player.getLocation()));
 		config.set("status", CharacterStatus.CHOOSE_USERNAME.toString());
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
 	public void create(){
@@ -452,14 +453,8 @@ public class Character {
 		config.set("stats.intelligence", 0);
 		config.set("location", LocationSerializer.locationToString(player.getLocation()));
 		config.set("status", CharacterStatus.CHOOSE_USERNAME.toString());
-		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml");
-		List<String> s = new ArrayList<String>();
-		if(plugin.getConfig().getStringList("players") != null){
-			s = plugin.getConfig().getStringList("players");
-		}
-		s.add(player.getUniqueId()+";char;"+characterID);
-		plugin.getConfig().set("players", s);
-		plugin.saveConfig();
+		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
+		players.addCharacter(player.getUniqueId()+";char;"+characterID);
 	}
 	
 }

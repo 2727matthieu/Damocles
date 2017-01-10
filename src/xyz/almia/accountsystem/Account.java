@@ -4,7 +4,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.utils.ConfigManager;
+import xyz.almia.configclasses.ConfigManager;
 
 public class Account {
 	
@@ -14,7 +14,7 @@ public class Account {
 	
 	public Account(Player player){
 		this.player = player;
-		ConfigManager.load(player.getUniqueId()+";acc.yml");
+		ConfigManager.load(player.getUniqueId()+";acc.yml", "players/"+player.getUniqueId());
 		config = ConfigManager.get(player.getUniqueId()+";acc.yml");
 	}
 	
@@ -30,7 +30,7 @@ public class Account {
 		config.set("status", AccountStatus.LOGGINGIN.toString());
 		config.set("lastLoaded", getLoadedCharacterID());
 		config.set("loaded", -1);
-		ConfigManager.save(player.getUniqueId()+";acc.yml");
+		ConfigManager.save(player.getUniqueId()+";acc.yml", "players/"+player.getUniqueId());
 	}
 	
 	public Character loadCharacter(int ID){
@@ -41,7 +41,7 @@ public class Account {
 		}else{
 			config.set("status", AccountStatus.LOGGEDIN.toString());
 			config.set("loaded", ID);
-			ConfigManager.save(player.getUniqueId()+";acc.yml");
+			ConfigManager.save(player.getUniqueId()+";acc.yml", "players/"+player.getUniqueId());
 			return new Character(player, ID);
 		}
 	}
@@ -68,7 +68,7 @@ public class Account {
 	public void unLoadCharacter(){
 		config.set("lastLoaded", getLoadedCharacterID());
 		config.set("loaded", -1);
-		ConfigManager.save(player.getUniqueId()+";acc.yml");
+		ConfigManager.save(player.getUniqueId()+";acc.yml", "players/"+player.getUniqueId());
 	}
 	
 	public void firstTimeSetup(){
@@ -76,7 +76,7 @@ public class Account {
 		config.set("accountlimit", 3);
 		config.set("loaded", -1);
 		config.set("lastLoaded", -1);
-		ConfigManager.save(player.getUniqueId()+";acc.yml");
+		ConfigManager.save(player.getUniqueId()+";acc.yml", "players/"+player.getUniqueId());
 		new Character(player, 0).create();
 		new Character(player, 1).create();
 		new Character(player, 2).create();
@@ -88,7 +88,7 @@ public class Account {
 	
 	public void setCharacterLimit(int value){
 		config.set("accountlimit", value);
-		ConfigManager.save(player.getUniqueId()+";acc.yml");
+		ConfigManager.save(player.getUniqueId()+";acc.yml", "players/"+player.getUniqueId());
 	}
 	
 	public Character getCharacterFromID(int ID){

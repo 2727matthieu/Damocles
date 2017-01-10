@@ -37,12 +37,16 @@ public class PlayerSetup implements Listener{
 		if(clan.equals(Clans.EXILED))
 			return xyz.almia.clansystem.Rank.CLANSMEN;
 		
-		if(clanProfile.getKing().equals(character)){
-			return xyz.almia.clansystem.Rank.KING;
+		if(clanProfile.getKing() != null){
+			if(clanProfile.getKing().getUsername().equals(character.getUsername())){
+				return xyz.almia.clansystem.Rank.KING;
+			}
 		}
 		
-		if(clanProfile.getClansmen().contains(character)){
-			return xyz.almia.clansystem.Rank.CLANSMEN;
+		for(Character chara : clanProfile.getClansmen()){
+			if(chara.getUsername().equals(character.getUsername())){
+				return xyz.almia.clansystem.Rank.CLANSMEN;
+			}
 		}
 		
 		return xyz.almia.clansystem.Rank.NONE;
@@ -53,26 +57,19 @@ public class PlayerSetup implements Listener{
 		for(Clans clan : Clans.values()){
 			Clan clanProfile = new Clan(clan);
 			
-			if(!(clan.equals(Clans.UNCLANNED))){
 			
-			if(clan.equals(Clans.EXILED)){
-				if(clanProfile.getClansmen().contains(character)){
+			for(Character chara : clanProfile.getClansmen()){
+				if(chara.getUsername().equals(character.getUsername())){
 					return clan;
 				}
 			}
 			
-			if(!(clan.equals(Clans.EXILED))){
-				if(clanProfile.getClansmen().contains(character)){
-					return clan;
-				}
-				if(clanProfile.getKing() != null){
-					if(clanProfile.getKing().equals(character)){
+			if(!(clan.equals(Clans.UNCLANNED)) || !(clan.equals(Clans.EXILED))){
+				try{
+					if(clanProfile.getKing().getUsername().equals(character.getUsername())){
 						return clan;
 					}
-				}
-			}
-			
-			
+				}catch(Exception e) {}
 			}
 			
 		}
@@ -101,7 +98,7 @@ public class PlayerSetup implements Listener{
 	
 	public List<Character> getOfflineCharacters(){
 		List<Character> onlineCharacters = getOnlineCharacters();
-		List<Character> allCharacters = getCharacters();
+		List<Character> allCharacters = new Players().getCharacters();
 		List<Character> offlineCharacters = allCharacters;
 		for(Character character : allCharacters){
 			for(Character chara : onlineCharacters){
@@ -112,15 +109,7 @@ public class PlayerSetup implements Listener{
 		}
 		return offlineCharacters;
 	}
-	
-	public List<Character> getCharacters(){
-		List<String> serchars = plugin.getConfig().getStringList("players");
-		List<Character> chars = new ArrayList<Character>();
-		for(String s : serchars){
-			chars.add(deserializeCharacter(s));
-		}
-		return chars;
-	}
+
 	
 	public Character getCharacterFromUsername(String username){
 		if(username.equalsIgnoreCase("unknown"))
@@ -135,7 +124,7 @@ public class PlayerSetup implements Listener{
 	}
 	
 	public List<String> getCharacterNames(){
-		List<Character> chars = getCharacters();
+		List<Character> chars = new Players().getCharacters();
 		List<String> names = new ArrayList<String>();
 		for(Character chara : chars){
 			names.add(chara.getUsername());

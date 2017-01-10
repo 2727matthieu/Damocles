@@ -7,6 +7,7 @@ commands:
     description: creates detailed items.
   balance:
     description: shows characters bank balance.
+    aliases: [bal]
   money:
     description: modifies characters bank balance.
   add:

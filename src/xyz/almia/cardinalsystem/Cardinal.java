@@ -1,7 +1,6 @@
 package xyz.almia.cardinalsystem;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -132,86 +131,6 @@ public class Cardinal extends JavaPlugin implements Listener{
 		getConfig().addDefault("Cardinal.enchant.SHEEP", 20);
 		getConfig().addDefault("Cardinal.enchant.RABBIT", 17);
 		
-		String main = "Kings";
-		getConfig().addDefault(main, null);
-
-		String white = "Kings.white";
-		getConfig().addDefault(white, null);
-		String whiteking = "Kings.white.king";
-		getConfig().addDefault(whiteking, "unknown");
-		String whiteofficer = "Kings.white.officer";
-		getConfig().addDefault(whiteofficer, "unkown");
-
-		String gold = "Kings.gold";
-		getConfig().addDefault(gold, null);
-		String goldking = "Kings.gold.king";
-		getConfig().addDefault(goldking, "unknown");
-		String goldofficer = "Kings.gold.officer";
-		getConfig().addDefault(goldofficer, "unkown");
-
-		String blue = "Kings.blue";
-		getConfig().addDefault(blue, null);
-		String blueking = "Kings.blue.king";
-		getConfig().addDefault(blueking, "unknown");
-		String blueofficer = "Kings.blue.officer";
-		getConfig().addDefault(blueofficer, "unknown");
-
-		String red = "Kings.red";
-		getConfig().addDefault(red, null);
-		String redking = "Kings.red.king";
-		getConfig().addDefault(redking, "unknown");
-		String redofficer = "Kings.red.officer";
-		getConfig().addDefault(redofficer, "unknown");
-
-		String black = "Kings.black";
-		getConfig().addDefault(black, null);
-		String blackking = "Kings.black.king";
-		getConfig().addDefault(blackking, "unknown");
-		String blackofficer = "Kings.black.officer";
-		getConfig().addDefault(blackofficer, "unkown");
-
-		String green = "Kings.green";
-		getConfig().addDefault(green, null);
-		String greenking = "Kings.green.king";
-		getConfig().addDefault(greenking, "unknown");
-		String greenofficer = "Kings.green.officer";
-		getConfig().addDefault(greenofficer, "unknown");
-
-		String colorless = "Kings.colorless";
-		getConfig().addDefault(colorless, null);
-		String colorlessking = "Kings.colorless.king";
-		getConfig().addDefault(colorlessking, "unknown");
-		String colorlessofficer = "Kings.colorless.officer";
-		getConfig().addDefault(colorlessofficer, "unknown");
-
-
-		getConfig().addDefault("Kings.white.clansmen", new ArrayList<String>());
-		getConfig().addDefault("Kings.gold.clansmen", new ArrayList<String>());
-		getConfig().addDefault("Kings.blue.clansmen", new ArrayList<String>());
-		getConfig().addDefault("Kings.red.clansmen", new ArrayList<String>());
-		getConfig().addDefault("Kings.black.clansmen", new ArrayList<String>());
-		getConfig().addDefault("Kings.green.clansmen", new ArrayList<String>());
-		getConfig().addDefault("Kings.colorless.clansmen", new ArrayList<String>());
-		getConfig().addDefault("Kings.exiled.clansmen", new ArrayList<String>());
-		
-		getConfig().addDefault("Kings.white.rejected", new ArrayList<String>());
-		getConfig().addDefault("Kings.gold.rejected", new ArrayList<String>());
-		getConfig().addDefault("Kings.blue.rejected", new ArrayList<String>());
-		getConfig().addDefault("Kings.red.rejected", new ArrayList<String>());
-		getConfig().addDefault("Kings.black.rejected", new ArrayList<String>());
-		getConfig().addDefault("Kings.green.rejected", new ArrayList<String>());
-		getConfig().addDefault("Kings.colorless.rejected", new ArrayList<String>());
-		
-		getConfig().addDefault("Kings.white.proposed", "unknown");
-		getConfig().addDefault("Kings.black.proposed", "unknown");
-		getConfig().addDefault("Kings.blue.proposed", "unknown");
-		getConfig().addDefault("Kings.red.proposed", "unknown");
-		getConfig().addDefault("Kings.gold.proposed", "unknown");
-		getConfig().addDefault("Kings.green.proposed", "unknown");
-		getConfig().addDefault("Kings.colorless.proposed", "unknown");
-		
-		getConfig().addDefault("players", new ArrayList<String>());
-		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
@@ -248,12 +167,7 @@ public class Cardinal extends JavaPlugin implements Listener{
 		new DarkMagic().darkMagic();
 	}
 
-	public void onEnable(){
-		plugin = this;
-		registerConfig();
-		registerEvents();
-		registerEnchants();
-		new Tasks().runTasks();
+	public void registerGlow(){
 		try {
 			Field f = Enchantment.class.getDeclaredField("acceptingNew");
 			f.setAccessible(true);
@@ -272,6 +186,15 @@ public class Cardinal extends JavaPlugin implements Listener{
 		}catch(Exception e){
 			
 		}
+	}
+	
+	public void onEnable(){
+		plugin = this;
+		registerConfig();
+		registerEvents();
+		registerEnchants();
+		new Tasks().runTasks();
+		registerGlow();
 	}
 	
 	public void onDisable(){

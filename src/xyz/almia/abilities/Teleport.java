@@ -15,14 +15,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.BlockIterator;
 
-import xyz.almia.utils.ConfigManager;
+import xyz.almia.configclasses.ConfigManager;
 
 public class Teleport implements Listener{
 	
 	@EventHandler
 	public void teleport(PlayerInteractEvent event){
 		List<UUID> uuids = new ArrayList<UUID>();
-		ConfigManager.load("teleport.yml");
+		ConfigManager.load("teleport.yml", "");
 		if(ConfigManager.get("teleport.yml").getString("list") == null){
 			ConfigManager.get("teleport.yml").set("list", new ArrayList<String>());
 		}
@@ -43,7 +43,7 @@ public class Teleport implements Listener{
 	}
 	
 	public static Entity getTarget(Player player, int range) {
-		ConfigManager.load("blacklist.yml");
+		ConfigManager.load("blacklist.yml", "");
 		List<String> blacklist = ConfigManager.get("blacklist.yml").getStringList("list");
 		List<Material> materials = new ArrayList<Material>();
 		for(String s : blacklist){

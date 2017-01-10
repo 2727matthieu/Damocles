@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package xyz.almia.utils;
+package xyz.almia.configclasses;
 
 import java.io.File;
 import java.util.HashMap;
@@ -62,14 +62,28 @@ public class ConfigManager {
      * Plugins folder
      * @param fileName File to load
      */
-    public static void load(String fileName) {
-        File file = new File(PLUGIN.getDataFolder(), fileName);
+    public static void load(String fileName, String path) {
+    	File file;
+    	String base;
+    	String branch;
+    	
+    	if(path.contains("/")){
+    		String[] s = path.split("/");
+    		base = s[0];
+    		branch = s[1];
+    		file = new File(PLUGIN.getDataFolder()  + File.separator + base + File.separator + branch, fileName);
+    	}else{
+        	if(path.equals("")){
+        		file = new File(PLUGIN.getDataFolder(), fileName);
+        	}else{
+        		file = new File(PLUGIN.getDataFolder()  + File.separator + path, fileName);
+        	}
+    	}
+    	
         if (!file.exists()) {
             try {
             	file.createNewFile();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) {}
         }
         if (!isFileLoaded(fileName)) {
             configs.put(fileName, YamlConfiguration.loadConfiguration(file));
@@ -190,8 +204,24 @@ public class ConfigManager {
      * @param plugin Plugin dir to save to the file to
      * @param fileName File to save
      */
-    public static void save(String fileName) {
-        File file = new File(PLUGIN.getDataFolder(), fileName);
+    public static void save(String fileName, String path) {
+    	File file;
+    	String base;
+    	String branch;
+    	
+    	if(path.contains("/")){
+    		String[] s = path.split("/");
+    		base = s[0];
+    		branch = s[1];
+    		file = new File(PLUGIN.getDataFolder()  + File.separator + base + File.separator + branch, fileName);
+    	}else{
+        	if(path.equals("")){
+        		file = new File(PLUGIN.getDataFolder(), fileName);
+        	}else{
+        		file = new File(PLUGIN.getDataFolder()  + File.separator + path, fileName);
+        	}
+    	}
+    	
         if (isFileLoaded(fileName)) {
             try {
                 configs.get(fileName).save(file);

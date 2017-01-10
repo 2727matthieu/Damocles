@@ -21,6 +21,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.BlockIterator;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import xyz.almia.cardinalsystem.Cardinal;
+import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.itemsystem.Armor;
 import xyz.almia.itemsystem.ItemHandler;
@@ -29,7 +30,6 @@ import xyz.almia.itemsystem.Soul;
 import xyz.almia.itemsystem.Weapon;
 import xyz.almia.menu.AccountMenu;
 import xyz.almia.selectionsystem.Selection;
-import xyz.almia.utils.ConfigManager;
 
 public class Tasks{
 	
@@ -514,7 +514,7 @@ public class Tasks{
 	}
 	
 	public Entity getTarget(Player player, int range) {
-		ConfigManager.load("blacklist.yml");
+		ConfigManager.load("blacklist.yml", "");
 		List<String> blacklist = ConfigManager.get("blacklist.yml").getStringList("list");
 		List<Material> materials = new ArrayList<Material>();
 		for(String s : blacklist){

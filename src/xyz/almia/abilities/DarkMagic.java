@@ -18,7 +18,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockIterator;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.utils.ConfigManager;
+import xyz.almia.configclasses.ConfigManager;
 
 public class DarkMagic implements Listener{
 	
@@ -33,7 +33,7 @@ public class DarkMagic implements Listener{
 			public void run() {
 				
 				List<UUID> uuids = new ArrayList<UUID>();
-				ConfigManager.load("dm.yml");
+				ConfigManager.load("dm.yml", "");
 				if(ConfigManager.get("dm.yml").getString("list") == null){
 					ConfigManager.get("dm.yml").set("list", new ArrayList<String>());
 				}
@@ -68,7 +68,7 @@ public class DarkMagic implements Listener{
 	@EventHandler
 	public void onrightClick(PlayerInteractEvent event){
 		List<UUID> uuids = new ArrayList<UUID>();
-		ConfigManager.load("dm.yml");
+		ConfigManager.load("dm.yml", "");
 		if(ConfigManager.get("dm.yml").getString("list") == null){
 			ConfigManager.get("dm.yml").set("list", new ArrayList<String>());
 		}
@@ -110,7 +110,7 @@ public class DarkMagic implements Listener{
 	}
 	
 	public static Entity getTarget(Player player, int range) {
-		ConfigManager.load("blacklist.yml");
+		ConfigManager.load("blacklist.yml", "");
 		List<String> blacklist = ConfigManager.get("blacklist.yml").getStringList("list");
 		List<Material> materials = new ArrayList<Material>();
 		for(String s : blacklist){
