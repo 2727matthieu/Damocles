@@ -1,9 +1,9 @@
 package xyz.almia.itemsystem;
 
 import java.util.HashMap;
-
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import net.minecraft.server.v1_11_R1.NBTBase;
 import net.minecraft.server.v1_11_R1.NBTTagByte;
 import net.minecraft.server.v1_11_R1.NBTTagCompound;
@@ -37,6 +37,34 @@ public class NBTHandler {
         compound.set("AttributeModifiers", modifiers);
         nmsStack.setTag(compound);
         return CraftItemStack.asBukkitCopy(nmsStack);
+	}
+	
+	public ItemStack setColor(Color color){
+        NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
+        int RGB = color.Red<<16 + color.Green<<8 + color.Blue;
+        compound.set("CustomPotionColor", new NBTTagInt(RGB));
+		nmsStack.setTag(compound);
+		return CraftItemStack.asBukkitCopy(nmsStack);
+	}
+	
+	@SuppressWarnings({ "deprecation" })
+	public ItemStack setPotionEffect(PotionEffect effect){
+		if(effect != null){
+			NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
+			NBTTagList list = new NBTTagList();
+			NBTTagCompound potionEffect = new NBTTagCompound();
+			potionEffect.set("Id", new NBTTagByte((byte)effect.getType().getId()));
+			potionEffect.set("Amplifier", new NBTTagByte((byte)effect.getAmplifier()));
+			potionEffect.set("Duration", new NBTTagInt(effect.getDuration()));
+			potionEffect.set("Ambient", new NBTTagByte((byte)0));
+			potionEffect.set("ShowParticles", new NBTTagByte((byte)1));
+			list.add(potionEffect);
+			compound.set("CustomPotionEffects", list);
+			nmsStack.setTag(compound);
+			return CraftItemStack.asBukkitCopy(nmsStack);
+		}else{
+			return item;
+		}
 	}
 	
 	public ItemStack setBoolean(String tag, boolean value){

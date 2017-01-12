@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -16,12 +15,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
+
 import mkremins.fanciful.FancyMessage;
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
-import net.minecraft.server.v1_11_R1.NBTTagInt;
+import net.blitzcube.score.secondlineapi.manager.SecondLineManager;
 import xyz.almia.abilities.DarkMagic;
 import xyz.almia.abilities.Teleport;
 import xyz.almia.accountsystem.Account;
+import xyz.almia.accountsystem.AccountStatus;
 import xyz.almia.accountsystem.EventCanceller;
 import xyz.almia.accountsystem.PlayerSetup;
 import xyz.almia.accountsystem.Rank;
@@ -36,7 +38,6 @@ import xyz.almia.enchantlistener.Eyepatch;
 import xyz.almia.enchantlistener.Jump;
 import xyz.almia.enchantlistener.Speed;
 import xyz.almia.enchantsystem.BlankEnchant;
-import xyz.almia.enchantsystem.Enchant;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.enchantsystem.Rune;
 import xyz.almia.itemsystem.CardinalDrops;
@@ -62,9 +63,65 @@ public class Cardinal extends JavaPlugin implements Listener{
 	private PlayerSetup playersetup = new PlayerSetup();
 	private xyz.almia.enchantsystem.Enchantment enchantclass = new xyz.almia.enchantsystem.Enchantment();
 	private Rune rune = new Rune();
+	public Tasks task;
 	
 	public static Plugin getPlugin() {
 		return plugin;
+	}
+	
+	public void updateActionBar(){
+		
+		try{
+			
+			@SuppressWarnings("unused")
+			Class<ActionBarAPI> api = ActionBarAPI.class;
+			
+			new BukkitRunnable(){
+				public void run(){
+					for(Player player : Bukkit.getOnlinePlayers()){
+						Account account = new Account(player);
+						if(account.getStatus().equals(AccountStatus.LOGGEDIN)){
+							
+							String name = "";
+							if(task.getTarget(player, 30) == null){
+								name = ChatColor.GRAY+"No Target";
+							}else{
+								name = task.getName(task.getTarget(player, 30));
+							}
+							
+							xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
+							ActionBarAPI.sendActionBar(player, ChatColor.DARK_RED+"❤"+ChatColor.RED+""+character.getHealth()+"/"+character.getMaxHealth()+
+									"   "+ name +"  "+ChatColor.BLUE+"✦"+ChatColor.AQUA+""+character.getMana()+"/"+character.getMaxMana());
+						}
+					}
+				}
+			}.runTaskTimer(getPlugin(), 0, 1);
+		}catch(NoClassDefFoundError e){
+			System.out.println(String.format("[%s] - No ActionBarAPI dependency found!", getDescription().getName()));
+		}
+	}
+	
+	public void updateNameTag(){
+		try{
+			
+			SecondLineManager.getInstance(getPlugin());
+			
+			new BukkitRunnable(){
+				public void run(){
+					for(Player player : Bukkit.getOnlinePlayers()){
+						Account account = new Account(player);
+							if(account.getStatus().equals(AccountStatus.LOGGEDIN)){
+								SecondLineManager.getInstance(getPlugin()).setName(player, account.getLoadedCharacter().getUsername());
+							}else{
+								SecondLineManager.getInstance(getPlugin()).setName(player, player.getName());
+							}
+					}
+				}
+				
+			}.runTaskTimer(plugin, 0, 1);
+		}catch(NoClassDefFoundError e) {
+			System.out.println(String.format("[%s] - No SecondLineAPI dependency found!", getDescription().getName()));
+		}
 	}
 	
 	public void registerConfig(){
@@ -146,7 +203,6 @@ public class Cardinal extends JavaPlugin implements Listener{
 		Bukkit.getPluginManager().registerEvents(new Smelting(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerMenu(), this);
 		Bukkit.getPluginManager().registerEvents(new Mining(), this);
-		Bukkit.getPluginManager().registerEvents(new Enchant(), this);
 		Bukkit.getPluginManager().registerEvents(new Fishing(), this);
 		Bukkit.getPluginManager().registerEvents(new Farming(), this);
 		Bukkit.getPluginManager().registerEvents(new DamageSystem(), this);
@@ -190,12 +246,14 @@ public class Cardinal extends JavaPlugin implements Listener{
 	
 	public void onEnable(){
 		plugin = this;
+		task = new Tasks(plugin);
 		registerConfig();
 		registerEvents();
 		registerEnchants();
-		new Tasks().runTasks();
-		
+		task.runTasks();
 		registerGlow();
+		updateNameTag();
+		updateActionBar();
 	}
 	
 	public void onDisable(){
@@ -266,6 +324,7 @@ public class Cardinal extends JavaPlugin implements Listener{
 				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Money "+ChatColor.GOLD+ ": Admin money command.");
 				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Cardinal "+ChatColor.GOLD+ ": generates custom weapons.");
 				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Rune "+ChatColor.GOLD+ ": For all the Enchant Commands.");
+				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Arrow "+ChatColor.GOLD+ ": For all the Arrow Commands.");
 				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Heal <Character>"+ChatColor.GOLD+ ": Heals specified player.");
 				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 			}else{
@@ -364,36 +423,47 @@ public class Cardinal extends JavaPlugin implements Listener{
 			}
 		}
 		
+		if(cmd.getName().equalsIgnoreCase("arrow")){
+			if(character.getRank().equals(Rank.GAMEMASTER)){
+				if(args.length == 0){
+					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					Message.sendCenteredMessage(player, ChatColor.BOLD + "Arrows Help");
+					Message.sendCenteredMessage(player, " ");
+					Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Arrow colors");
+					Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Arrow create <color> <Potion> : Not Implemented.");
+					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					return true;
+				}
+				if(args.length == 1){
+					if(args[0].equalsIgnoreCase("colors")){
+						player.openInventory(EventCanceller.getSavedInventory());
+						return true;
+					}
+					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					Message.sendCenteredMessage(player, ChatColor.BOLD + "Arrows");
+					Message.sendCenteredMessage(player, ChatColor.YELLOW+"Not a valid arrow command.");
+					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					return true;
+				}
+				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+				Message.sendCenteredMessage(player, ChatColor.BOLD + "Arrows");
+				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Not a valid arrow command.");
+				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+				return true;
+			}else{
+				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+				Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
+				Message.sendCenteredMessage(player, ChatColor.YELLOW+"You must be a GameMaster to use this command.");
+				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+				return true;
+			}
+		}
+		
 		if(cmd.getName().equalsIgnoreCase("add")){
-			ItemStack item = new ItemStack(Material.POTION);
-			net.minecraft.server.v1_11_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
-	        NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-	        compound.set("CustomPotionColor", new NBTTagInt(16446520));
-			nmsStack.setTag(compound);
-			player.getInventory().addItem(CraftItemStack.asBukkitCopy(nmsStack));
 			
-			ItemStack arrow = new ItemStack(Material.TIPPED_ARROW, 64);
-			net.minecraft.server.v1_11_R1.ItemStack nmsStackArrow = CraftItemStack.asNMSCopy(arrow);
-	        NBTTagCompound arrowcompound = (nmsStackArrow.hasTag()) ? nmsStackArrow.getTag() : new NBTTagCompound();
-	        arrowcompound.set("CustomPotionColor", new NBTTagInt(16446520));
-			nmsStackArrow.setTag(arrowcompound);
-			player.getInventory().addItem(CraftItemStack.asBukkitCopy(nmsStackArrow));
+			//ItemStack item = new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(Integer.valueOf(args[0]), Integer.valueOf(args[1]), Integer.valueOf(args[2])).getInt(), null).getItemStack();
+			//player.getInventory().addItem(item);
 			
-			/*ItemStack spawner = new ItemStack(Material.MOB_SPAWNER, 1);
-			net.minecraft.server.v1_11_R1.ItemStack nmsSpawner = CraftItemStack.asNMSCopy(spawner);
-			NBTTagCompound spawnercompound = (nmsSpawner.hasTag()) ? nmsSpawner.getTag() : new NBTTagCompound();
-			NBTTagCompound BlockEntityTag = new NBTTagCompound();
-			NBTTagList SpawnPotentials = new NBTTagList();
-			NBTTagCompound zombie = new NBTTagCompound();
-			zombie.set("Type", new NBTTagString("zombie"));
-			zombie.set("Weight", new NBTTagInt(1));
-			SpawnPotentials.add(zombie);
-			BlockEntityTag.set("SpawnPotentials", SpawnPotentials);
-			spawnercompound.set("BlockEntityTag", BlockEntityTag);
-			nmsSpawner.setTag(spawnercompound);
-			player.getInventory().addItem(CraftItemStack.asBukkitCopy(nmsSpawner));*/
-			
-			 
 			
 			return true;
 		}

@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
+
+import net.blitzcube.score.secondlineapi.manager.SecondLineManager;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.clansystem.Clan;
 import xyz.almia.clansystem.Clans;
@@ -325,9 +327,13 @@ public class PlayerSetup implements Listener{
 	}
 	
 	@EventHandler
-	public void onPlayersFirstJoin(PlayerJoinEvent event){
+	public void onPlayersJoin(PlayerJoinEvent event){
 		Player player = event.getPlayer();
 		Account account = new Account(player);
+		try{
+			SecondLineManager.getInstance(plugin).add(player);
+		}catch(NoClassDefFoundError e) {}
+		
 		try{
 			@SuppressWarnings("unused")
 			AccountStatus status = account.getStatus();

@@ -3,19 +3,16 @@ package xyz.almia.chatsystem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
 import mkremins.fanciful.FancyMessage;
 import xyz.almia.accountsystem.Account;
 
 public class ChatSystem implements Listener{
-	
 	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent event){

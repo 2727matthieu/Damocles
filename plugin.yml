@@ -12,6 +12,8 @@ commands:
     description: modifies characters bank balance.
   add:
     description: creates detailed items.
+  arrow:
+    description: master command for arrows.
   heal:
     description: heal the player.
   rank:

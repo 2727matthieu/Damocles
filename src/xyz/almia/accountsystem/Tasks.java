@@ -19,8 +19,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.BlockIterator;
-import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.itemsystem.Armor;
@@ -33,9 +31,11 @@ import xyz.almia.selectionsystem.Selection;
 
 public class Tasks{
 	
-	Plugin plugin = Cardinal.getPlugin();
+	private Plugin plugin;
 	
-	public Tasks() {}
+	public Tasks(Plugin plugin) {
+		this.plugin = plugin;
+	}
 	
 	public int getDefaultArmor(Material material){
 		if(material.equals(Material.DIAMOND_HELMET)){
@@ -352,15 +352,7 @@ public class Tasks{
 						}
 						character.applySpeed();
 						
-						String name = "";
-						if(getTarget(player, 30) == null){
-							name = ChatColor.GRAY+"No Target";
-						}else{
-							name = getName(getTarget(player, 30));
-						}
 						
-						ActionBarAPI.sendActionBar(player, ChatColor.DARK_RED+"❤"+ChatColor.RED+""+character.getHealth()+"/"+character.getMaxHealth()+
-								"   "+ name +"  "+ChatColor.BLUE+"✦"+ChatColor.AQUA+""+character.getMana()+"/"+character.getMaxMana());
 					}
 				}
 			}
@@ -460,7 +452,11 @@ public class Tasks{
 			return ChatColor.GOLD+"Pig Zombie";
 		case PLAYER:
 			Player player = (Player) entity;
-			return ChatColor.GRAY+new Account(player).getLoadedCharacter().getUsername();
+			if(new Account(player).getStatus().equals(AccountStatus.LOGGEDIN)){
+				return ChatColor.GRAY+new Account(player).getLoadedCharacter().getUsername();
+			}else{
+				return player.getName();
+			}
 		case POLAR_BEAR:
 			return ChatColor.GRAY+"Polar Bear";
 		case PRIMED_TNT:

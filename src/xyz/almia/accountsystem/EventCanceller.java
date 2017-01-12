@@ -1,6 +1,10 @@
 package xyz.almia.accountsystem;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,13 +20,16 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
+import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.enchantsystem.Rune;
 import xyz.almia.utils.Message;
@@ -34,11 +41,38 @@ public class EventCanceller implements Listener{
 	Rune rune = new Rune();
 	
 	@EventHandler
+	public void onRightClickEnchantmentTable(PlayerInteractEvent event){
+		Player player = event.getPlayer();
+		if(event.getClickedBlock() != null){
+			if(event.getClickedBlock().getType().equals(Material.ENCHANTMENT_TABLE)){
+				event.setCancelled(true);
+				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+				Message.sendCenteredMessage(player, ChatColor.BOLD + "Alter");
+				Message.sendCenteredMessage(player, ChatColor.YELLOW+"An omnious feeling begins to creep over you.");
+				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+			}
+		}
+	}
+	
+	@EventHandler
 	public void respawnEvent(PlayerRespawnEvent event){
 		Account account = new Account(event.getPlayer());
 		try{
 			account.getLoadedCharacter().setHealth(account.getLoadedCharacter().getMaxHealth());
 		}catch(Exception e) {}
+	}
+	
+	public static Inventory getSavedInventory(){
+		ConfigManager.load("arrows.yml", "");
+		List<Map<?, ?>> inventories = ConfigManager.get("arrows.yml").getMapList("inventory");
+		@SuppressWarnings("unchecked")
+		HashMap<Integer, ItemStack> hashInventory = (HashMap<Integer, ItemStack>) inventories.get(0);
+		Inventory inv = Bukkit.createInventory(null, 36, "Colors");
+		for(Integer i : hashInventory.keySet()){
+			ItemStack item = hashInventory.get(i);
+			inv.setItem(i, item);
+		}
+		return inv;
 	}
 	
 	@EventHandler
