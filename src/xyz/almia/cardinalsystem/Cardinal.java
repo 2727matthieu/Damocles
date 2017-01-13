@@ -4,20 +4,16 @@ import java.lang.reflect.Field;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
-
 import mkremins.fanciful.FancyMessage;
 import net.blitzcube.score.secondlineapi.manager.SecondLineManager;
 import xyz.almia.abilities.DarkMagic;
@@ -28,27 +24,32 @@ import xyz.almia.accountsystem.EventCanceller;
 import xyz.almia.accountsystem.PlayerSetup;
 import xyz.almia.accountsystem.Rank;
 import xyz.almia.accountsystem.Tasks;
-import xyz.almia.chatsystem.ChatSystem;
+import xyz.almia.anvilsystem.AnvilHandler;
+import xyz.almia.arrowsystem.ArrowHandler;
+import xyz.almia.arrowsystem.CustomArrow;
 import xyz.almia.clansystem.Clan;
 import xyz.almia.clansystem.Clans;
 import xyz.almia.damagesystem.DamageSystem;
-import xyz.almia.enchantlistener.BatVision;
-import xyz.almia.enchantlistener.BloodThirst;
-import xyz.almia.enchantlistener.Eyepatch;
-import xyz.almia.enchantlistener.Jump;
-import xyz.almia.enchantlistener.Speed;
+import xyz.almia.enchantsystem.BatVision;
 import xyz.almia.enchantsystem.BlankEnchant;
+import xyz.almia.enchantsystem.BloodThirst;
 import xyz.almia.enchantsystem.Enchantments;
+import xyz.almia.enchantsystem.Eyepatch;
+import xyz.almia.enchantsystem.Jump;
 import xyz.almia.enchantsystem.Rune;
+import xyz.almia.enchantsystem.Speed;
 import xyz.almia.itemsystem.CardinalDrops;
+import xyz.almia.utils.Color;
 import xyz.almia.itemsystem.ItemHandler;
 import xyz.almia.itemsystem.Items;
 import xyz.almia.itemsystem.Soul;
 import xyz.almia.menu.ClanMenu;
 import xyz.almia.menu.PlayerMenu;
 import xyz.almia.menu.SelectionMenu;
+import xyz.almia.potionsystem.Effect;
 import xyz.almia.potionsystem.Potion;
-import xyz.almia.potionsystem.PotionTypes;
+import xyz.almia.potionsystem.PotionColors;
+import xyz.almia.potionsystem.PotionType;
 import xyz.almia.professionssystem.Farming;
 import xyz.almia.professionssystem.Fishing;
 import xyz.almia.professionssystem.Mining;
@@ -188,6 +189,8 @@ public class Cardinal extends JavaPlugin implements Listener{
 		getConfig().addDefault("Cardinal.enchant.SHEEP", 20);
 		getConfig().addDefault("Cardinal.enchant.RABBIT", 17);
 		
+		getConfig().addDefault("Cardinal.Anvil.rate", 3);
+		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
@@ -207,12 +210,12 @@ public class Cardinal extends JavaPlugin implements Listener{
 		Bukkit.getPluginManager().registerEvents(new Farming(), this);
 		Bukkit.getPluginManager().registerEvents(new DamageSystem(), this);
 		Bukkit.getPluginManager().registerEvents(new SoulSystem(), this);
-		Bukkit.getPluginManager().registerEvents(new ChatSystem(), this); 
 		Bukkit.getPluginManager().registerEvents(new Teleport(), this);
 		Bukkit.getPluginManager().registerEvents(new DarkMagic(), this);
 		Bukkit.getPluginManager().registerEvents(new SelectionMenu(), this);
 		Bukkit.getPluginManager().registerEvents(new AnvilHandler(), this);
 		Bukkit.getPluginManager().registerEvents(new Soul(), this);
+		Bukkit.getPluginManager().registerEvents(new ArrowHandler(), this);
 	}
 	
 	public void registerEnchants(){
@@ -522,8 +525,10 @@ public class Cardinal extends JavaPlugin implements Listener{
 			for(Items item : Items.values()){
 				inv.addItem(drop.getItem(item));
 			}
-			inv.addItem(new Potion(new ItemStack(Material.POTION)).create(PotionTypes.HEALING, 1));
-			inv.addItem(new Potion(new ItemStack(Material.POTION)).create(PotionTypes.MANA, 1));
+			inv.addItem(new Potion(new Effect(PotionType.HEAL, 1, 20), new Color(PotionColors.GREEN).getInt(), false).buildItemStack());
+			inv.addItem(new Potion(new Effect(PotionType.HEAL, 1, 20), new Color(PotionColors.GREEN).getInt(), true).buildItemStack());
+			inv.addItem(new CustomArrow(new Effect(PotionType.EXPLOSION, 2, 20), 1, new Color(PotionColors.BLACK).getInt()).getItemStack());
+			inv.addItem(new Potion(new Effect(PotionType.HEAL, 37, 20), new Color(PotionColors.MAGENTA).getInt(), false).buildItemStack());
 			
 			player.openInventory(inv);
 			

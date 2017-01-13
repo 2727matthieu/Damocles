@@ -1,4 +1,4 @@
-package xyz.almia.cardinalsystem;
+package xyz.almia.anvilsystem;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -6,17 +6,22 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 import xyz.almia.accountsystem.Account;
+import xyz.almia.cardinalsystem.Cardinal;
+import xyz.almia.itemsystem.Armor;
 import xyz.almia.itemsystem.Weapon;
 
 public class Anvil{
 	
+	Plugin plugin = Cardinal.getPlugin();
 	int cost;
 	ItemStack item;
 	Item droppeditem;
 	Weapon weapon;
+	Armor armor;
 	Block anvil;
 	xyz.almia.accountsystem.Character character;
 	Player player;
@@ -28,11 +33,16 @@ public class Anvil{
 		this.anvil = anvil;
 		this.inventory = inventory;
 		this.weapon = new Weapon(this.item);
+		this.armor = new Armor(this.item);
 		this.character = new Account(this.player).getLoadedCharacter();
 	}
 	
 	public Weapon getWeapon(){
 		return this.weapon;
+	}
+	
+	public Armor getArmor(){
+		return this.armor;
 	}
 	
 	public Inventory getInventory(){
@@ -61,7 +71,7 @@ public class Anvil{
 	}
 	
 	public int getCost(){
-		return (weapon.getMaxDurability() - weapon.getDurability())*3;
+		return (weapon.getMaxDurability() - weapon.getDurability())*Cardinal.getPlugin().getConfig().getInt("Cardinal.Anvil.rate");
 	}
 	
 }

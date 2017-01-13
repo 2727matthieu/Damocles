@@ -13,16 +13,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import mkremins.fanciful.FancyMessage;
-import xyz.almia.accountsystem.Account;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.EnchantTypes;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.enchantsystem.Rune;
-import xyz.almia.potionsystem.Potion;
 import xyz.almia.utils.Message;
 
 public class ItemHandler implements Listener{
@@ -57,51 +54,6 @@ public class ItemHandler implements Listener{
 	}
 	*/
 	
-	@EventHandler
-	public void onPotionConsume(PlayerItemConsumeEvent event){
-		ItemStack consumed = event.getItem();
-		if(getType(consumed).equals(ItemTypes.POTION)){
-			Potion potion = new Potion(consumed);
-			Account player = new Account(event.getPlayer());
-			xyz.almia.accountsystem.Character character = player.getLoadedCharacter();
-			switch(potion.getPotionType()){
-			case HEALING:
-				character.setHealth(character.getHealth() + potion.getAmount());
-				String item = new FancyMessage("                                You drank a ")
-						.color(ChatColor.YELLOW)
-						.then("Potion")
-						.color(ChatColor.GOLD)
-						.style(ChatColor.BOLD)
-						.itemTooltip(consumed)
-						.then("!")
-						.color(ChatColor.YELLOW)
-						.toJSONString();
-	    		  Message.sendCenteredMessage(event.getPlayer(), ChatColor.GREEN+"----------------------------------------------------");
-	    		  FancyMessage.deserialize(item).send(event.getPlayer());				   
-	    		  Message.sendCenteredMessage(event.getPlayer(), ChatColor.GREEN+"----------------------------------------------------");
-				return;
-			case MANA:
-				character.setMana(character.getMana() + potion.getAmount());
-				String item2 = new FancyMessage("                                You drank a ")
-						.color(ChatColor.YELLOW)
-						.then("Potion")
-						.color(ChatColor.GOLD)
-						.style(ChatColor.BOLD)
-						.itemTooltip(consumed)
-						.then("!")
-						.color(ChatColor.YELLOW)
-						.toJSONString();
-	    		  Message.sendCenteredMessage(event.getPlayer(), ChatColor.GREEN+"----------------------------------------------------");
-	    		  FancyMessage.deserialize(item2).send(event.getPlayer());				   
-	    		  Message.sendCenteredMessage(event.getPlayer(), ChatColor.GREEN+"----------------------------------------------------");
-				return;
-			case NONE:
-				return;
-			default:
-				return;
-			}
-		}
-	}
 	
 	public EnchantTypes getEnchantType(ItemStack item){
 		switch(item.getType()){

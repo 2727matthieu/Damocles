@@ -1,4 +1,4 @@
-package xyz.almia.enchantlistener;
+package xyz.almia.enchantsystem;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -10,8 +10,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import xyz.almia.enchantsystem.EnchantTypes;
-import xyz.almia.enchantsystem.Enchantments;
+
 import xyz.almia.itemsystem.ItemHandler;
 import xyz.almia.itemsystem.Weapon;
 

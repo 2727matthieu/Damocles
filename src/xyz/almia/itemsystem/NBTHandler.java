@@ -11,6 +11,7 @@ import net.minecraft.server.v1_11_R1.NBTTagInt;
 import net.minecraft.server.v1_11_R1.NBTTagList;
 import net.minecraft.server.v1_11_R1.NBTTagString;
 import xyz.almia.enchantsystem.Enchantments;
+import xyz.almia.utils.Color;
 
 public class NBTHandler {
 	
@@ -46,7 +47,7 @@ public class NBTHandler {
 		nmsStack.setTag(compound);
 		return CraftItemStack.asBukkitCopy(nmsStack);
 	}
-	
+
 	@SuppressWarnings({ "deprecation" })
 	public ItemStack setPotionEffect(PotionEffect effect){
 		if(effect != null){

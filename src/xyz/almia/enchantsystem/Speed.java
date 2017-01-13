@@ -1,4 +1,4 @@
-package xyz.almia.enchantlistener;
+package xyz.almia.enchantsystem;
 
 import java.util.HashMap;
 import org.bukkit.Bukkit;
@@ -9,19 +9,17 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.enchantsystem.EnchantTypes;
-import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.itemsystem.Armor;
 import xyz.almia.itemsystem.ItemHandler;
 
-public class Jump {
+public class Speed {
 	
 	Plugin plugin = Cardinal.getPlugin();
 	ItemHandler itemhandler = new ItemHandler();
 	
-	public Jump() {}
+	public Speed() {}
 	
-	public void checkForJumpEnchant(){
+	public void checkForSpeedEnchant(){
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
         scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
 
@@ -33,9 +31,9 @@ public class Jump {
 						if(itemhandler.getEnchantType(item).equals(EnchantTypes.BOOTS)){
 							Armor detailItem = new Armor(item);
 								HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
-								if(enchantments.containsKey(Enchantments.JUMP)){
+								if(enchantments.containsKey(Enchantments.SPEED)){
 									int amp = 0;
-									int level = enchantments.get(Enchantments.JUMP);
+									int level = enchantments.get(Enchantments.SPEED);
 									if(level == 1){
 										amp = 0;
 									}else if(level == 2){
@@ -43,7 +41,7 @@ public class Jump {
 									}else if(level == 3){
 										amp = 2;
 									}
-										player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, amp));
+										player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, amp));
 								}
 						}
 					}

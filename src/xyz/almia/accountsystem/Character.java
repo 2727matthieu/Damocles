@@ -45,20 +45,20 @@ public class Character {
 		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
-	public int getBankBalance(){
-		return config.getInt("money");
+	public double getBankBalance(){
+		return config.getDouble("money");
 	}
 	
-	public void setBankBalance(int i){
+	public void setBankBalance(double i){
 		config.set("money", i);
 		ConfigManager.save(player.getUniqueId()+";char;"+characterID+".yml", "players/"+player.getUniqueId());
 	}
 	
-	public void deposit(int amount){
+	public void deposit(double amount){
 		setBankBalance(getBankBalance() + amount);
 	}
 	
-	public boolean withdraw(int amount){
+	public boolean withdraw(double amount){
 		if((getBankBalance() - amount) < 0)
 			return false;
 		setBankBalance(getBankBalance() - amount);
@@ -395,7 +395,7 @@ public class Character {
 		config.set("ap", 4);
 		config.set("health", 6);
 		config.set("maxhealth", 6);
-		config.set("money", 0);
+		config.set("money", 0.0);
 		config.set("soul", 5);
 		config.set("regening", false);
 		config.set("profession.herbalism.level", 1);
@@ -434,7 +434,7 @@ public class Character {
 		config.set("ap", 4);
 		config.set("health", 6);
 		config.set("maxhealth", 6);
-		config.set("money", 0);
+		config.set("money", 0.0);
 		config.set("soul", 5);
 		config.set("regening", false);
 		config.set("profession.herbalism.level", 1);
