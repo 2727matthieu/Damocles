@@ -1,8 +1,5 @@
 package xyz.almia.accountsystem;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,9 +26,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.enchantsystem.Rune;
+import xyz.almia.itemsystem.Color;
+import xyz.almia.itemsystem.CustomArrow;
 import xyz.almia.utils.Message;
 
 public class EventCanceller implements Listener{
@@ -62,17 +60,49 @@ public class EventCanceller implements Listener{
 		}catch(Exception e) {}
 	}
 	
-	public static Inventory getSavedInventory(){
-		ConfigManager.load("arrows.yml", "");
-		List<Map<?, ?>> inventories = ConfigManager.get("arrows.yml").getMapList("inventory");
-		@SuppressWarnings("unchecked")
-		HashMap<Integer, ItemStack> hashInventory = (HashMap<Integer, ItemStack>) inventories.get(0);
-		Inventory inv = Bukkit.createInventory(null, 36, "Colors");
-		for(Integer i : hashInventory.keySet()){
-			ItemStack item = hashInventory.get(i);
-			inv.setItem(i, item);
-		}
-		return inv;
+	public static Inventory getArrowColors(){
+		Inventory inventory = Bukkit.createInventory(null, 36, "Colors");
+		inventory.setItem(0, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(102,0,0).getInt(), null).getItemStack());
+		inventory.setItem(1, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(102,0,51).getInt(), null).getItemStack());
+		inventory.setItem(2, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(102,0,102).getInt(), null).getItemStack());
+		inventory.setItem(3, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(0,0,102).getInt(), null).getItemStack());
+		inventory.setItem(4, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(0,102,102).getInt(), null).getItemStack());
+		inventory.setItem(5, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(0,102,0).getInt(), null).getItemStack());
+		inventory.setItem(6, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(102,102,0).getInt(), null).getItemStack());
+		inventory.setItem(7, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(102,51,0).getInt(), null).getItemStack());
+		inventory.setItem(8, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(0,0,0).getInt(), null).getItemStack());
+		
+		inventory.setItem(9, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,0,0).getInt(), null).getItemStack());
+		inventory.setItem(10, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,0,128).getInt(), null).getItemStack());
+		inventory.setItem(11, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,0,255).getInt(), null).getItemStack());
+		inventory.setItem(12, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(0,0,255).getInt(), null).getItemStack());
+		inventory.setItem(13, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(0,255,255).getInt(), null).getItemStack());
+		inventory.setItem(14, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(0,255,0).getInt(), null).getItemStack());
+		inventory.setItem(15, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,255,0).getInt(), null).getItemStack());
+		inventory.setItem(16, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,127,0).getInt(), null).getItemStack());
+		inventory.setItem(17, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(128,128,128).getInt(), null).getItemStack());
+		
+		inventory.setItem(18, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,102,102).getInt(), null).getItemStack());
+		inventory.setItem(19, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,102,178).getInt(), null).getItemStack());
+		inventory.setItem(20, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,102,255).getInt(), null).getItemStack());
+		inventory.setItem(21, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(102,102,255).getInt(), null).getItemStack());
+		inventory.setItem(22, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(102,255,255).getInt(), null).getItemStack());
+		inventory.setItem(23, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(102,255,102).getInt(), null).getItemStack());
+		inventory.setItem(24, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,255,102).getInt(), null).getItemStack());
+		inventory.setItem(25, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,178,102).getInt(), null).getItemStack());
+		inventory.setItem(26, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(192,192,192).getInt(), null).getItemStack());
+		
+		inventory.setItem(27, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,204,229).getInt(), null).getItemStack());
+		inventory.setItem(28, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,204,204).getInt(), null).getItemStack());
+		inventory.setItem(29, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,204,255).getInt(), null).getItemStack());
+		inventory.setItem(30, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(204,204,255).getInt(), null).getItemStack());
+		inventory.setItem(31, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(204,255,255).getInt(), null).getItemStack());
+		inventory.setItem(32, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(204,255,204).getInt(), null).getItemStack());
+		inventory.setItem(33, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,204,204).getInt(), null).getItemStack());
+		inventory.setItem(34, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,229,204).getInt(), null).getItemStack());
+		inventory.setItem(35, new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(255,255,255).getInt(), null).getItemStack());
+		
+		return inventory;
 	}
 	
 	@EventHandler

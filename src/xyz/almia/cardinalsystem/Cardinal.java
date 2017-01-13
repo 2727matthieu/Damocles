@@ -436,7 +436,7 @@ public class Cardinal extends JavaPlugin implements Listener{
 				}
 				if(args.length == 1){
 					if(args[0].equalsIgnoreCase("colors")){
-						player.openInventory(EventCanceller.getSavedInventory());
+						player.openInventory(EventCanceller.getArrowColors());
 						return true;
 					}
 					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
