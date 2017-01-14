@@ -37,6 +37,7 @@ public class CustomArrow {
 	
 	public CustomArrow(ItemStack item) {
 		this.item = item;
+		this.effect = new Effect(PotionType.valueOf(new NBTHandler(item).getStringTag("type")), new NBTHandler(item).getIntTag("amp"), new NBTHandler(item).getIntTag("dur"));
 	}
 	
 	public int getAmplifier(){
@@ -52,7 +53,7 @@ public class CustomArrow {
 	}
 	
 	public PotionType getType(){
-		return PotionType.valueOf(new NBTHandler(item).getStringTag("type"));
+		return this.effect.getType();
 	}
 
 	public ItemStack getSimple(){
@@ -72,7 +73,7 @@ public class CustomArrow {
 		if(effect.getDuration() == 20)
 			lore.add(ChatColor.GRAY+"Instant "+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()));
 		if(effect.getDuration() > 20)
-			lore.add(ChatColor.GRAY+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()) + "("+ ((effect.getDuration()/20)/60) +":"+(((effect.getDuration()/20)/60) - (effect.getDuration()/20)) +")");
+			lore.add(ChatColor.GRAY+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()) + " ("+ ((effect.getDuration()/20)/60) +":"+((effect.getDuration()/20) - ((effect.getDuration()/20)/60)) +")");
 		itemmeta.setLore(lore);
 		itemmeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
 		item.setItemMeta(itemmeta);

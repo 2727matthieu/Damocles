@@ -4,16 +4,22 @@ author: Kowagatte
 main: xyz.almia.cardinalsystem.Cardinal
 commands:
   cardinal:
-    description: creates detailed items.
+    description: shows custom weapon menu.
   balance:
     description: shows characters bank balance.
     aliases: [bal]
   money:
     description: modifies characters bank balance.
-  add:
-    description: creates detailed items.
+  party:
+    description: master party command.
+  trade:
+    description: master trade command.
+  guild:
+    description: master guild command.
   arrow:
     description: master command for arrows.
+  potion:
+    description: master command for potions.
   heal:
     description: heal the player.
   rank:

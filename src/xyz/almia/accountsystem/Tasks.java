@@ -320,9 +320,6 @@ public class Tasks{
 							character.setRegening(true);
 						}
 						
-						if(character.getCharacterStatus().equals(CharacterStatus.CHOOSE_USERNAME)){
-							new PlayerSetup().sendNameSelectionProcess(player);
-						}
 						
 						player.setDisplayName(character.getUsername());
 						player.setCustomName(character.getUsername());

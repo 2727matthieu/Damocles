@@ -2,6 +2,7 @@ package xyz.almia.accountsystem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -36,11 +37,16 @@ public class Players {
 	
 	
 	public List<Character> getCharacters(){
+		
 		List<Character> characters = new ArrayList<Character>();
-		List<String> players = config.getStringList("players");
-		for(String s : players){
-			characters.add(setup.deserializeCharacter(s));
+		
+		for(String s : config.getStringList("players")){
+			String[] strings = s.split(";");
+			String uuid = strings[0];
+			int id = Integer.valueOf(strings[2]);
+			characters.add(new Character(UUID.fromString(uuid), id));
 		}
+		
 		return characters;
 	}
 	

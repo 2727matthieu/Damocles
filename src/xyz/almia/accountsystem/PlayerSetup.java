@@ -161,6 +161,7 @@ public class PlayerSetup implements Listener{
 						return;
 					}
 					
+					
 					if(event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Character Slot 1")){
 						account.loadCharacter(0);
 						player.closeInventory();
@@ -172,10 +173,14 @@ public class PlayerSetup implements Listener{
 							player.sendMessage("");
 							i++;
 						}
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Logging in!");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Logged into "+account.getLoadedCharacter().getUsername()+"!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+						if(!(account.getLoadedCharacter().getUsername().equalsIgnoreCase("unknown"))){
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+							Message.sendCenteredMessage(player, ChatColor.BOLD + "Logging in!");
+							Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Logged into "+account.getLoadedCharacter().getUsername()+"!");
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+						}else{
+							sendNameSelectionProcess(player);
+						}
 					}
 					
 					if(event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Character Slot 2")){
@@ -189,10 +194,14 @@ public class PlayerSetup implements Listener{
 							player.sendMessage("");
 							i++;
 						}
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Logging in!");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Logged into "+account.getLoadedCharacter().getUsername()+"!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+						if(!(account.getLoadedCharacter().getUsername().equalsIgnoreCase("unknown"))){
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+							Message.sendCenteredMessage(player, ChatColor.BOLD + "Logging in!");
+							Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Logged into "+account.getLoadedCharacter().getUsername()+"!");
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+						}else{
+							sendNameSelectionProcess(player);
+						}
 					}
 					
 					if(event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Character Slot 3")){
@@ -206,10 +215,14 @@ public class PlayerSetup implements Listener{
 							player.sendMessage("");
 							i++;
 						}
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Logging in!");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Logged into "+account.getLoadedCharacter().getUsername()+"!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+						if(!(account.getLoadedCharacter().getUsername().equalsIgnoreCase("unknown"))){
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+							Message.sendCenteredMessage(player, ChatColor.BOLD + "Logging in!");
+							Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Logged into "+account.getLoadedCharacter().getUsername()+"!");
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+						}else{
+							sendNameSelectionProcess(player);
+						}
 					}
 					
 				}
@@ -272,9 +285,15 @@ public class PlayerSetup implements Listener{
 		try{
 			Character fchar = new Account(player).getLoadedCharacter();
 			
+			player.sendMessage(fchar.getCharacterStatus().toString());
+			
 			if(fchar.getCharacterStatus().equals(CharacterStatus.CHOOSE_USERNAME)){
 				event.setCancelled(true);
 				
+				
+				for(String s : getCharacterNames()){
+					player.sendMessage(s);
+				}
 				if(nameSelection(event.getMessage()).equals(UserReason.NONE)){
 					
 					for(int i=0; i < 16;){

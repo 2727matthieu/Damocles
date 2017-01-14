@@ -3,18 +3,13 @@ package xyz.almia.cardinalsystem;
 import java.lang.reflect.Field;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import mkremins.fanciful.FancyMessage;
 import net.blitzcube.score.secondlineapi.manager.SecondLineManager;
 import xyz.almia.abilities.DarkMagic;
 import xyz.almia.abilities.Teleport;
@@ -22,48 +17,45 @@ import xyz.almia.accountsystem.Account;
 import xyz.almia.accountsystem.AccountStatus;
 import xyz.almia.accountsystem.EventCanceller;
 import xyz.almia.accountsystem.PlayerSetup;
-import xyz.almia.accountsystem.Rank;
 import xyz.almia.accountsystem.Tasks;
 import xyz.almia.anvilsystem.AnvilHandler;
 import xyz.almia.arrowsystem.ArrowHandler;
-import xyz.almia.arrowsystem.CustomArrow;
-import xyz.almia.clansystem.Clan;
-import xyz.almia.clansystem.Clans;
+import xyz.almia.commandsystem.Arrow;
+import xyz.almia.commandsystem.Balance;
+import xyz.almia.commandsystem.Guild;
+import xyz.almia.commandsystem.Heal;
+import xyz.almia.commandsystem.Help;
+import xyz.almia.commandsystem.Logout;
+import xyz.almia.commandsystem.Money;
+import xyz.almia.commandsystem.Party;
+import xyz.almia.commandsystem.Potion;
+import xyz.almia.commandsystem.Stats;
+import xyz.almia.commandsystem.Trade;
 import xyz.almia.damagesystem.DamageSystem;
 import xyz.almia.enchantsystem.BatVision;
 import xyz.almia.enchantsystem.BlankEnchant;
 import xyz.almia.enchantsystem.BloodThirst;
-import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.enchantsystem.Eyepatch;
 import xyz.almia.enchantsystem.Jump;
 import xyz.almia.enchantsystem.Rune;
 import xyz.almia.enchantsystem.Speed;
-import xyz.almia.itemsystem.CardinalDrops;
-import xyz.almia.utils.Color;
 import xyz.almia.itemsystem.ItemHandler;
-import xyz.almia.itemsystem.Items;
 import xyz.almia.itemsystem.Soul;
 import xyz.almia.menu.ClanMenu;
 import xyz.almia.menu.PlayerMenu;
 import xyz.almia.menu.SelectionMenu;
-import xyz.almia.potionsystem.Effect;
-import xyz.almia.potionsystem.Potion;
-import xyz.almia.potionsystem.PotionColors;
-import xyz.almia.potionsystem.PotionType;
+import xyz.almia.potionsystem.PotionHandler;
+import xyz.almia.potionsystem.SplashPotionHandler;
 import xyz.almia.professionssystem.Farming;
 import xyz.almia.professionssystem.Fishing;
 import xyz.almia.professionssystem.Mining;
 import xyz.almia.professionssystem.Smelting;
 import xyz.almia.soulsystem.SoulSystem;
-import xyz.almia.utils.Message;
 
 public class Cardinal extends JavaPlugin implements Listener{
 	
 	public BlankEnchant ench = new BlankEnchant(69);
 	public static Plugin plugin;
-	private PlayerSetup playersetup = new PlayerSetup();
-	private xyz.almia.enchantsystem.Enchantment enchantclass = new xyz.almia.enchantsystem.Enchantment();
-	private Rune rune = new Rune();
 	public Tasks task;
 	
 	public static Plugin getPlugin() {
@@ -216,6 +208,26 @@ public class Cardinal extends JavaPlugin implements Listener{
 		Bukkit.getPluginManager().registerEvents(new AnvilHandler(), this);
 		Bukkit.getPluginManager().registerEvents(new Soul(), this);
 		Bukkit.getPluginManager().registerEvents(new ArrowHandler(), this);
+		Bukkit.getPluginManager().registerEvents(new PotionHandler(), this);
+		Bukkit.getPluginManager().registerEvents(new SplashPotionHandler(), this);
+	}
+	
+	public void registerCommands(){
+		this.getCommand("potion").setExecutor(new Potion(this));
+		this.getCommand("arrow").setExecutor(new Arrow(this));
+		this.getCommand("balance").setExecutor(new Balance(this));
+		this.getCommand("cardinal").setExecutor(new xyz.almia.commandsystem.Cardinal(this));
+		this.getCommand("clan").setExecutor(new xyz.almia.commandsystem.Clan(this));
+		this.getCommand("guild").setExecutor(new Guild(this));
+		this.getCommand("heal").setExecutor(new Heal(this));
+		this.getCommand("logout").setExecutor(new Logout(this));
+		this.getCommand("money").setExecutor(new Money(this));
+		this.getCommand("party").setExecutor(new Party(this));
+		this.getCommand("rank").setExecutor(new xyz.almia.commandsystem.Rank(this));
+		this.getCommand("rune").setExecutor(new xyz.almia.commandsystem.Rune(this));
+		this.getCommand("stats").setExecutor(new Stats(this));
+		this.getCommand("trade").setExecutor(new Trade(this));
+		this.getCommand("help").setExecutor(new Help(this));
 	}
 	
 	public void registerEnchants(){
@@ -250,6 +262,7 @@ public class Cardinal extends JavaPlugin implements Listener{
 	public void onEnable(){
 		plugin = this;
 		task = new Tasks(plugin);
+		registerCommands();
 		registerConfig();
 		registerEvents();
 		registerEnchants();
@@ -262,821 +275,5 @@ public class Cardinal extends JavaPlugin implements Listener{
 	public void onDisable(){
 		plugin = null;
 	}
-
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-		if(!(sender instanceof Player)){
-			sender.sendMessage("You must be a player to use commands!");
-		}
-		Player player = (Player)sender;
-		Account account = new Account(player);
-		xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
-		Clans whatClan = playersetup.getClan(character);
-		Clan clan = new Clan(whatClan);
-		
-		if(cmd.getName().equalsIgnoreCase("logout")){
-			Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			Message.sendCenteredMessage(player, ChatColor.BOLD + "Account");
-			Message.sendCenteredMessage(player, ChatColor.YELLOW+"Logging out in 5 seconds do not move.");
-			Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			Location loc = player.getLocation();
-			int oldx = loc.getBlockX();
-			int oldy = loc.getBlockY();
-			int oldz = loc.getBlockZ();
-			for(int o = 0; o < 15; o++){
-				player.sendMessage("");
-			}
-			new BukkitRunnable(){
-				int i = 5;
-				
-				public void run() {
-					
-					int newx = player.getLocation().getBlockX();
-					int newy = player.getLocation().getBlockY();
-					int newz = player.getLocation().getBlockZ();
-					
-					if( (oldx != newx) || (oldy != newy) || (oldz != newz) ){
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Account");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"Moved cancelling logout.");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						this.cancel();
-					}
-					
-					if(!(i == 0)){
-						Message.sendCenteredMessage(player, ChatColor.RED + "" + i +"...");
-						i--;
-					}else{
-						Message.sendCenteredMessage(player, ChatColor.RED + "" + i +"...");
-						account.logout();
-						for(int o = 0; o < 15; o++){
-							player.sendMessage("");
-						}
-						this.cancel();
-					}
-				}
-			}.runTaskTimer(getPlugin(), 0, 20);
-			return true;
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("help")){
-			if(character.getRank().equals(Rank.GAMEMASTER)){
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-				Message.sendCenteredMessage(player, " ");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Rank "+ChatColor.GOLD+ ": For all the Rank Commands.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Money "+ChatColor.GOLD+ ": Admin money command.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Cardinal "+ChatColor.GOLD+ ": generates custom weapons.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Rune "+ChatColor.GOLD+ ": For all the Enchant Commands.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Arrow "+ChatColor.GOLD+ ": For all the Arrow Commands.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Heal <Character>"+ChatColor.GOLD+ ": Heals specified player.");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			}else{
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-				Message.sendCenteredMessage(player, " ");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/logout "+ChatColor.GOLD+ ": Logs out of your character.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/balance "+ChatColor.GOLD+ ": Displays users bank balance.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Clan "+ChatColor.GOLD+ ": For all the Clan Commands.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Stats "+ChatColor.GOLD+ ": For your players Stats.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Guild "+ChatColor.GOLD+ ": Not implemented.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Party "+ChatColor.GOLD+ ": Not implemented.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Trade "+ChatColor.GOLD+ ": Not implemented.");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-		}
-		
-		if(cmd.getName().equals("balance")){
-			if(args.length == 0){
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Balance");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Your balance is "+ChatColor.GREEN+"$"+character.getBankBalance());
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}else{
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Balance");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Error: Proper usage is /balance");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("money")){
-			
-			if(!(character.getRank().equals(Rank.GAMEMASTER))){
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Must be a GAMEMASTER to use /money");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-			
-			if(args.length == 0){
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Money Commands");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/money set <Player> <Amount>");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}else if(args.length == 3){
-				if(args[0].equalsIgnoreCase("set")){
-					try{
-						xyz.almia.accountsystem.Character target = playersetup.getCharacterFromUsername(args[1]);
-						try{
-							int amount = Integer.valueOf(args[2]);
-							
-							target.setBankBalance(amount);
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Money");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+ target.getUsername() + "'s balance has been set to " + args[2]);
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(target.getPlayer(), ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(target.getPlayer(), ChatColor.BOLD + "Money");
-							Message.sendCenteredMessage(target.getPlayer(), ChatColor.YELLOW+ target.getUsername() + "'s balance has been set to " + args[2]);
-							Message.sendCenteredMessage(target.getPlayer(), ChatColor.GREEN+"----------------------------------------------------");
-							return true;
-							
-						}catch(Exception e){
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Money");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+ args[2] + " is not a number.");
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							return true;
-						}
-					}catch(Exception e) {
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Money");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+ args[1] + " does not exist or is offline.");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						return true;
-					}
-				}else{
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW+"Improper command usage, use /money set <Player> <Amount>");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					return true;
-				}
-			}else{
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Improper command usage, use /money set <Player> <Amount>");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("arrow")){
-			if(character.getRank().equals(Rank.GAMEMASTER)){
-				if(args.length == 0){
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Arrows Help");
-					Message.sendCenteredMessage(player, " ");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Arrow colors");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Arrow create <color> <Potion> : Not Implemented.");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					return true;
-				}
-				if(args.length == 1){
-					if(args[0].equalsIgnoreCase("colors")){
-						player.openInventory(EventCanceller.getArrowColors());
-						return true;
-					}
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Arrows");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW+"Not a valid arrow command.");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					return true;
-				}
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Arrows");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Not a valid arrow command.");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}else{
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"You must be a GameMaster to use this command.");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("add")){
-			
-			//ItemStack item = new CustomArrow(ChatColor.GRAY+"Arrow", 1, new Color(Integer.valueOf(args[0]), Integer.valueOf(args[1]), Integer.valueOf(args[2])).getInt(), null).getItemStack();
-			//player.getInventory().addItem(item);
-			
-			
-			return true;
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("heal")){
-			if(character.getRank().equals(Rank.GAMEMASTER)){
-				if(args.length == 0){
-					character.setHealth(character.getMaxHealth());
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have been healed!");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					return true;
-				}else if(args.length == 1){
-					try{
-						xyz.almia.accountsystem.Character target = playersetup.getCharacterFromUsername(args[0]);
-						target.setHealth(target.getMaxHealth());
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have healed " + target.getUsername() + " !");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(target.getPlayer(), ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(target.getPlayer(), ChatColor.BOLD + "Help");
-						Message.sendCenteredMessage(target.getPlayer(), ChatColor.YELLOW+"You have been healed!");
-						Message.sendCenteredMessage(target.getPlayer(), ChatColor.GREEN+"----------------------------------------------------");
-						return true;
-					}catch(Exception e){
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"Player " + args[0] + " does not exist or is offline.");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						return true;
-					}
-				}else{
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW+"Improper command usage, use /heal <Player>");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					return true;
-				}
-			}else{
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Only GameMasters can use this command!");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("cardinal")){
-
-			
-			Inventory inv = Bukkit.createInventory(null, 18, "items");
-			CardinalDrops drop = new CardinalDrops();
-			
-			for(Items item : Items.values()){
-				inv.addItem(drop.getItem(item));
-			}
-			inv.addItem(new Potion(new Effect(PotionType.HEAL, 1, 20), new Color(PotionColors.GREEN).getInt(), false).buildItemStack());
-			inv.addItem(new Potion(new Effect(PotionType.HEAL, 1, 20), new Color(PotionColors.GREEN).getInt(), true).buildItemStack());
-			inv.addItem(new CustomArrow(new Effect(PotionType.EXPLOSION, 2, 20), 1, new Color(PotionColors.BLACK).getInt()).getItemStack());
-			inv.addItem(new Potion(new Effect(PotionType.HEAL, 37, 20), new Color(PotionColors.MAGENTA).getInt(), false).buildItemStack());
-			
-			player.openInventory(inv);
-			
-			return true;
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("rank")){
-			
-			if(player.isOp() || (new Account(player).getLoadedCharacter().getRank().equals(xyz.almia.accountsystem.Rank.GAMEMASTER))){
-			
-			if(args.length == 0){
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-				Message.sendCenteredMessage(player, " ");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Rank set <Player> <Rank>");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Rank get <Player>");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-			if(args[0].equalsIgnoreCase("help")){
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-				Message.sendCenteredMessage(player, " ");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Rank set <Player> <Rank>");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"/Rank get <Player>");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-			if(args[0].equalsIgnoreCase("set")){
-				if(args.length == 3){
-					try{
-						xyz.almia.accountsystem.Character chara = playersetup.getCharacterFromUsername(args[1]);
-						try{
-							xyz.almia.accountsystem.Rank rank = xyz.almia.accountsystem.Rank.valueOf(args[2].toUpperCase());
-							chara.setRank(rank);
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have set "+args[1]+" to a "+args[2]+"!");
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							return true;
-						}catch(Exception e){
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguments : Unknown Rank");
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							return true;
-						}
-					}catch(Exception e){
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguments : Unknown Player");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						return true;
-					}
-				}else{
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguments : /Rank set <Player> <Rank>");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					return true;
-				}
-			}
-			if(args[0].equalsIgnoreCase("get")){
-				if(args.length == 2){
-					try{
-						xyz.almia.accountsystem.Character target = playersetup.getCharacterFromUsername(args[1]);
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+args[1]+" is a "+ target.getRank()+"!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						return true;
-					}catch(Exception e){
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguments : Unknown Player");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						return true;
-					}
-				}else{
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguments : /Rank get <Player>");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					return true;
-				}
-			}
-			Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-			Message.sendCenteredMessage(player, ChatColor.YELLOW+"Unknown Rank command!");
-			Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			return true;
-		}else{
-			Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			Message.sendCenteredMessage(player, ChatColor.BOLD + "Rank Help");
-			Message.sendCenteredMessage(player, ChatColor.YELLOW+"You must be a GameMaster to use the Rank command!");
-			Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			return true;
-		}
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("stats")){
-			Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			Message.sendCenteredMessage(player, ChatColor.BOLD + character.getUsername() + " Stats");
-			Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Your current Level is " + ChatColor.GOLD + character.getLevel());
-			Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Your current xp is " + ChatColor.GOLD + character.getExp()+ ChatColor.YELLOW+ " / "+ ChatColor.GOLD + (character.getLevel() * 1028));
-			Message.sendCenteredMessage(player, ChatColor.YELLOW+ "You currently belong to the "+ playersetup.getClan(character).toString().toLowerCase().substring(0, 1).toUpperCase() + playersetup.getClan(character).toString().toLowerCase().substring(1) + " clan.");
-			Message.sendCenteredMessage(player, ChatColor.YELLOW+ "your position is " + ChatColor.GRAY + playersetup.getClanRank(character).toString().toLowerCase().substring(0, 1).toUpperCase() + playersetup.getClanRank(character).toString().toLowerCase().substring(1));	
-			Message.sendCenteredMessage(player, " ");
-			Message.sendCenteredMessage(player, ChatColor.BOLD + "No Active Bonus' !");
-			Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			player.openInventory(PlayerMenu.createMenu(player));
-			return true;
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("clan")){
-			
-		      if (args.length == 0){
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan choose");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan info "+ChatColor.GOLD+"[Player]"+ChatColor.YELLOW+" or "+ChatColor.GOLD+"[Clan]");
-					//Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan join"+ChatColor.GOLD+" [Color]");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan promote"+ChatColor.GOLD+" [Player]");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan leave");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		            return true;
-		      }
-		      
-		      if(args[0].equalsIgnoreCase("help")){
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan help");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan choose");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan info "+ChatColor.GOLD+"[Player]"+ChatColor.YELLOW+" or "+ChatColor.GOLD+"[Clan]");
-					//Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan join"+ChatColor.GOLD+" [Color]");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan promote"+ChatColor.GOLD+" [Player]");
-					Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Clan leave");
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		            return true;
-		      }
-		      
-		      if(args[0].equalsIgnoreCase("leave")){
-		    	  if(playersetup.isInClan(character)){
-		    		  
-		    		  if(clan.getProposed().getUsername().equalsIgnoreCase(character.getUsername()))
-		    			  clan.setProposed(null);
-		    		  
-		    		  xyz.almia.clansystem.Rank rank = playersetup.getClanRank(character);
-		    		  switch(rank){
-					case CLANSMEN:
-						clan.removeClansmen(character);
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have left "+whatClan.toString()+" Clan!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    			return true;
-					case KING:
-						clan.setKing(null);
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have left "+whatClan.toString()+" Clan!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    			  return true;
-					case NONE:
-						break;
-					default:
-						break;
-		    		  }
-		    	  }else{
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"You are not in a Clan!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-	    			  return true;
-		    	  }
-		      }
-		      
-		      /*
-		      if(args[0].equalsIgnoreCase("invite")){
-		    	  if(args.length == 2){
-			    	  Clans clan = Clan.getManager().getClan(player);
-			    	  if(clan == Clans.UNCLANNED){
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+"You are not in a Clan!");
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    			  return true;
-			    	  }
-			    	  Player target = Bukkit.getPlayer(args[1]);
-			    	  if(player == target){
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+"You cannot invite yourself to a Clan!");
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  return true;
-			    	  }
-			    	  boolean canInvite = false;
-			    	  if(Clan.getManager().getKing(clan).equalsIgnoreCase(player.getUniqueId()+""))
-			    		  canInvite = true;
-			    	  if(Clan.getManager().getOfficer(clan).equalsIgnoreCase(player.getUniqueId()+""))
-			    		  canInvite = true;
-			    	  if(canInvite){
-			    		  if(target != null){
-			    			  Clan.getManager().addInvitedMember(target, clan);
-			    			  return true;
-			    		  }else{
-								Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-								Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-								Message.sendCenteredMessage(player, ChatColor.YELLOW+"The player ( "+args[1]+" ) does not exist or is offline!");
-								Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    			  return true;
-			    		  }
-			    	  }else{
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+"You are not a King or an Officer!");
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  return true;
-			    	  }
-		    	  }else{
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid usage, check /sevenkings help for correct command usage!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  return true;
-		    	  }
-		      }
-		      */
-		      
-		      if(args[0].equalsIgnoreCase("choose")){
-		    	  
-		    	  if(character.getLevel() >= 5){
-			    	  if(!(playersetup.isInClan(character))){
-			    		  player.openInventory(SelectionMenu.getInstance().generateSelectionInventory());
-			    		  return true;
-			    	  }else{
-			    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-			    		  Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: You are already in a clan!");
-			    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  return true;
-			    	  } 
-		    	  }else{
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  Message.sendCenteredMessage(player, ChatColor.BOLD + "Game Info");
-		    		  Message.sendCenteredMessage(player, ChatColor.YELLOW+"You must be Level 5 to choose a clan!");
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  return true;
-		    	  }
-		    	  
-		      }
-		      
-		      if(args[0].equalsIgnoreCase("accept")){
-		    	  
-		    	  if(whatClan.equals(Clans.UNCLANNED))
-		    		  return true;
-		    	  
-		    	  if(whatClan.equals(Clans.EXILED))
-		    		  return true;
-		    	  
-		    	  if(clan.getProposed().getUsername().equalsIgnoreCase(character.getUsername())){
-		    		  if(clan.getKing() == null){
-		    			  clan.removeClansmen(character);
-		    			  clan.setProposed(null);
-		    			  clan.setKing(character);
-		    			  for(Player target : Bukkit.getOnlinePlayers()){
-								if(whatClan.equals(Clans.COLORLESS)){
-									Message.sendCenteredMessage(target, ChatColor.GREEN+"----------------------------------------------------");
-									Message.sendCenteredMessage(target, ChatColor.BOLD + "Game Info");
-									Message.sendCenteredMessage(target, ChatColor.YELLOW+character.getUsername()+" has become the " + ChatColor.DARK_GRAY + whatClan.toString().toLowerCase().substring(0, 1).toUpperCase() + whatClan.toString().toLowerCase().substring(1) + ChatColor.YELLOW + " King!");
-									Message.sendCenteredMessage(target, ChatColor.GREEN+"----------------------------------------------------");
-								}else{
-									Message.sendCenteredMessage(target, ChatColor.GREEN+"----------------------------------------------------");
-									Message.sendCenteredMessage(target, ChatColor.BOLD + "Game Info");
-									Message.sendCenteredMessage(target, ChatColor.YELLOW+character.getUsername()+" has become the " + ChatColor.valueOf(whatClan.toString().toUpperCase()) + whatClan.toString().toLowerCase().substring(0, 1).toUpperCase() + whatClan.toString().toLowerCase().substring(1) + ChatColor.YELLOW + " King!");
-									Message.sendCenteredMessage(target, ChatColor.GREEN+"----------------------------------------------------");
-								}
-							}
-		    		  }
-		    		  return true;
-		    	  }
-		    	  
-		      }
-		      
-		      if(args[0].equalsIgnoreCase("reject")){
-		    	  
-		    	  if(whatClan.equals(Clans.UNCLANNED))
-		    		  return true;
-		    	  
-		    	  if(whatClan.equals(Clans.EXILED))
-		    		  return true;
-		    	  
-		    	  if(clan.getProposed().getUsername().equalsIgnoreCase(character.getUsername())){
-		    		  if(clan.getKing() == null){
-		    			  clan.addRejected(character);
-							if(whatClan.equals(Clans.COLORLESS)){
-								Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-								Message.sendCenteredMessage(player, ChatColor.BOLD + "Game Info");
-								Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have rejected becoming the " + ChatColor.DARK_GRAY + whatClan.toString().toLowerCase().substring(0, 1).toUpperCase() + whatClan.toString().toLowerCase().substring(1) + ChatColor.YELLOW + " King!");
-								Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							}else{
-								Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-								Message.sendCenteredMessage(player, ChatColor.BOLD + "Game Info");
-								Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have rejected becoming the " + ChatColor.valueOf(whatClan.toString().toUpperCase()) + whatClan.toString().toLowerCase().substring(0, 1).toUpperCase() + whatClan.toString().toLowerCase().substring(1) + ChatColor.YELLOW + " King!");
-								Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							}
-		    		  }
-		    		  return true;
-		    	  }
-		    	  
-		      }
-		      
-		      /*
-		      if(args[0].equalsIgnoreCase("kick")){
-		    	  if(args.length == 2){
-			    	  if(Clan.getManager().isInClan(player)){
-			    		  if(Clan.getManager().getRank(player) == Rank.KING || Clan.getManager().getRank(player) == Rank.OFFICER){
-			    			  Player target = Bukkit.getPlayer(args[1]);
-			    			  if(target != null){
-			    				  if(Clan.getManager().getClan(target).equals(Clan.getManager().getClan(player))){
-			    					  if(Clan.getManager().getRank(target) == Rank.CLANSMEN){
-			    						  Clan.getManager().removeClanMember(target, Clan.getManager().getClan(player));
-			    							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-			    							Message.sendCenteredMessage(player, ChatColor.YELLOW+"INFO: You have kicked "+args[1]+" from the Clan!");
-			    							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    							Message.sendCenteredMessage(target, ChatColor.GREEN+"----------------------------------------------------");
-			    							Message.sendCenteredMessage(target, ChatColor.BOLD + "Clan Info");
-			    							Message.sendCenteredMessage(target, ChatColor.YELLOW+"INFO: You have been kicked out of your clan!");
-			    							Message.sendCenteredMessage(target, ChatColor.GREEN+"----------------------------------------------------");
-			    			    		  return true;
-			    					  }else{
-			    							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-			    							Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: A King/Officer cannot kick a King/Officer!");
-			    							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    			    		  return true;
-			    					  }
-			    				  }else{
-		    							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-		    							Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: "+ args[1]+" is not in your clan.");
-		    							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		    		  return true;
-			    				  }
-			    			  }else{
-	    							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-	    							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-	    							Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: Player " + args[1] +" does not exist or is offline.");
-	    							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					    		  return true;
-			    			  }
-			    		  }else{
-  							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-  							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-  							Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: Only the King/Officer can kick people!");
-  							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				    		  return true;
-			    		  }
-			    	  }else{
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: You are not in a Clan!");
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  return true;
-			    	  }
-		    	  }else{
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: Invalid usage, check /sevenkings help for correct command usage!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  return true;
-		    	  }
-		      }
-		      */
-		     
-		      if(args[0].equalsIgnoreCase("join")){
-		    	  if(args.length == 2){
-			    	  if(!(playersetup.isInClan(character))){
-			    		  try{
-			    			  Clans clanchoice = Clans.valueOf(args[1].toUpperCase());
-			    			  Clan theClan = new Clan(clanchoice);
-			    			  theClan.addClansmen(character);
-	    						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-	    						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-	    						Message.sendCenteredMessage(player, ChatColor.YELLOW+"INFO: You have joined the "+args[1]+" Clan!");
-	    						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-	    						return true;
-			    		  }catch(Exception IllegalArgumentException){
-  							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-  							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-  							Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: "+args[1]+ " is not a valid Clan!");
-  							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				    		  return true;
-			    		  }
-			    	  }else{
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-							Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: You are already in a Clan!");
-							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  return true; 
-			    	  }  
-		    	  }else{
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"ERROR: Invalid usage, check /sevenkings help for correct command usage!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  return true;
-		    	  }
-		      }
-	
-		      
-		      if(args[0].equalsIgnoreCase("info")){
-		    	  if(args.length == 2){
-		    		  for(Clans clans : Clans.values()){
-		    			  if(!clan.equals(Clans.UNCLANNED)){
-		    				  if(args[1].equalsIgnoreCase(clan.toString().toLowerCase())){
-		    					  player.openInventory(ClanMenu.generateClanMenu(clans));
-		  						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    					  new FancyMessage("You have opened the ")
-		    					  .color(ChatColor.YELLOW)
-		    					  .then(clan.toString().toLowerCase())
-		    					  .color(ChatColor.valueOf(clan.toString().toUpperCase()))
-		    					  .then("'s Clan Menu. Click ")
-		    					  .color(ChatColor.YELLOW)
-		    					  .then("here")
-		    					  .command("/clan info "+args[1])
-		    					  .color(ChatColor.GOLD)
-		    					  .style(ChatColor.BOLD)
-		    					  .then(" to reopen the menu.")
-		    					  .color(ChatColor.YELLOW)
-		    					  .send(player);
-		  						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    					  
-		    				  }
-		    			  }
-		    		  }
-		    		  //Get player menu here.
-		    	  }else{
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguemnts for proper usage use /Help");
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  return true;
-		    	  }
-		      }
-			
-		}
-		
-		if(cmd.getName().equalsIgnoreCase("rune")){
-			
-			if(args.length == 0){
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				Message.sendCenteredMessage(player, ChatColor.BOLD + "Rune Help");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Rune list "+ChatColor.GOLD+": for a list of Runes.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Rune <Enchantment> <level> <Success Rate> <Destroy Rate>");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Rune slot <Amount> "+ChatColor.GOLD+": gives a Slot Rune.");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW + "/Rune protection "+ChatColor.GOLD+": gives a Protection Rune.");
-				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				return true;
-			}
-			
-			if(args[0].equalsIgnoreCase("list")){
-				if(args.length == 1){
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					Message.sendCenteredMessage(player, ChatColor.BOLD + "Runes");
-					
-					String enchants = "";
-					for(Enchantments enchant : Enchantments.values()){
-						enchants = enchants + ChatColor.GOLD+ enchantclass.getName(enchant) + ChatColor.YELLOW+ ", ";
-					}
-					Message.sendCenteredMessage(player, enchants);
-					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-					return true;
-				}else{
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguemnts for proper usage use /Rune");
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  return true;
-				}
-			}else if(args[0].equalsIgnoreCase("slot")){
-				if(args.length == 2){
-					try{
-						int slots = Integer.valueOf(args[1]);
-						player.getInventory().addItem(rune.createSlotRune(slots));
-						return true;
-					}catch(Exception e){
-			    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  Message.sendCenteredMessage(player, ChatColor.YELLOW+args[1]+" is not a whole number or your inventory is full!");
-			    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  return true;
-					}
-				}else{
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguemnts for proper usage use /Rune");
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  return true;
-				}
-			}else if(args[0].equalsIgnoreCase("protection")){
-				if(args.length == 1){
-					try{
-						player.getInventory().addItem(rune.createProtectionRune());
-						return true;
-					}catch(Exception e){
-			    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  Message.sendCenteredMessage(player, ChatColor.YELLOW+"Your inventory is full.");
-			    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-			    		  return true;
-					}
-				}else{
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  Message.sendCenteredMessage(player, ChatColor.YELLOW+"Invalid Arguemnts for proper usage use /Rune");
-		    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    		  return true;
-				}
-			}
-			
-			
-			for(Enchantments enchant : Enchantments.values()){
-				if(args[0].equalsIgnoreCase(enchant.toString())){
-					try{
-						int level = Integer.valueOf(args[1]);
-						int success = Integer.valueOf(args[2]);
-						int destroy = Integer.valueOf(args[3]);
-						if(level > enchantclass.getMaxLevel(enchant))
-						if(level > enchantclass.getMaxLevel(enchant)){
-							player.sendMessage(ChatColor.YELLOW + "Error: The max level for " + enchantclass.getName(enchant) + " is " + enchantclass.getMaxLevel(enchant));
-							return true;
-						}
-						player.getInventory().addItem(rune.createRune(enchant, level, success, destroy));
-						return true;
-					}catch(NumberFormatException e) {
-				  		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				  		  Message.sendCenteredMessage(player, ChatColor.YELLOW+args[1]+ ", "+args[2]+", "+args[3]+" One or allof these are not whole numbers!");
-				  		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-				  		  return true;
-					}
-				}
-			}
-			
-  		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-  		  Message.sendCenteredMessage(player, ChatColor.YELLOW+args[0]+" is not a rune, or a valid sub-command of /rune");
-  		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-  		  return true;
-
-		}
-				
-    	return true;
-    }
 	
 }

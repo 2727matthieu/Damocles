@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -169,6 +170,13 @@ public class EventCanceller implements Listener{
 	}
 	
 	@EventHandler
+	public void onEntityExplode(EntityExplodeEvent event){
+		if(event.getEntity() instanceof EnderCrystal){
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
 	public void onRuneHit(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof EnderCrystal){
 			if(event.getDamager() instanceof Player){
@@ -241,17 +249,13 @@ public class EventCanceller implements Listener{
 	
 	@EventHandler
 	public void deathEvent(EntityDeathEvent event){
-		if(ThreadLocalRandom.current().nextInt(100) <= 10){
+		if(ThreadLocalRandom.current().nextInt(100) <= 100){
 			event.getEntity().getWorld().spawnEntity(event.getEntity().getLocation(), EntityType.ENDER_CRYSTAL);
 		}
 		event.setDroppedExp(0);
 		if(event.getEntity() instanceof Creature){
 			event.getDrops().add(createMoney(ThreadLocalRandom.current().nextInt(12)));
 			return;
-		}
-		
-		if(event.getEntity() instanceof Player){
-			
 		}
 		
 		return;

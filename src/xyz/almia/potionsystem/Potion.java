@@ -14,7 +14,7 @@ public class Potion {
 	
 	private PotionHandler handler = new PotionHandler();
 	private ItemStack item;
-	private Effect effect;
+	public Effect effect;
 	private int color;
 	private boolean splash;
 	
@@ -26,6 +26,7 @@ public class Potion {
 	
 	public Potion(ItemStack item){
 		this.item = item;
+		this.effect = new Effect(PotionType.valueOf(new NBTHandler(item).getStringTag("type")), new NBTHandler(item).getIntTag("amp"), new NBTHandler(item).getIntTag("dur"));
 	}
 	
 	public int getAmplifier(){
@@ -61,7 +62,7 @@ public class Potion {
 			if(effect.getDuration() == 20)
 				lore.add(ChatColor.GRAY+"Instant "+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()));
 			if(effect.getDuration() > 20)
-				lore.add(ChatColor.GRAY+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()) + "("+ ((effect.getDuration()/20)/60) +":"+(((effect.getDuration()/20)/60) - (effect.getDuration()/20)) +")");
+				lore.add(ChatColor.GRAY+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()) + " ("+ ((effect.getDuration()/20)/60) +":"+( ( (effect.getDuration()/20) - ((effect.getDuration()/20)/60)) ) +")");
 			im.setLore(lore);
 			im.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
 			item.setItemMeta(im);
@@ -78,7 +79,7 @@ public class Potion {
 			if(effect.getDuration() == 20)
 				lore.add(ChatColor.GRAY+"Instant "+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()));
 			if(effect.getDuration() > 20)
-				lore.add(ChatColor.GRAY+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()) + "("+ ((effect.getDuration()/20)/60) +":"+(((effect.getDuration()/20)/60) - (effect.getDuration()/20)) +")");
+				lore.add(ChatColor.GRAY+handler.getLore(effect.getType())+" "+RomanNumerals.intToRoman(effect.getAmplifier()) + " ("+ ((effect.getDuration()/20)/60) +":"+((effect.getDuration()/20) - ((effect.getDuration()/20)/60)) +")");
 			im.setLore(lore);
 			im.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
 			item.setItemMeta(im);
