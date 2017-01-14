@@ -249,7 +249,7 @@ public class EventCanceller implements Listener{
 	
 	@EventHandler
 	public void deathEvent(EntityDeathEvent event){
-		if(ThreadLocalRandom.current().nextInt(100) <= 100){
+		if(ThreadLocalRandom.current().nextInt(100) <= 10){
 			event.getEntity().getWorld().spawnEntity(event.getEntity().getLocation(), EntityType.ENDER_CRYSTAL);
 		}
 		event.setDroppedExp(0);
