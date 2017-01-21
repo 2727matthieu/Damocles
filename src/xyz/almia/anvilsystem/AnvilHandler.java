@@ -28,6 +28,7 @@ import xyz.almia.itemsystem.ItemHandler;
 import xyz.almia.itemsystem.ItemTypes;
 import xyz.almia.itemsystem.Weapon;
 import xyz.almia.menu.MenuItem;
+import xyz.almia.storagesystem.Treasury;
 import xyz.almia.utils.Message;
 
 public class AnvilHandler implements Listener{
@@ -129,7 +130,7 @@ public class AnvilHandler implements Listener{
 					Player player = (Player)event.getWhoClicked();
 					Account account = new Account(player);
 					xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
-					if(!(character.withdraw(anvil.getCost()))){
+					if(!(new Treasury(character).withdraw(anvil.getCost()))){
 						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 						Message.sendCenteredMessage(player, ChatColor.BOLD + "Anvil");
 						Message.sendCenteredMessage(player, ChatColor.YELLOW+ "You cannot afford to repair this item.");

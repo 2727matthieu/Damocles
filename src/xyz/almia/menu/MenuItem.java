@@ -20,6 +20,14 @@ import xyz.almia.clansystem.Clans;
 
 public class MenuItem {
 	
+	public static ItemStack createItem(String name, Material material){
+		ItemStack item = new ItemStack(material);
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(name);
+		item.setItemMeta(im);
+		return item;
+	}
+	
 	public static ItemStack createClanPane(Clans clan){
 		Clan clanProfile = new Clan(clan);
 		if(clan.equals(Clans.COLORLESS)){

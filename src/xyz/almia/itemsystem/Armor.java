@@ -87,13 +87,13 @@ public class Armor{
 		nbt = new NBTHandler(nbt).setIntTag("hp", hp);
 		nbt = new NBTHandler(nbt).setIntTag("agi", agi);
 		nbt = new NBTHandler(nbt).setIntTag("armor", armor);
-		nbt = new NBTHandler(nbt).setArmor(armor, getType().toString().toLowerCase());
 		nbt = new NBTHandler(nbt).setIntTag("reforges", reforges);
 		nbt = new NBTHandler(nbt).setIntTag("weight", weight);
 		nbt = new NBTHandler(nbt).setIntTag("upgrades", upgrades);
 		nbt = new NBTHandler(nbt).setBoolean("protected", isprotected);
 		nbt = new NBTHandler(nbt).setIntTag("durability", durability);
 		nbt = new NBTHandler(nbt).setIntTag("maxdurability", maxdurability);
+		nbt = new NBTHandler(nbt).resetArmor();
 		
 		this.item = nbt;
 		

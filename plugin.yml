@@ -5,6 +5,8 @@ main: xyz.almia.cardinalsystem.Cardinal
 commands:
   cardinal:
     description: shows custom weapon menu.
+  debuging:
+    description: should not be used, will be wiped every update. Used to test specific functions during development.
   balance:
     description: shows characters bank balance.
     aliases: [bal]

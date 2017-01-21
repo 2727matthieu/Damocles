@@ -36,6 +36,8 @@ import xyz.almia.arrowsystem.CustomArrow;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.enchantsystem.Rune;
+import xyz.almia.storagesystem.Bank;
+import xyz.almia.storagesystem.Treasury;
 import xyz.almia.utils.Color;
 import xyz.almia.utils.Message;
 
@@ -44,6 +46,21 @@ public class EventCanceller implements Listener{
 	Plugin plugin = Cardinal.getPlugin();
 	xyz.almia.enchantsystem.Enchantment enchantclass = new xyz.almia.enchantsystem.Enchantment();
 	Rune rune = new Rune();
+	
+	@EventHandler
+	public void onRightClickEnder(PlayerInteractEvent event){
+		Player player = event.getPlayer();
+		if(event.getClickedBlock() != null){
+			if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+				if(event.getClickedBlock().getType().equals(Material.ENDER_CHEST)){
+					event.setCancelled(true);
+					Account account = new Account(player);
+					Character character = account.getLoadedCharacter();
+					player.openInventory(new Bank(character).getMenu());
+				}
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onRightClickEnchantmentTable(PlayerInteractEvent event){
@@ -268,7 +285,7 @@ public class EventCanceller implements Listener{
 				if(event.getItem().getItemStack().getItemMeta().getDisplayName().contains("$")){
 					String name = event.getItem().getItemStack().getItemMeta().getDisplayName();
 					name = name.replace("$", "");
-					new Account(event.getPlayer()).getLoadedCharacter().deposit(Integer.valueOf(name));
+					new Treasury(new Account(event.getPlayer()).getLoadedCharacter()).deposit(Integer.valueOf(name));
 					event.getPlayer().sendMessage(ChatColor.YELLOW+"You have picked up $"+ Integer.valueOf(name)+" Dollars!");
 		            event.setCancelled(true);
 		            event.getItem().remove();

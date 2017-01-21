@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import net.md_5.bungee.api.ChatColor;
@@ -63,6 +64,22 @@ public class Soul implements Listener{
 			}
 		}catch(Exception e){}
 
+	}
+	
+	@EventHandler
+	public void onItemSwap(PlayerSwapHandItemsEvent event){
+		ItemStack main = event.getMainHandItem();
+		ItemStack off = event.getOffHandItem();
+		Account account = new Account(event.getPlayer());
+		xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
+		if(main.equals(soulApple(character))){
+			event.setCancelled(true);
+		}
+		if(off.equals(soulApple(character))){
+			event.setCancelled(true);
+		}
+		
+		return;
 	}
 	
 }

@@ -5,14 +5,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import net.blitzcube.score.secondlineapi.manager.SecondLineManager;
-import xyz.almia.abilities.DarkMagic;
-import xyz.almia.abilities.Teleport;
 import xyz.almia.accountsystem.Account;
 import xyz.almia.accountsystem.AccountStatus;
 import xyz.almia.accountsystem.EventCanceller;
@@ -22,6 +19,7 @@ import xyz.almia.anvilsystem.AnvilHandler;
 import xyz.almia.arrowsystem.ArrowHandler;
 import xyz.almia.commandsystem.Arrow;
 import xyz.almia.commandsystem.Balance;
+import xyz.almia.commandsystem.Debug;
 import xyz.almia.commandsystem.Guild;
 import xyz.almia.commandsystem.Heal;
 import xyz.almia.commandsystem.Help;
@@ -51,8 +49,9 @@ import xyz.almia.professionssystem.Fishing;
 import xyz.almia.professionssystem.Mining;
 import xyz.almia.professionssystem.Smelting;
 import xyz.almia.soulsystem.SoulSystem;
+import xyz.almia.storagesystem.EquipHandler;
 
-public class Cardinal extends JavaPlugin implements Listener{
+public class Cardinal extends JavaPlugin{
 	
 	public BlankEnchant ench = new BlankEnchant(69);
 	public static Plugin plugin;
@@ -188,7 +187,7 @@ public class Cardinal extends JavaPlugin implements Listener{
 	}
 
 	public void registerEvents(){
-		Bukkit.getPluginManager().registerEvents(this, this);
+		Bukkit.getPluginManager().registerEvents(new EquipHandler(), this);
 		Bukkit.getPluginManager().registerEvents(new EventCanceller(), this);
 		Bukkit.getPluginManager().registerEvents(new ItemHandler(), this);
 		Bukkit.getPluginManager().registerEvents(new ClanMenu(), this);
@@ -202,8 +201,6 @@ public class Cardinal extends JavaPlugin implements Listener{
 		Bukkit.getPluginManager().registerEvents(new Farming(), this);
 		Bukkit.getPluginManager().registerEvents(new DamageSystem(), this);
 		Bukkit.getPluginManager().registerEvents(new SoulSystem(), this);
-		Bukkit.getPluginManager().registerEvents(new Teleport(), this);
-		Bukkit.getPluginManager().registerEvents(new DarkMagic(), this);
 		Bukkit.getPluginManager().registerEvents(new SelectionMenu(), this);
 		Bukkit.getPluginManager().registerEvents(new AnvilHandler(), this);
 		Bukkit.getPluginManager().registerEvents(new Soul(), this);
@@ -213,6 +210,7 @@ public class Cardinal extends JavaPlugin implements Listener{
 	}
 	
 	public void registerCommands(){
+		this.getCommand("debuging").setExecutor(new Debug(this));
 		this.getCommand("potion").setExecutor(new Potion(this));
 		this.getCommand("arrow").setExecutor(new Arrow(this));
 		this.getCommand("balance").setExecutor(new Balance(this));
@@ -235,7 +233,6 @@ public class Cardinal extends JavaPlugin implements Listener{
 		new BatVision().checkForBatEnchant();
 		new Speed().checkForSpeedEnchant();
 		new Jump().checkForJumpEnchant();
-		new DarkMagic().darkMagic();
 	}
 
 	public void registerGlow(){

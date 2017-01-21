@@ -285,15 +285,9 @@ public class PlayerSetup implements Listener{
 		try{
 			Character fchar = new Account(player).getLoadedCharacter();
 			
-			player.sendMessage(fchar.getCharacterStatus().toString());
-			
 			if(fchar.getCharacterStatus().equals(CharacterStatus.CHOOSE_USERNAME)){
 				event.setCancelled(true);
 				
-				
-				for(String s : getCharacterNames()){
-					player.sendMessage(s);
-				}
 				if(nameSelection(event.getMessage()).equals(UserReason.NONE)){
 					
 					for(int i=0; i < 16;){

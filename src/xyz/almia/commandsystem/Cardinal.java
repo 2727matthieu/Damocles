@@ -8,10 +8,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+
+import net.md_5.bungee.api.ChatColor;
 import xyz.almia.arrowsystem.CustomArrow;
 import xyz.almia.itemsystem.CardinalDrops;
 import xyz.almia.itemsystem.Items;
+import xyz.almia.menu.MenuItem;
 import xyz.almia.potionsystem.Effect;
 import xyz.almia.potionsystem.Potion;
 import xyz.almia.potionsystem.PotionColors;
@@ -32,7 +36,7 @@ public class Cardinal implements CommandExecutor{
 		Player player = (Player)sender;
 		if(cmd.getName().equalsIgnoreCase("cardinal")){
 			
-			Inventory inv = Bukkit.createInventory(null, 18, "items");
+			Inventory inv = Bukkit.createInventory(null, 27, "items");
 			CardinalDrops drop = new CardinalDrops();
 			
 			for(Items item : Items.values()){
@@ -46,6 +50,14 @@ public class Cardinal implements CommandExecutor{
 			inv.addItem(new Potion(new Effect(PotionType.HEAL, 1, 20), new Color(PotionColors.GREEN).getInt(), true).buildItemStack());
 			inv.addItem(new Potion(new Effect(PotionType.SPEED, 1, 300), new Color(PotionColors.CYAN).getInt(), false).buildItemStack());
 			inv.addItem(new Potion(new Effect(PotionType.EXPLOSION, 1, 20), new Color(PotionColors.BLACK).getInt(), true).buildItemStack());
+			inv.addItem(MenuItem.createItem(ChatColor.GOLD+"Basic Bank", Material.YELLOW_SHULKER_BOX));
+			
+			ItemStack item = new ItemStack(Material.DIAMOND_AXE);
+			ItemMeta im = item.getItemMeta();
+			im.setUnbreakable(true);
+			item.setItemMeta(im);
+			
+			inv.addItem(item);
 			
 			player.openInventory(inv);
 			

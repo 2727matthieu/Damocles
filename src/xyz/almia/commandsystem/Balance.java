@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.accountsystem.Account;
+import xyz.almia.storagesystem.Treasury;
 import xyz.almia.utils.Message;
 
 public class Balance implements CommandExecutor{
@@ -27,7 +28,7 @@ public class Balance implements CommandExecutor{
 			if(args.length == 0){
 				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 				Message.sendCenteredMessage(player, ChatColor.BOLD + "Balance");
-				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Your balance is "+ChatColor.GREEN+"$"+character.getBankBalance());
+				Message.sendCenteredMessage(player, ChatColor.YELLOW+"Your balance is "+ChatColor.GREEN+"$"+new Treasury(character).getBalance());
 				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 				return true;
 			}else{

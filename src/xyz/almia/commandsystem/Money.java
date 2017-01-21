@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 import xyz.almia.accountsystem.Account;
 import xyz.almia.accountsystem.PlayerSetup;
 import xyz.almia.accountsystem.Rank;
+import xyz.almia.storagesystem.Treasury;
 import xyz.almia.utils.Message;
 
 public class Money implements CommandExecutor{
@@ -51,7 +52,7 @@ public class Money implements CommandExecutor{
 						try{
 							int amount = Integer.valueOf(args[2]);
 							
-							target.setBankBalance(amount);
+							new Treasury(target).setBalance(amount);
 							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 							Message.sendCenteredMessage(player, ChatColor.BOLD + "Money");
 							Message.sendCenteredMessage(player, ChatColor.YELLOW+ target.getUsername() + "'s balance has been set to " + args[2]);

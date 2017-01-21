@@ -9,17 +9,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import xyz.almia.accountsystem.Account;
 import xyz.almia.accountsystem.Profession;
 import xyz.almia.accountsystem.Stat;
+import xyz.almia.storagesystem.Equips;
+import xyz.almia.storagesystem.Treasury;
 
 public class PlayerMenu implements Listener{
 	
 	public static Inventory createMenu(Player player){
-		Inventory inv = Bukkit.getServer().createInventory(null, 27, player.getName() + " Stats");
-		
 		xyz.almia.accountsystem.Character character = new Account(player).getLoadedCharacter();
+		Inventory inv = Bukkit.getServer().createInventory(null, 27, character.getUsername() + "'s Stats");
 		
 		ItemStack emp = MenuItem.createItem("Empty", "", Material.STAINED_GLASS_PANE);
 		ItemStack i1 = MenuItem.createBetterItem(ChatColor.DARK_GRAY + "Player Data", Arrays.asList(new String[] {
@@ -39,10 +43,15 @@ public class PlayerMenu implements Listener{
 				}), Material.END_CRYSTAL);
 		ItemStack prof = MenuItem.createBetterItem(ChatColor.DARK_GRAY + "Professions", Arrays.asList(new String[] { ChatColor.GRAY + "Click to open the Professions menu." }), Material.STONE_PICKAXE);
 		ItemStack skills = MenuItem.createBetterItem(ChatColor.DARK_GRAY + "Skills", Arrays.asList(new String[] { ChatColor.GRAY + "Click to open the Skill menu."}), Material.ENCHANTED_BOOK);
-		ItemStack money = MenuItem.createBetterItem(ChatColor.GREEN+"Balance", Arrays.asList(new String[] { ChatColor.GREEN+"$"+ChatColor.GRAY+""+ character.getBankBalance() }), Material.EMERALD);
+		ItemStack money = MenuItem.createBetterItem(ChatColor.GREEN+"Balance", Arrays.asList(new String[] { ChatColor.GREEN+"$"+ChatColor.GRAY+""+ new Treasury(character).getBalance() }), Material.EMERALD);
 		ItemStack friends = MenuItem.createBetterItem(ChatColor.RED+"Friends", Arrays.asList(new String[] {  }), Material.RED_ROSE);
 		ItemStack ap = MenuItem.createEvenBetterItem(ChatColor.DARK_GRAY + "Ability Points", Arrays.asList(new String[] {ChatColor.GRAY + "Unallocated Points: " + new Account(player).getLoadedCharacter().getAbilityPoints(), ChatColor.GRAY + "Total Points: " + new Account(player).getLoadedCharacter().getLevel() * 3}), Material.EXP_BOTTLE, new Account(player).getLoadedCharacter().getAbilityPoints());
 		ItemStack clan = MenuItem.createClanTag(player);
+		ItemStack equip = MenuItem.createEvenBetterItem(ChatColor.DARK_GRAY + "Equips", Arrays.asList(ChatColor.GRAY + "Click to open your equip inventory.") , Material.DIAMOND_CHESTPLATE, 1);
+		ItemMeta equipmeta = equip.getItemMeta();
+		equipmeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		equip.setItemMeta(equipmeta);
+		
 		
 		ItemStack s1 = MenuItem.createEvenBetterItem(ChatColor.DARK_GRAY + "Strength", Arrays.asList(new String[] { ChatColor.GRAY + "Current Level: " + new Account(player).getLoadedCharacter().getStat(Stat.STRENGTH), ChatColor.GREEN+"Increases Base Physical-Damage." }), Material.BOOK, new Account(player).getLoadedCharacter().getStat(Stat.STRENGTH));
 		ItemStack s2 = MenuItem.createEvenBetterItem(ChatColor.DARK_GRAY + "Agility", Arrays.asList(new String[] { ChatColor.GRAY + "Current Level: " + new Account(player).getLoadedCharacter().getStat(Stat.AGILITY), ChatColor.GREEN+"Increases Dodge-Chance and Base-Speed." }), Material.BOOK, new Account(player).getLoadedCharacter().getStat(Stat.AGILITY));
@@ -65,7 +74,7 @@ public class PlayerMenu implements Listener{
 		 */
 		
 		
-		inv.setItem(0, emp);
+		inv.setItem(0, clan);
 		inv.setItem(1, emp);
 		inv.setItem(2, emp);
 		inv.setItem(3, i1);
@@ -86,7 +95,7 @@ public class PlayerMenu implements Listener{
 		inv.setItem(18, friends);
 		inv.setItem(19, emp);
 		inv.setItem(20, emp);
-		inv.setItem(21, clan);
+		inv.setItem(21, equip);
 		inv.setItem(22, emp);
 		inv.setItem(23, emp);
 		inv.setItem(24, emp);
@@ -161,49 +170,26 @@ public class PlayerMenu implements Listener{
 		
 		return inv;
 	}
-	
-	public static Inventory createAdminMenu(){
-		Inventory inv = Bukkit.getServer().createInventory(null, 9, "Admin Menu");
-		ItemStack emp = MenuItem.createItem("Empty", "", Material.STAINED_GLASS_PANE);
-		ItemStack apple = new ItemStack(Material.GOLDEN_APPLE, 64, (short)1);
-		ItemStack helm = new ItemStack(Material.DIAMOND_HELMET, 1);
-		ItemStack chest = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
-		ItemStack legg = new ItemStack(Material.DIAMOND_LEGGINGS, 1);
-		ItemStack boot = new ItemStack(Material.DIAMOND_BOOTS, 1);
-		ItemStack pick = new ItemStack(Material.DIAMOND_PICKAXE, 1);
-		ItemStack diamond = new ItemStack(Material.DIAMOND, 32);
-		inv.setItem(0, apple);
-		inv.setItem(1, emp); //4
-		inv.setItem(2, diamond);
-		inv.setItem(3, emp); //3
-		inv.setItem(4, pick);
-		inv.setItem(5, helm); //2
-		inv.setItem(6, chest);
-		inv.setItem(7, legg); //1
-		inv.setItem(8, boot);
-		return inv;
-	}
-		
+
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event){
 		Player player = (Player)event.getWhoClicked();
+		Account account = new Account(player);
+		xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
 		
 		if(event.getInventory().getName().toLowerCase().equals("profession menu")){
 			event.setCancelled(true);
 		}
 		
-		if(event.getInventory().getName().toLowerCase().equals("stat menu")){
+		if(event.getInventory().getName().equals(character.getUsername() + "'s Stats")){
 			event.setCancelled(true);
 			if(event.getCurrentItem() != null){
-				if(event.getCurrentItem().getType().equals(Material.STONE_PICKAXE)){
-					player.openInventory(createAdminMenu());
+				
+				if(event.getCurrentItem().getType().equals(Material.DIAMOND_CHESTPLATE)){
+					player.closeInventory();
+					player.openInventory(new Equips(character).getMenu());
 				}
-			}
-		}
-		
-		if(event.getInventory().getName().toLowerCase().equals(player.getName().toLowerCase() + " stats")){
-			event.setCancelled(true);
-			if(event.getCurrentItem() != null){
+				
 				if(event.getCurrentItem().getType().equals(Material.STONE_PICKAXE)){
 					player.closeInventory();
 					player.openInventory(createProfMenu(player));

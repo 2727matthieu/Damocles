@@ -28,7 +28,6 @@ public class Weapon{
 		this.item = item;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setup(HashMap<Enchantments, Integer> enchants, int slots, int intel, int str, int hp, int agi ,int damage, int reforges, int weight, int upgrades, boolean isprotected, int durability, int maxdurability){
 		
 		ItemMeta im = this.item.getItemMeta();
@@ -60,7 +59,7 @@ public class Weapon{
 		}
 		
 		im.setLore(lore);
-		im.spigot().setUnbreakable(true);
+		im.setUnbreakable(true);
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		im.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		
@@ -89,11 +88,10 @@ public class Weapon{
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setID(int id){
 		ItemMeta im = this.item.getItemMeta();
 		item.setDurability((short)id);
-		im.spigot().setUnbreakable(true);
+		im.setUnbreakable(true);
 		im.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(im);

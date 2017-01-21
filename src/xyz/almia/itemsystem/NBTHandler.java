@@ -1,12 +1,17 @@
 package xyz.almia.itemsystem;
 
 import java.util.HashMap;
+import org.bukkit.Bukkit;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.potion.PotionEffect;
 import net.minecraft.server.v1_11_R1.NBTBase;
 import net.minecraft.server.v1_11_R1.NBTTagByte;
 import net.minecraft.server.v1_11_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.NBTTagDouble;
 import net.minecraft.server.v1_11_R1.NBTTagInt;
 import net.minecraft.server.v1_11_R1.NBTTagList;
 import net.minecraft.server.v1_11_R1.NBTTagString;
@@ -23,21 +28,47 @@ public class NBTHandler {
 		nmsStack = CraftItemStack.asNMSCopy(item);
 	}
 	
-	public ItemStack setArmor(int value, String slot){
-        NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-        NBTTagList modifiers = new NBTTagList();
-        NBTTagCompound armor = new NBTTagCompound();
-        armor.set("AttributeName", new NBTTagString("generic.armor"));
-        armor.set("Name", new NBTTagString("generic.armor"));
-        armor.set("Amount", new NBTTagInt(value));
-        armor.set("Operation", new NBTTagInt(0));
-        armor.set("UUIDLeast", new NBTTagInt(894654));
-        armor.set("UUIDMost", new NBTTagInt(2872));
-        armor.set("Slot", new NBTTagString(slot));
-        modifiers.add(armor);
-        compound.set("AttributeModifiers", modifiers);
-        nmsStack.setTag(compound);
-        return CraftItemStack.asBukkitCopy(nmsStack);
+	public ItemStack resetArmor(){
+		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
+		NBTTagList modifiers = new NBTTagList();
+		NBTTagCompound armor = new NBTTagCompound();
+		armor.set("AttributeName", new NBTTagString("generic.armor"));
+		armor.set("Name", new NBTTagString("generic.armor"));
+		armor.set("Amount", new NBTTagDouble(0.0));
+		armor.set("Operation", new NBTTagInt(0));
+		armor.set("UUIDLeast", new NBTTagInt(894654));
+		armor.set("UUIDMost", new NBTTagInt(2872));
+		modifiers.add(armor);
+		compound.set("AttributeModifiers", modifiers);
+		nmsStack.setTag(compound);
+		return CraftItemStack.asBukkitCopy(nmsStack);
+	}
+	
+	public void setBoxInventory(Inventory inventory){
+		if(item.getItemMeta() instanceof BlockStateMeta){
+			BlockStateMeta im = (BlockStateMeta)item.getItemMeta();
+			if(im.getBlockState() instanceof ShulkerBox){
+				ShulkerBox shulker = (ShulkerBox) im.getBlockState();
+				shulker.getInventory().setContents(inventory.getContents());
+				im.setBlockState(shulker);
+				item.setItemMeta(im);
+				return;
+			}
+		}
+		return;
+	}
+	
+	public Inventory getBoxInventory(){
+		Inventory inv = Bukkit.createInventory(null, 27, "Bank");
+		if(item.getItemMeta() instanceof BlockStateMeta){
+			BlockStateMeta im = (BlockStateMeta)item.getItemMeta();
+			if(im.getBlockState() instanceof ShulkerBox){
+				ShulkerBox shulker = (ShulkerBox) im.getBlockState();
+				inv.setContents(shulker.getInventory().getContents());
+				return inv;
+			}
+		}
+		return inv;
 	}
 	
 	public ItemStack setColor(Color color){

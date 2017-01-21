@@ -1,13 +1,12 @@
 package xyz.almia.accountsystem;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -17,14 +16,17 @@ import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.messagesystem.Messages;
+import xyz.almia.storagesystem.Equips;
+import xyz.almia.storagesystem.Equips.Slot;
+import xyz.almia.storagesystem.Treasury;
 import xyz.almia.utils.LocationSerializer;
 
 public class Character {
 	
 	Plugin plugin = Cardinal.getPlugin();
 	private Player player;
-	UUID uuid;
-	int characterID = 0;
+	public UUID uuid;
+	public int characterID = 0;
 	FileConfiguration config;
 	Players players = new Players();
 	
@@ -56,19 +58,23 @@ public class Character {
 		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
 	}
 	
+	@Deprecated
 	public double getBankBalance(){
 		return config.getDouble("money");
 	}
 	
+	@Deprecated
 	public void setBankBalance(double i){
 		config.set("money", i);
 		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
 	}
 	
+	@Deprecated
 	public void deposit(double amount){
 		setBankBalance(getBankBalance() + amount);
 	}
 	
+	@Deprecated
 	public boolean withdraw(double amount){
 		if((getBankBalance() - amount) < 0)
 			return false;
@@ -101,7 +107,7 @@ public class Character {
 	
 	public void setSavedInventory(Inventory inventory){
 		//Inventory oldsavedInventory = getSavedInventory();
-		List<Map<?, ?>> inventories = new ArrayList<Map<?, ?>>();
+		List<Map<?, ?>> inventories = config.getMapList("inventories");
 		HashMap<Integer, ItemStack> hashInventory = new HashMap<Integer, ItemStack>();
 		for(int i = 0; i < inventory.getSize(); i++){
 			ItemStack item = inventory.getItem(i);
@@ -111,6 +117,46 @@ public class Character {
 		}
 		inventories.add(hashInventory);
 		config.set("inventory", inventories);
+		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+	}
+	
+	public void setEquip(Slot slot, ItemStack itemstack){
+		config.set("equips."+slot.toString(), itemstack);
+		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+	}
+	
+	public ItemStack getEquip(Slot slot){
+		return config.getItemStack("equips."+slot.toString());
+	}
+	
+	@Deprecated
+	public void setEquips(){
+		ItemStack helmet = new Equips(this).getEquip(Slot.HELMET);
+		ItemStack chestplate = new Equips(this).getEquip(Slot.CHESTPLATE);
+		ItemStack leggings = new Equips(this).getEquip(Slot.LEGGINGS);
+		ItemStack boots = new Equips(this).getEquip(Slot.BOOTS);
+		ItemStack spellbook = new Equips(this).getEquip(Slot.SPELLBOOK);
+		ItemStack bank = new Equips(this).getEquip(Slot.BANK);
+		ItemStack ring1 = new Equips(this).getEquip(Slot.RING1);
+		ItemStack ring2 = new Equips(this).getEquip(Slot.RING2);
+		ItemStack ring3 = new Equips(this).getEquip(Slot.RING3);
+		ItemStack ring4 = new Equips(this).getEquip(Slot.RING4);
+		ItemStack belt = new Equips(this).getEquip(Slot.BELT);
+		ItemStack gloves = new Equips(this).getEquip(Slot.GLOVES);
+		ItemStack quiver = new Equips(this).getEquip(Slot.QUIVER);
+		config.set("equips.HELMET", helmet);
+		config.set("equips.CHESTPLATE", chestplate);
+		config.set("equips.LEGGINGS", leggings);
+		config.set("equips.BOOTS", boots);
+		config.set("equips.SPELLBOOK", spellbook);
+		config.set("equips.BANK", bank);
+		config.set("equips.RING1", ring1);
+		config.set("equips.RING2", ring2);
+		config.set("equips.RING3", ring3);
+		config.set("equips.RING4", ring4);
+		config.set("equips.BELT", belt);
+		config.set("equips.GLOVES", gloves);
+		config.set("equips.QUIVER", quiver);
 		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
 	}
 	
@@ -354,10 +400,12 @@ public class Character {
 		return config.getInt("ap");
 	}
 	
+	@Deprecated
 	public int getSkillSlots(){
 		return config.getInt("skillslots");
 	}
 	
+	@Deprecated
 	public void calcSkillSlots(){
 		if(getLevel() == 1){
 			config.set("skillslots", 2);
@@ -400,11 +448,9 @@ public class Character {
 		config.set("speed", .2);
 		config.set("level", 1);
 		config.set("exp", 0);
-		config.set("skillslots", 2);
 		config.set("ap", 4);
 		config.set("health", 6);
 		config.set("maxhealth", 6);
-		config.set("money", 0.0);
 		config.set("soul", 5);
 		config.set("regening", false);
 		config.set("profession.herbalism.level", 1);
@@ -427,6 +473,7 @@ public class Character {
 		config.set("location", LocationSerializer.locationToString(player.getLocation()));
 		config.set("status", CharacterStatus.CHOOSE_USERNAME.toString());
 		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+		new Treasury(this).setupBankAccount();
 	}
 	
 	public void create(){
@@ -439,11 +486,9 @@ public class Character {
 		config.set("speed", .2);
 		config.set("level", 1);
 		config.set("exp", 0);
-		config.set("skillslots", 2);
 		config.set("ap", 4);
 		config.set("health", 6);
 		config.set("maxhealth", 6);
-		config.set("money", 0.0);
 		config.set("soul", 5);
 		config.set("regening", false);
 		config.set("profession.herbalism.level", 1);
@@ -465,6 +510,9 @@ public class Character {
 		config.set("stats.intelligence", 0);
 		config.set("location", LocationSerializer.locationToString(player.getLocation()));
 		config.set("status", CharacterStatus.CHOOSE_USERNAME.toString());
+		for(Slot slot : Slot.values()){
+			config.set("equips."+slot.toString(), new ItemStack(Material.AIR));
+		}
 		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
 		players.addCharacter(player.getUniqueId()+";char;"+characterID);
 	}

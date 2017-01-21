@@ -28,6 +28,7 @@ import xyz.almia.itemsystem.Soul;
 import xyz.almia.itemsystem.Weapon;
 import xyz.almia.menu.AccountMenu;
 import xyz.almia.selectionsystem.Selection;
+import xyz.almia.storagesystem.Equips.Slot;
 
 public class Tasks{
 	
@@ -279,6 +280,38 @@ public class Tasks{
 		
 		new Selection().promoteToKing();
 		addSlotsToItem();
+		
+		new BukkitRunnable(){
+			
+			public void run(){
+				for(Player player : Bukkit.getOnlinePlayers()){
+					Account account = new Account(player);
+					if(account.getStatus().equals(AccountStatus.LOGGEDIN)){
+						Character character = account.getLoadedCharacter();
+						character.setEquip(Slot.HELMET, player.getInventory().getHelmet());
+						player.getInventory().setHelmet(character.getEquip(Slot.HELMET));
+						
+						character.setEquip(Slot.CHESTPLATE, player.getInventory().getChestplate());
+						player.getInventory().setChestplate(character.getEquip(Slot.CHESTPLATE));
+						
+						character.setEquip(Slot.LEGGINGS, player.getInventory().getLeggings());
+						player.getInventory().setLeggings(character.getEquip(Slot.LEGGINGS));
+						
+						character.setEquip(Slot.BOOTS, player.getInventory().getBoots());
+						player.getInventory().setBoots(character.getEquip(Slot.BOOTS));
+						
+						double i = 0.0;
+						i = i + new Armor(player.getInventory().getHelmet()).getArmor();
+						i = i + new Armor(player.getInventory().getChestplate()).getArmor();
+						i = i + new Armor(player.getInventory().getLeggings()).getArmor();
+						i = i + new Armor(player.getInventory().getBoots()).getArmor();
+						player.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(i);
+						
+					}
+				}
+			}
+			
+		}.runTaskTimer(plugin, 0, 20);
 		
 		new BukkitRunnable(){
 			@Override
