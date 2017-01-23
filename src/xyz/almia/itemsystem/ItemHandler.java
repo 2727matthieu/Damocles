@@ -17,9 +17,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import mkremins.fanciful.FancyMessage;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.enchantsystem.EnchantTypes;
+import xyz.almia.enchantsystem.Enchantment.EnchantTypes;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.enchantsystem.Rune;
+import xyz.almia.itemsystem.ItemType.ArmorTypes;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
+import xyz.almia.itemsystem.ItemType.RuneType;
 import xyz.almia.utils.Message;
 
 public class ItemHandler implements Listener{
@@ -29,51 +32,6 @@ public class ItemHandler implements Listener{
 	Rune rune = new Rune();
 	
 	public ItemHandler() {}
-	
-	public static ItemTypes getType(ItemStack item){
-		switch(item.getType()){
-		case DIAMOND_SPADE: case GOLD_SPADE: case IRON_SPADE: case WOOD_SPADE: case STONE_SPADE: case DIAMOND_PICKAXE: case IRON_PICKAXE: case WOOD_PICKAXE: case STONE_PICKAXE: case GOLD_PICKAXE: case DIAMOND_AXE: case IRON_AXE: case WOOD_AXE: case GOLD_AXE: case STONE_AXE:
-			return ItemTypes.TOOL;
-		case DIAMOND_HELMET: case IRON_HELMET: case CHAINMAIL_HELMET: case GOLD_HELMET: case LEATHER_HELMET: case DIAMOND_CHESTPLATE: case IRON_CHESTPLATE: case CHAINMAIL_CHESTPLATE: case GOLD_CHESTPLATE: case LEATHER_CHESTPLATE: case DIAMOND_LEGGINGS: case IRON_LEGGINGS: case CHAINMAIL_LEGGINGS: case GOLD_LEGGINGS: case LEATHER_LEGGINGS: case DIAMOND_BOOTS: case IRON_BOOTS: case CHAINMAIL_BOOTS: case GOLD_BOOTS: case LEATHER_BOOTS:
-			return ItemTypes.ARMOR;
-		case SHIELD:
-			return ItemTypes.SHIELD;
-		case DIAMOND_SWORD: case IRON_SWORD: case WOOD_SWORD: case GOLD_SWORD: case STONE_SWORD: case BOW:
-			return ItemTypes.WEAPON;
-		case POTION:
-			return ItemTypes.POTION;
-		default:
-			return ItemTypes.ALL;
-		}
-	}
-	
-	/*
-	@EventHandler
-	public void onDurbility(){
-		
-	}
-	*/
-	
-	
-	public EnchantTypes getEnchantType(ItemStack item){
-		switch(item.getType()){
-		case DIAMOND_HELMET: case IRON_HELMET: case CHAINMAIL_HELMET: case GOLD_HELMET: case LEATHER_HELMET:
-			return EnchantTypes.HELMET;
-		case DIAMOND_CHESTPLATE: case IRON_CHESTPLATE: case CHAINMAIL_CHESTPLATE: case GOLD_CHESTPLATE: case LEATHER_CHESTPLATE:
-			return EnchantTypes.CHESTPLATE;
-		case DIAMOND_LEGGINGS: case IRON_LEGGINGS: case CHAINMAIL_LEGGINGS: case GOLD_LEGGINGS: case LEATHER_LEGGINGS:
-			return EnchantTypes.LEGGINGS;
-		case DIAMOND_BOOTS: case IRON_BOOTS: case CHAINMAIL_BOOTS: case GOLD_BOOTS: case LEATHER_BOOTS:
-			return EnchantTypes.BOOTS;
-		case DIAMOND_SWORD: case IRON_SWORD: case WOOD_SWORD: case GOLD_SWORD: case STONE_SWORD:
-			return EnchantTypes.SWORD;
-		case BOW:
-			return EnchantTypes.BOW;
-		default:
-			return EnchantTypes.NONE;
-		}
-	}
-
 	
 	@EventHandler
 	public void onEnderPearl(PlayerInteractEvent event){
@@ -95,15 +53,23 @@ public class ItemHandler implements Listener{
 	@EventHandler
 	public void onItemApply(InventoryClickEvent event){
 		Player player = (Player) event.getWhoClicked();
+		
+		if(event.getCurrentItem() == null){
+			return;
+		}
+		
 		if(event.getCurrentItem() != null){
 			
-			if(!(ItemHandler.getType(event.getCurrentItem()).equals(ItemTypes.POTION)) && !(ItemHandler.getType(event.getCurrentItem()).equals(ItemTypes.NONE))){
+			ItemType currentType = new ItemType(event.getCurrentItem());
+			
+			if(currentType.getType().equals(ItemTypes.ARMOR) || currentType.getType().equals(ItemTypes.WEAPON)){
+				
 				if(event.getCursor() != null){
 					
-					if(event.getCursor().getType().equals(Material.EMPTY_MAP)){
-						
-						
-						if(ItemHandler.getType(event.getCurrentItem()).equals(ItemTypes.ARMOR)){
+					ItemType cursorType = new ItemType(event.getCursor());
+					
+					if(cursorType.getRuneType().equals(RuneType.PROTECTION)){
+						if(currentType.getType().equals(ItemTypes.ARMOR)){
 							Armor detailItem = new Armor(event.getCurrentItem());
 							if(!(detailItem.isProtected())){
 								event.setCancelled(true);
@@ -121,7 +87,7 @@ public class ItemHandler implements Listener{
 								event.setCancelled(true);
 								return;
 							}
-						}else if(ItemHandler.getType(event.getCurrentItem()).equals(ItemTypes.WEAPON)){
+						}else if(currentType.getType().equals(ItemTypes.WEAPON)){
 							Weapon detailItem = new Weapon(event.getCurrentItem());
 							if(!(detailItem.isProtected())){
 								event.setCancelled(true);
@@ -145,13 +111,8 @@ public class ItemHandler implements Listener{
 						
 					}
 					
-					if(event.getCursor().getType().equals(Material.EYE_OF_ENDER)){
-						
-						if(event.getCurrentItem() == null){
-							return;
-						}
-						
-						if(ItemHandler.getType(event.getCurrentItem()).equals(ItemTypes.ARMOR)){
+					if(cursorType.getRuneType().equals(RuneType.SLOT)){
+						if(currentType.getType().equals(ItemTypes.ARMOR)){
 							Armor detailItem = new Armor(event.getCurrentItem());
 							if(event.getCursor().hasItemMeta()){
 								event.setCancelled(true);
@@ -173,7 +134,7 @@ public class ItemHandler implements Listener{
 					    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		  player.getWorld().spawnParticle(Particle.CRIT_MAGIC, player.getLocation(), 50);
 							}
-						}else if(ItemHandler.getType(event.getCurrentItem()).equals(ItemTypes.WEAPON)){
+						}else if(currentType.getType().equals(ItemTypes.WEAPON)){
 							Weapon detailItem = new Weapon(event.getCurrentItem());
 							if(event.getCursor().hasItemMeta()){
 								event.setCancelled(true);
@@ -200,13 +161,13 @@ public class ItemHandler implements Listener{
 						}
 					}
 					
-					if(event.getCursor().getType().equals(Material.NETHER_STAR)){
+					if(cursorType.getRuneType().equals(RuneType.RUNE)){
 						
 						if(event.getCurrentItem().equals(null) || event.getCurrentItem().equals(Material.AIR)){
 							return;
 						}
 						
-						if(ItemHandler.getType(event.getCurrentItem()).equals(ItemTypes.ARMOR)){
+						if(currentType.getType().equals(ItemTypes.ARMOR)){
 							
 							Armor detailItem = new Armor(event.getCurrentItem());
 							
@@ -248,7 +209,7 @@ public class ItemHandler implements Listener{
 									event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
 									return;
 								}else if(enchantclass.getType(enchantment).equals(EnchantTypes.BOOTS)){
-									if(getEnchantType(event.getCurrentItem()).equals(EnchantTypes.BOOTS)){
+									if(currentType.getArmorType().equals(ArmorTypes.FEET)){
 										event.setCancelled(true);
 										ItemStack item = enchant(player, event.getCurrentItem(), enchantment, enchantLevel, enchantSuccess, enchantDestroy);
 										event.setCurrentItem(item);
@@ -256,7 +217,7 @@ public class ItemHandler implements Listener{
 										return;
 									}
 								}else if(enchantclass.getType(enchantment).equals(EnchantTypes.LEGGINGS)){
-									if(getEnchantType(event.getCurrentItem()).equals(EnchantTypes.LEGGINGS)){
+									if(currentType.getArmorType().equals(ArmorTypes.LEGS)){
 										event.setCancelled(true);
 										ItemStack item = enchant(player, event.getCurrentItem(), enchantment, enchantLevel, enchantSuccess, enchantDestroy);
 										event.setCurrentItem(item);
@@ -264,7 +225,7 @@ public class ItemHandler implements Listener{
 										return;
 									}
 								}else if(enchantclass.getType(enchantment).equals(EnchantTypes.CHESTPLATE)){
-									if(getEnchantType(event.getCurrentItem()).equals(EnchantTypes.CHESTPLATE)){
+									if(currentType.getArmorType().equals(ArmorTypes.CHEST)){
 										event.setCancelled(true);
 										ItemStack item = enchant(player, event.getCurrentItem(), enchantment, enchantLevel, enchantSuccess, enchantDestroy);
 										event.setCurrentItem(item);
@@ -272,7 +233,7 @@ public class ItemHandler implements Listener{
 										return;
 									}
 								}else if(enchantclass.getType(enchantment).equals(EnchantTypes.HELMET)){
-									if(getEnchantType(event.getCurrentItem()).equals(EnchantTypes.HELMET)){
+									if(currentType.getArmorType().equals(ArmorTypes.HEAD)){
 										event.setCancelled(true);
 										ItemStack item = enchant(player, event.getCurrentItem(), enchantment, enchantLevel, enchantSuccess, enchantDestroy);
 										event.setCurrentItem(item);
@@ -286,7 +247,7 @@ public class ItemHandler implements Listener{
 								
 							}
 							player.updateInventory();
-						}else if(ItemHandler.getType(event.getCurrentItem()).equals(ItemTypes.WEAPON)){
+						}else if(currentType.getType().equals(ItemTypes.WEAPON)){
 							
 							Weapon detailItem = new Weapon(event.getCurrentItem());
 							
@@ -323,7 +284,7 @@ public class ItemHandler implements Listener{
 								
 								
 								if(enchantclass.getType(enchantment).equals(EnchantTypes.SWORD)){
-									if(getEnchantType(event.getCurrentItem()).equals(EnchantTypes.SWORD)){
+									if(currentType.getType().equals(ItemTypes.WEAPON)){
 										event.setCancelled(true);
 										ItemStack item = enchant(player, event.getCurrentItem(), enchantment, enchantLevel, enchantSuccess, enchantDestroy);
 										event.setCurrentItem(item);
@@ -331,7 +292,7 @@ public class ItemHandler implements Listener{
 										return;
 									}
 								}else if(enchantclass.getType(enchantment).equals(EnchantTypes.BOW)){
-									if(getEnchantType(event.getCurrentItem()).equals(EnchantTypes.BOW)){
+									if(currentType.getType().equals(ItemTypes.BOW)){
 										event.setCancelled(true);
 										ItemStack item = enchant(player, event.getCurrentItem(), enchantment, enchantLevel, enchantSuccess, enchantDestroy);
 										event.setCurrentItem(item);
@@ -355,14 +316,17 @@ public class ItemHandler implements Listener{
 						
 					}
 				}
+				
 			}
+			
 		}else{
 			return;
 		}
 	}
 	
 	public ItemStack enchant(Player source, ItemStack item, Enchantments enchant, int level, int success, int destroy){
-		if(ItemHandler.getType(item).equals(ItemTypes.ARMOR)){
+		ItemType type = new ItemType(item);
+		if(type.getType().equals(ItemTypes.ARMOR)){
 			Armor detailItem = new Armor(item);
 			int random = new Random().nextInt(100);
 			if(random <= success){
@@ -410,7 +374,7 @@ public class ItemHandler implements Listener{
 			}
 			return item;
 		}
-		if(ItemHandler.getType(item).equals(ItemTypes.WEAPON)){
+		if(type.getType().equals(ItemTypes.WEAPON)){
 			Weapon detailItem = new Weapon(item);
 			int random = new Random().nextInt(100);
 			if(random <= success){

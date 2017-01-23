@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.enchantsystem.Enchantments;
+import xyz.almia.itemsystem.Protection;
+import xyz.almia.itemsystem.SlotRune;
 import xyz.almia.utils.Message;
 
 public class Rune implements CommandExecutor{
@@ -59,7 +61,7 @@ public class Rune implements CommandExecutor{
 				if(args.length == 2){
 					try{
 						int slots = Integer.valueOf(args[1]);
-						player.getInventory().addItem(rune.createSlotRune(slots));
+						player.getInventory().addItem(new SlotRune(slots).getItemStack());
 						return true;
 					}catch(Exception e){
 			    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
@@ -76,7 +78,7 @@ public class Rune implements CommandExecutor{
 			}else if(args[0].equalsIgnoreCase("protection")){
 				if(args.length == 1){
 					try{
-						player.getInventory().addItem(rune.createProtectionRune());
+						player.getInventory().addItem(new Protection().getItemStack());
 						return true;
 					}catch(Exception e){
 			    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
@@ -104,7 +106,7 @@ public class Rune implements CommandExecutor{
 							player.sendMessage(ChatColor.YELLOW + "Error: The max level for " + enchantclass.getName(enchant) + " is " + enchantclass.getMaxLevel(enchant));
 							return true;
 						}
-						player.getInventory().addItem(rune.createRune(enchant, level, success, destroy));
+						player.getInventory().addItem(new xyz.almia.itemsystem.Rune(enchant, level, success, destroy).getItemStack());
 						return true;
 					}catch(NumberFormatException e) {
 				  		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");

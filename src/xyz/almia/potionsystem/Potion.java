@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import xyz.almia.itemsystem.NBTHandler;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.utils.RomanNumerals;
 
 public class Potion {
@@ -70,6 +71,7 @@ public class Potion {
 			item = new NBTHandler(item).setIntTag("CustomPotionColor", color);
 			item = new NBTHandler(item).setIntTag("amp", effect.getAmplifier());
 			item = new NBTHandler(item).setIntTag("dur", effect.getDuration());
+			item = new NBTHandler(item).setType(ItemTypes.POTION.toString());
 			item = new NBTHandler(item).setStringTag("type", effect.getType().toString());
 		}else{
 			item = new ItemStack(Material.POTION);

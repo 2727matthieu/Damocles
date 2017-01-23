@@ -181,6 +181,10 @@ public class PlayerMenu implements Listener{
 			event.setCancelled(true);
 		}
 		
+		if(character == null){
+			return;
+		}
+		
 		if(event.getInventory().getName().equals(character.getUsername() + "'s Stats")){
 			event.setCancelled(true);
 			if(event.getCurrentItem() != null){

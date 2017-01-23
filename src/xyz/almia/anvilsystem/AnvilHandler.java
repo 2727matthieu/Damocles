@@ -20,12 +20,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import xyz.almia.accountsystem.Account;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.itemsystem.Armor;
-import xyz.almia.itemsystem.ItemHandler;
-import xyz.almia.itemsystem.ItemTypes;
+import xyz.almia.itemsystem.ItemType;
 import xyz.almia.itemsystem.Weapon;
 import xyz.almia.menu.MenuItem;
 import xyz.almia.storagesystem.Treasury;
@@ -63,9 +61,10 @@ public class AnvilHandler implements Listener{
 					Player player = event.getPlayer();
 					player.closeInventory();
 					if(player.getInventory().getItemInMainHand() != null){
-						if(ItemHandler.getType(player.getInventory().getItemInMainHand()).equals(ItemTypes.WEAPON) || ItemHandler.getType(player.getInventory().getItemInMainHand()).equals(ItemTypes.ARMOR)){
+						ItemType type = new ItemType(player.getInventory().getItemInMainHand());
+						if(type.getType().equals(xyz.almia.itemsystem.ItemType.ItemTypes.ARMOR) || type.getType().equals(xyz.almia.itemsystem.ItemType.ItemTypes.WEAPON)){
 							
-							if(ItemHandler.getType(player.getInventory().getItemInMainHand()).equals(ItemTypes.WEAPON)){
+							if(type.getType().equals(xyz.almia.itemsystem.ItemType.ItemTypes.WEAPON)){
 								Weapon weapon = new Weapon(player.getInventory().getItemInMainHand());
 								if(weapon.getDurability() < weapon.getMaxDurability()){
 									Inventory inventory = createWeaponAnvil(weapon, player);
@@ -140,7 +139,7 @@ public class AnvilHandler implements Listener{
 						return;
 					}
 					
-					if(ItemHandler.getType(anvil.getItemStack()).equals(ItemTypes.WEAPON)){
+					if(new ItemType(anvil.getItemStack()).getType().equals(xyz.almia.itemsystem.ItemType.ItemTypes.WEAPON)){
 						Weapon weapon = anvil.getWeapon();
 						weapon.setDurability(anvil.getWeapon().getMaxDurability());
 						animating.add(anvil);

@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.Enchantments;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.utils.RomanNumerals;
 
 public class Weapon{
@@ -67,6 +68,7 @@ public class Weapon{
 		
 		ItemStack nbt = this.item;
 		
+		nbt = new NBTHandler(nbt).setType(ItemTypes.WEAPON.toString());
 		nbt = new NBTHandler(nbt).setListEmpty("enchants");
 			for(Enchantments enchant : enchants.keySet()){
 				nbt = new NBTHandler(nbt).addEnchant(enchant, enchants.get(enchant));

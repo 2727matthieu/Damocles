@@ -28,6 +28,36 @@ public class NBTHandler {
 		nmsStack = CraftItemStack.asNMSCopy(item);
 	}
 	
+	public String getType(){
+		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
+		String s = compound.getString("itemtype");
+		if(s.equals("")){
+			return "NONE";
+		}
+		return compound.getString("itemtype");
+	}
+	
+	public ItemStack setType(String string){
+		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
+		compound.set("itemtype", new NBTTagString(string));
+		nmsStack.setTag(compound);
+		return CraftItemStack.asBukkitCopy(nmsStack);
+	}
+	
+	public double getDamage(){
+		
+		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
+
+		NBTTagList am = (NBTTagList) compound.get("AttributeModifiers");
+		for(int i = 0; i < am.size(); i++){
+			NBTTagCompound damage = am.get(i);
+			if(damage.getString("AttributeName").equals("generic.attackDamage")){
+				return damage.getDouble("Amount");
+			}
+		}
+		return 0.0;
+	}
+	
 	public ItemStack resetArmor(){
 		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
 		NBTTagList modifiers = new NBTTagList();

@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.Enchantments;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.utils.RomanNumerals;
 
 public class Armor{
@@ -23,22 +23,6 @@ public class Armor{
 	
 	public Armor(ItemStack item){
 		this.item = item;
-	}
-	
-	public ArmorTypes getType(){
-		if((item.getType().equals(Material.DIAMOND_HELMET)) || (item.getType().equals(Material.GOLD_HELMET)) || (item.getType().equals(Material.IRON_HELMET) || (item.getType().equals(Material.CHAINMAIL_HELMET) || (item.getType().equals(Material.LEATHER_HELMET))))){
-			return ArmorTypes.HEAD;
-		}
-		if((item.getType().equals(Material.DIAMOND_CHESTPLATE)) || (item.getType().equals(Material.GOLD_CHESTPLATE)) || (item.getType().equals(Material.IRON_CHESTPLATE) || (item.getType().equals(Material.CHAINMAIL_CHESTPLATE) || (item.getType().equals(Material.LEATHER_CHESTPLATE))))){
-			return ArmorTypes.CHEST;
-		}
-		if((item.getType().equals(Material.DIAMOND_LEGGINGS)) || (item.getType().equals(Material.GOLD_LEGGINGS)) || (item.getType().equals(Material.IRON_LEGGINGS) || (item.getType().equals(Material.CHAINMAIL_LEGGINGS) || (item.getType().equals(Material.LEATHER_LEGGINGS))))){
-			return ArmorTypes.LEGS;
-		}
-		if((item.getType().equals(Material.DIAMOND_BOOTS)) || (item.getType().equals(Material.GOLD_BOOTS)) || (item.getType().equals(Material.IRON_BOOTS) || (item.getType().equals(Material.CHAINMAIL_BOOTS) || (item.getType().equals(Material.LEATHER_BOOTS))))){
-			return ArmorTypes.FEET;
-		}
-		return ArmorTypes.NONE;
 	}
 	
 	public void setup(HashMap<Enchantments, Integer> enchants, int slots, int intel, int str, int hp, int agi ,int armor, int reforges, int weight, int upgrades, boolean isprotected, int durability, int maxdurability){
@@ -77,6 +61,7 @@ public class Armor{
 		
 		ItemStack nbt = this.item;
 		
+		nbt = new NBTHandler(nbt).setType(ItemTypes.ARMOR.toString());
 		nbt = new NBTHandler(nbt).setListEmpty("enchants");
 			for(Enchantments enchant : enchants.keySet()){
 				nbt = new NBTHandler(nbt).addEnchant(enchant, enchants.get(enchant));

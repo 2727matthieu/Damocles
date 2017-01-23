@@ -10,9 +10,10 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
 import xyz.almia.itemsystem.ItemHandler;
+import xyz.almia.itemsystem.ItemType;
 import xyz.almia.itemsystem.Weapon;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
 
 public class BloodThirst implements Listener{
 	ItemHandler itemhandler = new ItemHandler();
@@ -25,7 +26,7 @@ public class BloodThirst implements Listener{
 				
 				if(player.getInventory().getItemInMainHand() != null){
 					ItemStack item = player.getInventory().getItemInMainHand();
-					if(itemhandler.getEnchantType(item).equals(EnchantTypes.SWORD)){
+					if(new ItemType(item).getType().equals(ItemTypes.WEAPON)){
 						Weapon detailItem = new Weapon(item);
 						HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
 							if(enchantments.containsKey(Enchantments.BLOODTHIRST)){

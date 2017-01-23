@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import net.md_5.bungee.api.ChatColor;
 import xyz.almia.itemsystem.NBTHandler;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.potionsystem.Effect;
 import xyz.almia.potionsystem.PotionHandler;
 import xyz.almia.potionsystem.PotionType;
@@ -80,6 +81,7 @@ public class CustomArrow {
 		item = new NBTHandler(item).setIntTag("CustomPotionColor", color);
 		item = new NBTHandler(item).setIntTag("amp", effect.getAmplifier());
 		item = new NBTHandler(item).setIntTag("dur", effect.getDuration());
+		item = new NBTHandler(item).setType(ItemTypes.ARROW.toString());
 		item = new NBTHandler(item).setStringTag("type", effect.getType().toString());
 		return item;
 	}

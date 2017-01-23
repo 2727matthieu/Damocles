@@ -34,8 +34,8 @@ import xyz.almia.accountsystem.Account;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.itemsystem.Armor;
-import xyz.almia.itemsystem.ItemHandler;
-import xyz.almia.itemsystem.ItemTypes;
+import xyz.almia.itemsystem.ItemType;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.itemsystem.Weapon;
 
 public class DamageSystem implements Listener{
@@ -46,25 +46,25 @@ public class DamageSystem implements Listener{
 		int armor = 0;
 		
 		if(player.getInventory().getHelmet() != null){
-			if(ItemHandler.getType(player.getInventory().getHelmet()).equals(ItemTypes.ARMOR)){
+			if(new ItemType(player.getInventory().getHelmet()).getType().equals(ItemTypes.ARMOR)){
 				Armor item = new Armor(player.getInventory().getHelmet());
 				armor = armor + item.getArmor();
 			}
 		}
 		if(player.getInventory().getChestplate() != null){
-			if(ItemHandler.getType(player.getInventory().getChestplate()).equals(ItemTypes.ARMOR)){
+			if(new ItemType(player.getInventory().getChestplate()).getType().equals(ItemTypes.ARMOR)){
 				Armor item = new Armor(player.getInventory().getChestplate());
 				armor = armor + item.getArmor();
 			}
 		}
 		if(player.getInventory().getLeggings() != null){
-			if(ItemHandler.getType(player.getInventory().getLeggings()).equals(ItemTypes.ARMOR)){
+			if(new ItemType(player.getInventory().getLeggings()).getType().equals(ItemTypes.ARMOR)){
 				Armor item = new Armor(player.getInventory().getLeggings());
 				armor = armor + item.getArmor();
 			}
 		}
 		if(player.getInventory().getBoots() != null){
-			if(ItemHandler.getType(player.getInventory().getBoots()).equals(ItemTypes.ARMOR)){
+			if(new ItemType(player.getInventory().getBoots()).getType().equals(ItemTypes.ARMOR)){
 				Armor item = new Armor(player.getInventory().getBoots());
 				armor = armor + item.getArmor();
 			}
@@ -169,7 +169,7 @@ public class DamageSystem implements Listener{
 				Player player = (Player) arrow.getShooter();
 				
 					ItemStack item = playerAndBow.get(player.getUniqueId());
-					if(ItemHandler.getType(item).equals(ItemTypes.WEAPON)){
+					if(new ItemType(item).getType().equals(ItemTypes.WEAPON)){
 						Weapon detailItem = new Weapon(item);
 							if(detailItem.getEnchantsAndLevel() != null){
 								HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
@@ -216,7 +216,7 @@ public class DamageSystem implements Listener{
 				if(attacker.getInventory().getItemInMainHand() != null){
 					itemDamage = 0;
 					
-					if(ItemHandler.getType(attacker.getInventory().getItemInMainHand()).equals(ItemTypes.WEAPON)){
+					if(new ItemType(attacker.getInventory().getItemInMainHand()).getType().equals(ItemTypes.WEAPON)){
 						Weapon item = new Weapon(attacker.getInventory().getItemInMainHand());
 						itemDamage = item.getDamage();
 						HashMap<Enchantments, Integer> enchants = item.getEnchantsAndLevel();
@@ -396,7 +396,7 @@ public class DamageSystem implements Listener{
 				if(attacker.getInventory().getItemInMainHand() != null){
 					itemDamage = 0;
 					
-					if(ItemHandler.getType(attacker.getInventory().getItemInMainHand()).equals(ItemTypes.WEAPON)){
+					if(new ItemType(attacker.getInventory().getItemInMainHand()).getType().equals(ItemTypes.WEAPON)){
 						
 						Weapon item = new Weapon(attacker.getInventory().getItemInMainHand());
 						itemDamage = item.getDamage();
@@ -480,7 +480,7 @@ public class DamageSystem implements Listener{
 			
 			if(player.getInventory().getItemInMainHand() != null){
 				
-				if(ItemHandler.getType(player.getInventory().getItemInMainHand()).equals(ItemTypes.WEAPON)){
+				if(new ItemType(player.getInventory().getItemInMainHand()).getType().equals(ItemTypes.WEAPON)){
 					Weapon item = new Weapon(player.getInventory().getItemInMainHand());
 					HashMap<Enchantments, Integer> enchants = item.getEnchantsAndLevel();
 					if(enchants != null){
@@ -516,7 +516,7 @@ public class DamageSystem implements Listener{
 				
 				if(attacker.getInventory().getItemInMainHand() != null){
 					
-					if(ItemHandler.getType(attacker.getInventory().getItemInMainHand()).equals(ItemTypes.WEAPON)){
+					if(new ItemType(attacker.getInventory().getItemInMainHand()).getType().equals(ItemTypes.WEAPON)){
 						Weapon item = new Weapon(attacker.getInventory().getItemInMainHand());
 						int itemDamage = item.getDamage();
 						HashMap<Enchantments, Integer> enchants = item.getEnchantsAndLevel();

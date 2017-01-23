@@ -5,8 +5,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import xyz.almia.accountsystem.Account;
-import xyz.almia.storagesystem.Equips;
 
 public class Debug implements CommandExecutor{
 
@@ -16,6 +14,7 @@ public class Debug implements CommandExecutor{
 		this.plugin = plugin;
 	}
 	
+	@SuppressWarnings("unused")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!(sender instanceof Player)){
@@ -23,14 +22,13 @@ public class Debug implements CommandExecutor{
 		}
 		
 		Player player = (Player) sender;
-		Account account = new Account(player);
-		xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
+		//Account account = new Account(player);
+		//xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
 
 		
 		
 		if(cmd.getName().equalsIgnoreCase("debuging")){
 			
-			player.openInventory(new Equips(character).getMenu());
 		}
 		
 		return true;

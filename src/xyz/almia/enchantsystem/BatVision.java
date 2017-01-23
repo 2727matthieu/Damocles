@@ -11,6 +11,8 @@ import org.bukkit.scheduler.BukkitScheduler;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.itemsystem.Armor;
 import xyz.almia.itemsystem.ItemHandler;
+import xyz.almia.itemsystem.ItemType;
+import xyz.almia.itemsystem.ItemType.ArmorTypes;
 
 public class BatVision {
 	
@@ -30,7 +32,7 @@ public class BatVision {
 					if(player.getInventory().getHelmet() != null){
 						ItemStack item = player.getInventory().getHelmet();
 						
-						if(itemhandler.getEnchantType(item).equals(EnchantTypes.HELMET)){
+						if(new ItemType(item).getArmorType().equals(ArmorTypes.HEAD)){
 							Armor detailItem = new Armor(item);
 							HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
 							if(enchantments.containsKey(Enchantments.BAT_VISION)){

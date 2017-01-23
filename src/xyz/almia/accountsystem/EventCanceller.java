@@ -216,7 +216,7 @@ public class EventCanceller implements Listener{
 					int level = ThreadLocalRandom.current().nextInt(enchantclass.getMaxLevel(ench));
 					if(level == 0)
 						level = 1;
-					event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), rune.createRune(ench, level, ThreadLocalRandom.current().nextInt(100), ThreadLocalRandom.current().nextInt(100)));
+					event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), new xyz.almia.itemsystem.Rune(ench, level, ThreadLocalRandom.current().nextInt(100), ThreadLocalRandom.current().nextInt(100)).getItemStack());
 					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					Message.sendCenteredMessage(player, ChatColor.BOLD + "Rune");
 					Message.sendCenteredMessage(player, ChatColor.YELLOW + "You successefuly harvest some runes.");
@@ -253,7 +253,7 @@ public class EventCanceller implements Listener{
 				int level = ThreadLocalRandom.current().nextInt(enchantclass.getMaxLevel(ench) + 1);
 				if(level == 0)
 					level = 1;
-				event.getRightClicked().getWorld().dropItem(event.getRightClicked().getLocation(), rune.createRune(ench, level, ThreadLocalRandom.current().nextInt(100), ThreadLocalRandom.current().nextInt(100)));
+				event.getRightClicked().getWorld().dropItem(event.getRightClicked().getLocation(), new xyz.almia.itemsystem.Rune(ench, level, ThreadLocalRandom.current().nextInt(100), ThreadLocalRandom.current().nextInt(100)).getItemStack());
 				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 				Message.sendCenteredMessage(player, ChatColor.BOLD + "Rune");
 				Message.sendCenteredMessage(player, ChatColor.YELLOW + "You successefuly harvest some runes.");

@@ -49,13 +49,41 @@ public class Character {
 		return this.player;
 	}
 	
-	public int getSouls(){
-		return config.getInt("soul");
+	@Deprecated
+	public int getSkillSlots(){
+		return config.getInt("skillslots");
 	}
 	
-	public void setSouls(int amount){
-		config.set("soul", amount);
-		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+	@Deprecated
+	public void calcSkillSlots(){
+		if(getLevel() == 1){
+			config.set("skillslots", 2);
+			ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+			return;
+		}else if(getLevel() == 6){
+			config.set("skillslots", 3);
+			ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+			return;
+		}else if(getLevel() == 12){
+			config.set("skillslots", 4);
+			ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+			return;
+		}else if(getLevel() == 20){
+			config.set("skillslots", 5);
+			ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+			return;
+		}else if(getLevel() > 20){
+			double i = getLevel() - 20;
+			i = i/10;
+			if(i >= 1.0){
+				config.set("skillslots", 5 + ((int)i));
+				ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+				return;
+			}
+			return;
+		}else{
+			return;
+		}
 	}
 	
 	@Deprecated
@@ -80,6 +108,51 @@ public class Character {
 			return false;
 		setBankBalance(getBankBalance() - amount);
 		return true;
+	}
+	
+	@Deprecated
+	public void setEquips(){
+		ItemStack helmet = new Equips(this).getEquip(Slot.HELMET);
+		ItemStack chestplate = new Equips(this).getEquip(Slot.CHESTPLATE);
+		ItemStack leggings = new Equips(this).getEquip(Slot.LEGGINGS);
+		ItemStack boots = new Equips(this).getEquip(Slot.BOOTS);
+		ItemStack spellbook = new Equips(this).getEquip(Slot.SPELLBOOK);
+		ItemStack bank = new Equips(this).getEquip(Slot.BANK);
+		ItemStack ring1 = new Equips(this).getEquip(Slot.RING1);
+		ItemStack ring2 = new Equips(this).getEquip(Slot.RING2);
+		ItemStack ring3 = new Equips(this).getEquip(Slot.RING3);
+		ItemStack ring4 = new Equips(this).getEquip(Slot.RING4);
+		ItemStack belt = new Equips(this).getEquip(Slot.BELT);
+		ItemStack gloves = new Equips(this).getEquip(Slot.GLOVES);
+		ItemStack quiver = new Equips(this).getEquip(Slot.QUIVER);
+		config.set("equips.HELMET", helmet);
+		config.set("equips.CHESTPLATE", chestplate);
+		config.set("equips.LEGGINGS", leggings);
+		config.set("equips.BOOTS", boots);
+		config.set("equips.SPELLBOOK", spellbook);
+		config.set("equips.BANK", bank);
+		config.set("equips.RING1", ring1);
+		config.set("equips.RING2", ring2);
+		config.set("equips.RING3", ring3);
+		config.set("equips.RING4", ring4);
+		config.set("equips.BELT", belt);
+		config.set("equips.GLOVES", gloves);
+		config.set("equips.QUIVER", quiver);
+		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+	}
+	
+	@Deprecated
+	public Inventory getInventory(){
+		return this.getPlayer().getInventory();
+	}
+	
+	public int getSouls(){
+		return config.getInt("soul");
+	}
+	
+	public void setSouls(int amount){
+		config.set("soul", amount);
+		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
 	}
 	
 	public Inventory getSavedInventory(){
@@ -128,43 +201,7 @@ public class Character {
 	public ItemStack getEquip(Slot slot){
 		return config.getItemStack("equips."+slot.toString());
 	}
-	
-	@Deprecated
-	public void setEquips(){
-		ItemStack helmet = new Equips(this).getEquip(Slot.HELMET);
-		ItemStack chestplate = new Equips(this).getEquip(Slot.CHESTPLATE);
-		ItemStack leggings = new Equips(this).getEquip(Slot.LEGGINGS);
-		ItemStack boots = new Equips(this).getEquip(Slot.BOOTS);
-		ItemStack spellbook = new Equips(this).getEquip(Slot.SPELLBOOK);
-		ItemStack bank = new Equips(this).getEquip(Slot.BANK);
-		ItemStack ring1 = new Equips(this).getEquip(Slot.RING1);
-		ItemStack ring2 = new Equips(this).getEquip(Slot.RING2);
-		ItemStack ring3 = new Equips(this).getEquip(Slot.RING3);
-		ItemStack ring4 = new Equips(this).getEquip(Slot.RING4);
-		ItemStack belt = new Equips(this).getEquip(Slot.BELT);
-		ItemStack gloves = new Equips(this).getEquip(Slot.GLOVES);
-		ItemStack quiver = new Equips(this).getEquip(Slot.QUIVER);
-		config.set("equips.HELMET", helmet);
-		config.set("equips.CHESTPLATE", chestplate);
-		config.set("equips.LEGGINGS", leggings);
-		config.set("equips.BOOTS", boots);
-		config.set("equips.SPELLBOOK", spellbook);
-		config.set("equips.BANK", bank);
-		config.set("equips.RING1", ring1);
-		config.set("equips.RING2", ring2);
-		config.set("equips.RING3", ring3);
-		config.set("equips.RING4", ring4);
-		config.set("equips.BELT", belt);
-		config.set("equips.GLOVES", gloves);
-		config.set("equips.QUIVER", quiver);
-		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
-	}
-	
-	@Deprecated
-	public Inventory getInventory(){
-		return this.getPlayer().getInventory();
-	}
-	
+		
 	public Location getLastLocation(){
 		return LocationSerializer.locationFromString(config.getString("location"));
 	}
@@ -399,44 +436,7 @@ public class Character {
 	public int getAbilityPoints(){
 		return config.getInt("ap");
 	}
-	
-	@Deprecated
-	public int getSkillSlots(){
-		return config.getInt("skillslots");
-	}
-	
-	@Deprecated
-	public void calcSkillSlots(){
-		if(getLevel() == 1){
-			config.set("skillslots", 2);
-			ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
-			return;
-		}else if(getLevel() == 6){
-			config.set("skillslots", 3);
-			ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
-			return;
-		}else if(getLevel() == 12){
-			config.set("skillslots", 4);
-			ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
-			return;
-		}else if(getLevel() == 20){
-			config.set("skillslots", 5);
-			ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
-			return;
-		}else if(getLevel() > 20){
-			double i = getLevel() - 20;
-			i = i/10;
-			if(i >= 1.0){
-				config.set("skillslots", 5 + ((int)i));
-				ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
-				return;
-			}
-			return;
-		}else{
-			return;
-		}
-	}
-			
+				
 	public void remove(){
 		new Account(player).logout();
 		config.set("username", "UNKNOWN");

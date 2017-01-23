@@ -32,40 +32,6 @@ public class Equips{
 		character.setEquip(slot, value);
 	}
 	
-	public int itemSlot(Slot slot){
-		switch(slot){
-		case BANK:
-			return 12;
-		case BELT:
-			return 4;
-		case BOOTS:
-			return 3;
-		case CHESTPLATE:
-			return 1;
-		case GLOVES:
-			return 5;
-		case HELMET:
-			return 0;
-		case LEGGINGS:
-			return 2;
-		case QUIVER:
-			return 10;
-		case RING1:
-			return 6;
-		case RING2:
-			return 7;
-		case RING3:
-			return 8;
-		case RING4:
-			return 9;
-		case SPELLBOOK:
-			return 11;
-		default:
-			break;
-		}
-		return -1;
-	}
-	
 	@SuppressWarnings("deprecation")
 	public Inventory getMenu(){
 		Inventory inv = Bukkit.createInventory(null, 45, "Equip Inventory");
@@ -131,15 +97,15 @@ public class Equips{
 		inv.setItem(33, empty);
 		inv.setItem(34, empty);
 		inv.setItem(35, empty);
-		inv.setItem(36, MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "Ring go here -->", Material.ARMOR_STAND));
-		inv.setItem(37, getEquip(Slot.RING3));
-		inv.setItem(38, getEquip(Slot.RING4));
-		inv.setItem(39, MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "<-- Ring go here", Material.ARMOR_STAND));
+		inv.setItem(36, MenuItem.createItem(ChatColor.GRAY+"SpellBook slot",ChatColor.GRAY+ "SpellBook goes here -->", Material.ENCHANTED_BOOK));
+		inv.setItem(37, getEquip(Slot.SPELLBOOK));
+		inv.setItem(38, getEquip(Slot.BANK));
+		inv.setItem(39, MenuItem.createItem(ChatColor.GRAY+"Bank slot",ChatColor.GRAY+ "<-- Bank chest goes here", Material.CYAN_SHULKER_BOX));
 		inv.setItem(40, empty);
-		inv.setItem(41, MenuItem.createItem(ChatColor.GRAY+"SpellBook slot",ChatColor.GRAY+ "SpellBook goes here -->", Material.ENCHANTED_BOOK));
-		inv.setItem(42, getEquip(Slot.SPELLBOOK));
-		inv.setItem(43, getEquip(Slot.BANK));
-		inv.setItem(44, MenuItem.createItem(ChatColor.GRAY+"Bank slot",ChatColor.GRAY+ "<-- Bank chest goes here", Material.CYAN_SHULKER_BOX));
+		inv.setItem(41, MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "Ring go here -->", Material.ARMOR_STAND));
+		inv.setItem(42, getEquip(Slot.RING3));
+		inv.setItem(43, getEquip(Slot.RING4));
+		inv.setItem(44, MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "<-- Ring go here", Material.ARMOR_STAND));
 		return inv;
 	}
 	

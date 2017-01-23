@@ -11,6 +11,8 @@ import org.bukkit.scheduler.BukkitScheduler;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.itemsystem.Armor;
 import xyz.almia.itemsystem.ItemHandler;
+import xyz.almia.itemsystem.ItemType;
+import xyz.almia.itemsystem.ItemType.ArmorTypes;
 
 public class Jump {
 	
@@ -28,7 +30,7 @@ public class Jump {
 				for(Player player : Bukkit.getOnlinePlayers()){
 					if(player.getInventory().getBoots() != null){
 						ItemStack item = player.getInventory().getBoots();
-						if(itemhandler.getEnchantType(item).equals(EnchantTypes.BOOTS)){
+						if(new ItemType(item).getArmorType().equals(ArmorTypes.FEET)){
 							Armor detailItem = new Armor(item);
 								HashMap<Enchantments, Integer> enchantments = detailItem.getEnchantsAndLevel();
 								if(enchantments.containsKey(Enchantments.JUMP)){

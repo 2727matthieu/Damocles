@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.accountsystem.Account;
 import xyz.almia.accountsystem.PlayerSetup;
+import xyz.almia.clansystem.Clans;
 import xyz.almia.menu.PlayerMenu;
 import xyz.almia.utils.Message;
 
@@ -32,7 +33,11 @@ public class Stats implements CommandExecutor{
 			Message.sendCenteredMessage(player, ChatColor.BOLD + character.getUsername() + " Stats");
 			Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Your current Level is " + ChatColor.GOLD + character.getLevel());
 			Message.sendCenteredMessage(player, ChatColor.YELLOW+ "Your current xp is " + ChatColor.GOLD + character.getExp()+ ChatColor.YELLOW+ " / "+ ChatColor.GOLD + (character.getLevel() * 1028));
-			Message.sendCenteredMessage(player, ChatColor.YELLOW+ "You currently belong to the "+ playersetup.getClan(character).toString().toLowerCase().substring(0, 1).toUpperCase() + playersetup.getClan(character).toString().toLowerCase().substring(1) + " clan.");
+			if(playersetup.getClan(character).equals(Clans.UNCLANNED)){
+				Message.sendCenteredMessage(player, ChatColor.YELLOW+ "You are currently not in a clan.");
+			}else{
+				Message.sendCenteredMessage(player, ChatColor.YELLOW+ "You currently belong to the "+ playersetup.getClan(character).toString().toLowerCase().substring(0, 1).toUpperCase() + playersetup.getClan(character).toString().toLowerCase().substring(1) + " clan.");
+			}
 			Message.sendCenteredMessage(player, ChatColor.YELLOW+ "your position is " + ChatColor.GRAY + playersetup.getClanRank(character).toString().toLowerCase().substring(0, 1).toUpperCase() + playersetup.getClanRank(character).toString().toLowerCase().substring(1));	
 			Message.sendCenteredMessage(player, " ");
 			Message.sendCenteredMessage(player, ChatColor.BOLD + "No Active Bonus' !");

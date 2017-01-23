@@ -11,6 +11,12 @@ public class Enchantment {
 	
 	public Enchantment(){}
 	
+	public enum EnchantTypes{
+		ARMOR, SWORD, BOOTS,
+		BOW, HELMET, CHESTPLATE,
+		LEGGINGS, NONE;
+	}
+	
 	public int getMaxLevel(Enchantments enchant){
 		switch(enchant){
 		case AEGIS:

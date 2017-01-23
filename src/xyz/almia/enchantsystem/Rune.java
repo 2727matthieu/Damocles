@@ -1,6 +1,5 @@
 package xyz.almia.enchantsystem;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.ChatColor;
@@ -14,7 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.itemsystem.NBTHandler;
-import xyz.almia.utils.RomanNumerals;
 
 public class Rune implements Listener{
 	
@@ -32,18 +30,6 @@ public class Rune implements Listener{
 		}
 	}
 	
-	public ItemStack createSlotRune(int slots){
-		ItemStack rune = new ItemStack(Material.EYE_OF_ENDER, 1);
-		ItemMeta runeMeta = rune.getItemMeta();
-		runeMeta.setDisplayName(ChatColor.YELLOW + "Slot Rune");
-		runeMeta.setLore(Arrays.asList(new String[] { 
-				ChatColor.WHITE + "" + ChatColor.BOLD + "+" + slots + " Slots",
-				ChatColor.GRAY + "Place rune on item to apply slots."}));
-		rune.setItemMeta(runeMeta);
-		rune = new NBTHandler(rune).setIntTag("slots", slots);
-		return rune;
-	}
-	
 	public int getSlotsFromRune(ItemStack item){
 		if(item.hasItemMeta()){
 			if(item.getItemMeta().hasDisplayName()){
@@ -53,25 +39,6 @@ public class Rune implements Listener{
 			}
 		}
 		return -1;
-	}
-	
-	public ItemStack createRune(Enchantments enchant, int level, int success, int destroy){
-		ItemStack rune = new ItemStack(Material.NETHER_STAR, 1);
-		ItemMeta runeMeta = rune.getItemMeta();
-		runeMeta.setDisplayName(ChatColor.YELLOW + "Rune of " + ChatColor.UNDERLINE + enchantclass.getName(enchant) + ChatColor.RESET + " " + ChatColor.YELLOW + RomanNumerals.intToRoman(level));
-		runeMeta.setLore(Arrays.asList(new String[] { ChatColor.GREEN + "" + success + "% Success Rate",
-				ChatColor.RED + "" + destroy + "% Destroy Rate On Fail.",
-				ChatColor.YELLOW + "Level " + ChatColor.GOLD + "" + level,
-				ChatColor.GOLD + "" + enchantclass.getType(enchant).toString() + " Enchantment",
-				ChatColor.GRAY + "Place rune on item to enchant."}));
-		rune.setItemMeta(runeMeta);
-		
-		rune = new NBTHandler(rune).setStringTag("enchant", enchant.toString());
-		rune = new NBTHandler(rune).setIntTag("level", level);
-		rune = new NBTHandler(rune).setIntTag("success", success);
-		rune = new NBTHandler(rune).setIntTag("destroy", destroy);
-		
-		return rune;
 	}
 	
 	public Map<String, Integer> getRune(ItemStack rune){
@@ -112,22 +79,6 @@ public class Rune implements Listener{
 				}
 			}
 		}
-	}
-	
-	public ItemStack createProtectionRune(){
-		ItemStack rune = new ItemStack(Material.EMPTY_MAP, 1);
-		ItemMeta runeMeta = rune.getItemMeta();
-		runeMeta.setDisplayName(ChatColor.YELLOW + "Protection Rune");
-		runeMeta.setLore(Arrays.asList(new String[] {
-				ChatColor.GRAY + "Prevents an item from being destroyed",
-				ChatColor.GRAY + "due to a failed Enchantment Rune.",
-				ChatColor.YELLOW + "Place on item to apply."
-				}));
-		rune.setItemMeta(runeMeta);
-		
-		new NBTHandler(rune).setIntTag("protect", 1);
-		
-		return rune;
 	}
 	
 	public boolean isProtectionRune(ItemStack rune){

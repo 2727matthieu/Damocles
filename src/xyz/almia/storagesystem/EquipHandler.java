@@ -16,8 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import net.md_5.bungee.api.ChatColor;
 import xyz.almia.accountsystem.Account;
-import xyz.almia.enchantsystem.EnchantTypes;
-import xyz.almia.itemsystem.ItemHandler;
+import xyz.almia.itemsystem.ItemType;
+import xyz.almia.itemsystem.ItemType.ArmorTypes;
 import xyz.almia.itemsystem.NBTHandler;
 import xyz.almia.storagesystem.Equips.Slot;
 
@@ -42,6 +42,11 @@ public class EquipHandler implements Listener{
 		Player player = (Player) event.getWhoClicked();
 		Account account = new Account(player);
 		xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
+		
+		if(character == null){
+			return;
+		}
+		
 		if(event.getInventory().getName().equalsIgnoreCase(character.getUsername()+"'s Bank")){
 			if(event.getCurrentItem() == null){
 				return;
@@ -77,6 +82,9 @@ public class EquipHandler implements Listener{
 		}
 		
 		if(event.getInventory().getName().equalsIgnoreCase("Equip Inventory")){
+			
+			ItemType type = new ItemType(event.getCursor());
+			
 			if(event.getAction().equals(InventoryAction.PLACE_ALL) || event.getAction().equals(InventoryAction.PICKUP_ALL)){
 				
 				if(event.getCurrentItem().hasItemMeta()){
@@ -130,7 +138,8 @@ public class EquipHandler implements Listener{
 					if(event.getCursor().getType().equals(Material.AIR)){
 						return;
 					}
-					if(!(new ItemHandler().getEnchantType(event.getCursor()).equals(EnchantTypes.HELMET))){
+					
+					if(!(type.getArmorType().equals(ArmorTypes.HEAD))){
 						event.setCancelled(true);
 						return;
 					}
@@ -141,7 +150,7 @@ public class EquipHandler implements Listener{
 					if(event.getCursor().getType().equals(Material.AIR)){
 						return;
 					}
-					if(!(new ItemHandler().getEnchantType(event.getCursor()).equals(EnchantTypes.CHESTPLATE))){
+					if(!(type.getArmorType().equals(ArmorTypes.CHEST))){
 						event.setCancelled(true);
 						return;
 					}
@@ -152,7 +161,7 @@ public class EquipHandler implements Listener{
 					if(event.getCursor().getType().equals(Material.AIR)){
 						return;
 					}
-					if(!(new ItemHandler().getEnchantType(event.getCursor()).equals(EnchantTypes.LEGGINGS))){
+					if(!(type.getArmorType().equals(ArmorTypes.LEGS))){
 						event.setCancelled(true);
 						return;
 					}
@@ -163,7 +172,7 @@ public class EquipHandler implements Listener{
 					if(event.getCursor().getType().equals(Material.AIR)){
 						return;
 					}
-					if(!(new ItemHandler().getEnchantType(event.getCursor()).equals(EnchantTypes.BOOTS))){
+					if(!(type.getArmorType().equals(ArmorTypes.FEET))){
 						event.setCancelled(true);
 						return;
 					}
@@ -171,7 +180,7 @@ public class EquipHandler implements Listener{
 				}
 				
 				
-				if(event.getSlot() == 43){
+				if(event.getSlot() == 38){
 					if(event.getCursor().getType().equals(Material.AIR)){
 						return;
 					}
@@ -225,10 +234,10 @@ public class EquipHandler implements Listener{
 			character.setEquip(Slot.GLOVES, inv.getItem(20));
 			character.setEquip(Slot.RING1, inv.getItem(24));
 			character.setEquip(Slot.RING2, inv.getItem(25));
-			character.setEquip(Slot.RING3, inv.getItem(37));
-			character.setEquip(Slot.RING4, inv.getItem(38));
-			character.setEquip(Slot.SPELLBOOK, inv.getItem(42));
-			character.setEquip(Slot.BANK, inv.getItem(43));
+			character.setEquip(Slot.SPELLBOOK, inv.getItem(37));
+			character.setEquip(Slot.BANK, inv.getItem(38));
+			character.setEquip(Slot.RING3, inv.getItem(42));
+			character.setEquip(Slot.RING4, inv.getItem(43));
 		}
 	}
 	

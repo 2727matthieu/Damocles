@@ -22,8 +22,8 @@ import org.bukkit.util.BlockIterator;
 import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.itemsystem.Armor;
-import xyz.almia.itemsystem.ItemHandler;
-import xyz.almia.itemsystem.ItemTypes;
+import xyz.almia.itemsystem.ItemType;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.itemsystem.Soul;
 import xyz.almia.itemsystem.Weapon;
 import xyz.almia.menu.AccountMenu;
@@ -173,8 +173,6 @@ public class Tasks{
 
 	public int getDefaultWeight(ItemTypes type){
 		switch(type){
-		case ALL:
-			break;
 		case ARMOR:
 			return 10;
 		case BOW:
@@ -182,7 +180,7 @@ public class Tasks{
 		case NONE:
 			break;
 		case POTION:
-			return 0;
+			break;
 		case SHIELD:
 			return 5;
 		case TOOL:
@@ -205,7 +203,7 @@ public class Tasks{
 					for(ItemStack item : p.getInventory().getContents()){
 						if(item != null){
 							
-							if(ItemHandler.getType(item).equals(ItemTypes.ARMOR)){
+							if(new ItemType(item).getRawType().equals(ItemTypes.ARMOR)){
 								Armor detailItem = new Armor(item);
 								if(!(detailItem.isItemSet())){
 									int slots = ThreadLocalRandom.current().nextInt(3);
@@ -226,7 +224,7 @@ public class Tasks{
 									p.updateInventory();
 								}
 							}
-							if(ItemHandler.getType(item).equals(ItemTypes.WEAPON)){
+							if(new ItemType(item).getRawType().equals(ItemTypes.WEAPON)){
 								Weapon detailItem = new Weapon(item);
 								if(!(detailItem.isItemSet())){
 									int slots = ThreadLocalRandom.current().nextInt(3);
