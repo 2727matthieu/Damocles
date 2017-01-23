@@ -147,9 +147,9 @@ public class ItemType {
 	public enum ItemTypes{
 		SHIELD, TOOL, ARMOR,
 		WEAPON, GLOVES, BELT,
-		BOW, ARROW, POTION,
-		RUNE, SPELL, SPELLBOOK,
-		NONE;
+		RING, BOW, ARROW,
+		POTION, RUNE, SPELL,
+		SPELLBOOK, NONE;
 	}
 	
 }

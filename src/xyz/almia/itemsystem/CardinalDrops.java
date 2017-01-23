@@ -106,6 +106,30 @@ public class CardinalDrops {
 			item = shsword.getItemStack();
 			item = new NBTHandler(item).setUnbreakable(true);
 			return item;
+		case ENDER_RING:
+			item = new ItemStack(Material.SHEARS);
+			itemmeta = item.getItemMeta();
+			itemmeta.setDisplayName(ChatColor.LIGHT_PURPLE+"Ender Ring");
+			item.setItemMeta(itemmeta);
+			Ring enderring = new Ring(item);
+			enderring.setup(0, 0, 0, 0, 0, 1, 8);
+			enderring.setID(1);
+			item = enderring.getItemStack();
+			item = new NBTHandler(item).setUnbreakable(true);
+			return item;
+		case SILVER_RING:
+			item = new ItemStack(Material.SHEARS);
+			itemmeta = item.getItemMeta();
+			itemmeta.setDisplayName(ChatColor.GRAY+"Silver Ring");
+			item.setItemMeta(itemmeta);
+			Ring silverring = new Ring(item);
+			silverring.setup(0, 0, 0, 0, 0, 1, 8);
+			silverring.setID(2);
+			item = silverring.getItemStack();
+			item = new NBTHandler(item).setUnbreakable(true);
+			return item;
+		default:
+			break;
 		}
 		return null;
 	}

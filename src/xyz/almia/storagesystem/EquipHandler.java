@@ -18,6 +18,7 @@ import net.md_5.bungee.api.ChatColor;
 import xyz.almia.accountsystem.Account;
 import xyz.almia.itemsystem.ItemType;
 import xyz.almia.itemsystem.ItemType.ArmorTypes;
+import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.itemsystem.NBTHandler;
 import xyz.almia.storagesystem.Equips.Slot;
 
@@ -82,6 +83,10 @@ public class EquipHandler implements Listener{
 		}
 		
 		if(event.getInventory().getName().equalsIgnoreCase("Equip Inventory")){
+			
+			if(event.getClickedInventory().equals(event.getWhoClicked().getInventory())){
+				return;
+			}
 			
 			ItemType type = new ItemType(event.getCursor());
 			
@@ -177,6 +182,46 @@ public class EquipHandler implements Listener{
 						return;
 					}
 					return;
+				}
+				
+				if(event.getSlot() == 19){
+					if(event.getCursor().getType().equals(Material.AIR)){
+						return;
+					}
+					if(!(type.getType().equals(ItemTypes.BELT))){
+						event.setCancelled(true);
+						return;
+					}
+				}
+				
+				if(event.getSlot() == 20){
+					if(event.getCursor().getType().equals(Material.AIR)){
+						return;
+					}
+					if(!(type.getType().equals(ItemTypes.GLOVES))){
+						event.setCancelled(true);
+						return;
+					}
+				}
+				
+				if(event.getSlot() == 24 || event.getSlot() == 25 || event.getSlot() == 42 || event.getSlot() == 43){
+					if(event.getCursor().getType().equals(Material.AIR)){
+						return;
+					}
+					if(!(type.getType().equals(ItemTypes.RING))){
+						event.setCancelled(true);
+						return;
+					}
+				}
+				
+				if(event.getSlot() == 37){
+					if(event.getCursor().getType().equals(Material.AIR)){
+						return;
+					}
+					if(!(type.getType().equals(ItemTypes.SPELLBOOK))){
+						event.setCancelled(true);
+						return;
+					}
 				}
 				
 				

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +33,25 @@ public class ItemHandler implements Listener{
 	Rune rune = new Rune();
 	
 	public ItemHandler() {}
+	
+	@EventHandler
+	public void onRingInteract(PlayerInteractEvent event){
+		if(event.getAction().equals(Action.LEFT_CLICK_AIR)){
+			if(new ItemType(event.getPlayer().getInventory().getItemInMainHand()).getType().equals(ItemTypes.RING)){
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onRingBreak(BlockBreakEvent event){
+		Player player = event.getPlayer();
+		if(new ItemType(player.getInventory().getItemInMainHand()).getType().equals(ItemTypes.RING)){
+			event.setCancelled(true);
+			return;
+		}
+	}
 	
 	@EventHandler
 	public void onEnderPearl(PlayerInteractEvent event){

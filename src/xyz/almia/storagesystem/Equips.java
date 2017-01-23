@@ -61,6 +61,21 @@ public class Equips{
 		bootmeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		boots.setItemMeta(bootmeta);
 		
+		ItemStack leftring = MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "<-- Ring go here", Material.SHEARS);
+		ItemMeta leftringmeta = leftring.getItemMeta();
+		leftring.setDurability((short)2);
+		leftringmeta.setUnbreakable(true);
+		leftringmeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+		leftring.setItemMeta(leftringmeta);
+		
+		ItemStack rightring = MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "Ring go here -->", Material.SHEARS);
+		ItemMeta rightringmeta = rightring.getItemMeta();
+		rightring.setDurability((short)2);
+		rightringmeta.setUnbreakable(true);
+		rightringmeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+		rightring.setItemMeta(rightringmeta);
+		
+		
 		inv.setItem(0, helmet);
 		inv.setItem(1, getEquip(Slot.HELMET));
 		inv.setItem(2, getEquip(Slot.CHESTPLATE));
@@ -84,10 +99,10 @@ public class Equips{
 		inv.setItem(20, getEquip(Slot.GLOVES));
 		inv.setItem(21, MenuItem.createItem(ChatColor.GRAY+"Glove slot",ChatColor.GRAY+ "<-- Gloves go here", Material.ARMOR_STAND));
 		inv.setItem(22, empty);
-		inv.setItem(23, MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "Ring go here -->", Material.ARMOR_STAND));
+		inv.setItem(23, rightring);
 		inv.setItem(24, getEquip(Slot.RING1));
 		inv.setItem(25, getEquip(Slot.RING2));
-		inv.setItem(26, MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "<-- Ring go here", Material.ARMOR_STAND));
+		inv.setItem(26, leftring);
 		inv.setItem(27, empty);
 		inv.setItem(28, empty);
 		inv.setItem(29, empty);
@@ -102,10 +117,10 @@ public class Equips{
 		inv.setItem(38, getEquip(Slot.BANK));
 		inv.setItem(39, MenuItem.createItem(ChatColor.GRAY+"Bank slot",ChatColor.GRAY+ "<-- Bank chest goes here", Material.CYAN_SHULKER_BOX));
 		inv.setItem(40, empty);
-		inv.setItem(41, MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "Ring go here -->", Material.ARMOR_STAND));
+		inv.setItem(41, rightring);
 		inv.setItem(42, getEquip(Slot.RING3));
 		inv.setItem(43, getEquip(Slot.RING4));
-		inv.setItem(44, MenuItem.createItem(ChatColor.GRAY+"Ring slot",ChatColor.GRAY+ "<-- Ring go here", Material.ARMOR_STAND));
+		inv.setItem(44, leftring);
 		return inv;
 	}
 	
