@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.almia.accountsystem.Account;
+import xyz.almia.accountsystem.AccountStatus;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.itemblueprints.Armor;
@@ -419,9 +420,11 @@ public class Damage implements Listener{
 	
 	@EventHandler
 	public void onMove(PlayerMoveEvent event){
-		if(petrified.contains(new Account(event.getPlayer()).getLoadedCharacter().getUsername())){
-			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.YELLOW+"You are petrified!");
+		if(new Account(event.getPlayer()).getStatus().equals(AccountStatus.LOGGEDIN)){
+			if(petrified.contains(new Account(event.getPlayer()).getLoadedCharacter().getUsername())){
+				event.setCancelled(true);
+				event.getPlayer().sendMessage(ChatColor.YELLOW+"You are petrified!");
+			}
 		}
 	}
 	

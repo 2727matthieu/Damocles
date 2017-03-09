@@ -447,7 +447,7 @@ public class Character {
 		int intel = getShowStat(Stat.INTELLIGENCE);
 		int agi = getShowStat(Stat.AGILITY);
 		int str = getShowStat(Stat.STRENGTH);
-		int hp = getShowStat(Stat.INTELLIGENCE);
+		int hp = getShowStat(Stat.HITPOINTS);
 		setStat(Stat.INTELLIGENCE, getStat(Stat.INTELLIGENCE)+ intel);
 		setStat(Stat.AGILITY, getStat(Stat.AGILITY)+ agi);
 		setStat(Stat.STRENGTH, getStat(Stat.STRENGTH)+ str);
@@ -465,11 +465,9 @@ public class Character {
 		return;
 	}
 	
-	
 	public int getShowStat(Stat stat){
 		return config.getInt("stats.show."+stat.toString().toLowerCase());
 	}
-	
 	
 	public void subtractShowStat(Stat stat){
 		if(getShowStat(stat) > 0){
@@ -478,7 +476,6 @@ public class Character {
 		}
 		return;
 	}
-	
 	
 	public void addShowStat(Stat stat){
 		int total = getShowStat(Stat.AGILITY) + getShowStat(Stat.HITPOINTS) + getShowStat(Stat.INTELLIGENCE) + getShowStat(Stat.STRENGTH);
