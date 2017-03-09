@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.itemsystem.NBTHandler;
+import xyz.almia.utils.NBTHandler;
 
 public class Rune implements Listener{
 	

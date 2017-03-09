@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
-import net.blitzcube.score.secondlineapi.manager.SecondLineManager;
+import net.blitzcube.mlapi.MultiLineAPI;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.clansystem.Clan;
 import xyz.almia.clansystem.Clans;
@@ -344,7 +344,7 @@ public class PlayerSetup implements Listener{
 		Player player = event.getPlayer();
 		Account account = new Account(player);
 		try{
-			SecondLineManager.getInstance(plugin).add(player);
+			MultiLineAPI.enable(player);
 		}catch(NoClassDefFoundError e) {}
 		
 		try{

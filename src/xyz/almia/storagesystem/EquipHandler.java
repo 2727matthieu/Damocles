@@ -19,8 +19,8 @@ import xyz.almia.accountsystem.Account;
 import xyz.almia.itemsystem.ItemType;
 import xyz.almia.itemsystem.ItemType.ArmorTypes;
 import xyz.almia.itemsystem.ItemType.ItemTypes;
-import xyz.almia.itemsystem.NBTHandler;
 import xyz.almia.storagesystem.Equips.Slot;
+import xyz.almia.utils.NBTHandler;
 
 public class EquipHandler implements Listener{
 	

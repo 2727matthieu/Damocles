@@ -1,4 +1,4 @@
-package xyz.almia.itemsystem;
+package xyz.almia.itemblueprints;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,25 +13,24 @@ import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.itemsystem.ItemType.ItemTypes;
+import xyz.almia.itemsystem.Settable;
+import xyz.almia.utils.NBTHandler;
 import xyz.almia.utils.RomanNumerals;
 
-public class Weapon{
-	
-	/*
-	 * @Author Kowagatte
-	 */
+public class Armor implements Settable{
 	
 	Plugin plugin = Cardinal.getPlugin();
 	xyz.almia.enchantsystem.Enchantment enchantclass = new xyz.almia.enchantsystem.Enchantment();
 	private ItemStack item;
 	
-	public Weapon(ItemStack item){
+	public Armor(ItemStack item){
 		this.item = item;
 	}
 	
-	public void setup(HashMap<Enchantments, Integer> enchants, int slots, int intel, int str, int hp, int agi ,int damage, int reforges, int weight, int upgrades, boolean isprotected, int durability, int maxdurability){
+	public void setup(HashMap<Enchantments, Integer> enchants, String name, int slots, int intel, int str, int hp, int agi ,int armor, int reforges, int weight, int upgrades, boolean isprotected, int durability, int maxdurability, int appliedUpgrades){
 		
 		ItemMeta im = this.item.getItemMeta();
+		im.setDisplayName(name + ChatColor.RESET + " " + ChatColor.BOLD + "+" + appliedUpgrades);
 		List<String> lore = new ArrayList<String>();
 		lore.add("");
 		
@@ -46,7 +45,7 @@ public class Weapon{
 		lore.add(ChatColor.GRAY+"Int: +"+ intel + " | " + ChatColor.GRAY+"Hp: +"+ hp);
 		lore.add(ChatColor.GRAY+"Str: +"+ str + " | " + ChatColor.GRAY+"Agi: +"+ agi);
 		lore.add("");
-		lore.add(ChatColor.BLUE+"+"+damage+" Damage");
+		lore.add(ChatColor.BLUE+"+"+armor+" Armor");
 		lore.add("");
 		lore.add(ChatColor.DARK_GRAY+"Weight: "+weight);
 		lore.add(ChatColor.DARK_GRAY+"Number of upgrades available: "+ upgrades);
@@ -60,16 +59,14 @@ public class Weapon{
 		}
 		
 		im.setLore(lore);
-		im.setUnbreakable(true);
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		im.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-		
 		item.setItemMeta(im);
 		
 		ItemStack nbt = this.item;
 		
-		nbt = new NBTHandler(nbt).setType(ItemTypes.WEAPON.toString());
+		nbt = new NBTHandler(nbt).setType(ItemTypes.ARMOR.toString());
 		nbt = new NBTHandler(nbt).setListEmpty("enchants");
+		nbt = new NBTHandler(nbt).setStringTag("displayname", name);
 			for(Enchantments enchant : enchants.keySet()){
 				nbt = new NBTHandler(nbt).addEnchant(enchant, enchants.get(enchant));
 			}
@@ -78,13 +75,15 @@ public class Weapon{
 		nbt = new NBTHandler(nbt).setIntTag("str", str);
 		nbt = new NBTHandler(nbt).setIntTag("hp", hp);
 		nbt = new NBTHandler(nbt).setIntTag("agi", agi);
-		nbt = new NBTHandler(nbt).setIntTag("damage", damage);
+		nbt = new NBTHandler(nbt).setIntTag("armor", armor);
 		nbt = new NBTHandler(nbt).setIntTag("reforges", reforges);
 		nbt = new NBTHandler(nbt).setIntTag("weight", weight);
 		nbt = new NBTHandler(nbt).setIntTag("upgrades", upgrades);
+		nbt = new NBTHandler(nbt).setIntTag("appliedupgrades", appliedUpgrades);
 		nbt = new NBTHandler(nbt).setBoolean("protected", isprotected);
 		nbt = new NBTHandler(nbt).setIntTag("durability", durability);
 		nbt = new NBTHandler(nbt).setIntTag("maxdurability", maxdurability);
+		nbt = new NBTHandler(nbt).resetArmor();
 		
 		this.item = nbt;
 		
@@ -106,12 +105,16 @@ public class Weapon{
 		return StringUtils.capitaliseAllWords(item.getType().toString().toLowerCase());
 	}
 	
+	public String getDisplayName(){
+		return new NBTHandler(item).getStringTag("displayname");
+	}
+	
 	public void setMaxDurability(int maxdurability){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), maxdurability);
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), maxdurability, getAppliedUpgrades());
 	}
 	
 	public void setDurability(int durability){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), durability, getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), durability, getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public int getMaxDurability(){
@@ -142,24 +145,32 @@ public class Weapon{
 		return new NBTHandler(item).getIntTag("upgrades");
 	}
 	
+	public int getAppliedUpgrades(){
+		return new NBTHandler(item).getIntTag("appliedupgrades");
+	}
+	
+	public void setAppliedUpgrades(int amount){
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), amount);
+	}
+	
 	public void setInt(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), amount, getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), amount, getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public void setStr(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), amount, getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), amount, getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public void setHp(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), amount, getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), amount, getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public void setAgi(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), amount, getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), amount, getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public void setUpgrades(int amount){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), amount, isProtected(), getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), amount, isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public ItemStack getItemStack(){
@@ -169,13 +180,13 @@ public class Weapon{
 	public void addEnchant(Enchantments enchant, int level){
 		HashMap<Enchantments, Integer> enchantments = getEnchantsAndLevel();
 		enchantments.put(enchant, level);
-		setup(enchantments, getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(enchantments, getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public void removeEnchant(Enchantments enchant){
 		HashMap<Enchantments, Integer> enchantments = getEnchantsAndLevel();
 		enchantments.remove(enchant);
-		setup(enchantments, getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(enchantments, getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 
 	public int getWeight(){
@@ -183,27 +194,27 @@ public class Weapon{
 	}
 
 	public void setWeight(int weight){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), weight, getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), weight, getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public void setReforges(int reforges){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), reforges, getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), reforges, getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public int getReforges(){
 		return new NBTHandler(item).getIntTag("reforges");
 	}
 	
-	public void setDamage(int damage){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), damage, getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+	public void setArmor(int armor){
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), armor, getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
-	public int getDamage(){
-		return new NBTHandler(item).getIntTag("damage");
+	public int getArmor(){
+		return new NBTHandler(item).getIntTag("armor");
 	}
 	
 	public void setSlots(int slots){
-		setup(getEnchantsAndLevel(), slots, getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), slots, getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), isProtected(), getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public int getSlots(){
@@ -211,11 +222,11 @@ public class Weapon{
 	}
 	
 	public void unProtect(){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), false, getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), false, getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public void protect(){
-		setup(getEnchantsAndLevel(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getDamage(), getReforges(), getWeight(), getUpgrades(), true, getDurability(), getMaxDurability());
+		setup(getEnchantsAndLevel(), getDisplayName(), getSlots(), getInt(), getStr(), getHp(), getAgi(), getArmor(), getReforges(), getWeight(), getUpgrades(), true, getDurability(), getMaxDurability(), getAppliedUpgrades());
 	}
 	
 	public boolean isProtected(){

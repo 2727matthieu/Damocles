@@ -32,7 +32,7 @@ public class SoulSystem implements Listener{
 		return item;
 	}
 	
-	@EventHandler
+	//@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event){
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 			if(event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.MONSTER_EGG)){

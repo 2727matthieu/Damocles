@@ -11,8 +11,8 @@ import org.bukkit.util.Vector;
 
 import xyz.almia.accountsystem.Account;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.itemsystem.Armor;
-import xyz.almia.itemsystem.Weapon;
+import xyz.almia.itemblueprints.Armor;
+import xyz.almia.itemblueprints.Weapon;
 
 public class Anvil{
 	
@@ -59,6 +59,10 @@ public class Anvil{
 	
 	public Location getLocation(){
 		return this.anvil.getLocation();
+	}
+	
+	public Item getItem(){
+		return droppeditem;
 	}
 	
 	public void setShowItem(){

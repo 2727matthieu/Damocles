@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import xyz.almia.utils.NBTHandler;
+
 public class ItemType {
 	
 	ItemStack item;
@@ -132,6 +134,11 @@ public class ItemType {
 		}
 	}
 	
+	public enum ScrollType{
+		INTELLIGENCE, AGILITY, HITPOINTS,
+		STRENGTH, DAMAGE, ARMOR;
+	}
+	
 	public enum RuneType{
 		RUNE, PROTECTION, SLOT, NONE;
 	}
@@ -149,7 +156,7 @@ public class ItemType {
 		WEAPON, GLOVES, BELT,
 		RING, BOW, ARROW,
 		POTION, RUNE, SPELL,
-		SPELLBOOK, NONE;
+		SPELLBOOK, SCROLL, NONE;
 	}
 	
 }

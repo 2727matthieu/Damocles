@@ -9,7 +9,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.itemsystem.Armor;
+import xyz.almia.itemblueprints.Armor;
 import xyz.almia.itemsystem.ItemHandler;
 import xyz.almia.itemsystem.ItemType;
 import xyz.almia.itemsystem.ItemType.ArmorTypes;

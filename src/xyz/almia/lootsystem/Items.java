@@ -1,4 +1,4 @@
-package xyz.almia.itemsystem;
+package xyz.almia.lootsystem;
 
 public enum Items {
 	EXCALIBUR, RORAN, BAT, KENDO_SWORD, MURAMASA, PLATINUM_SCIMITAR,

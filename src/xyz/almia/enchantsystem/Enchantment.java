@@ -19,8 +19,6 @@ public class Enchantment {
 	
 	public int getMaxLevel(Enchantments enchant){
 		switch(enchant){
-		case AEGIS:
-			return 5;
 		case ASSASSIN:
 			return 3;
 		case BAT_VISION:
@@ -63,8 +61,6 @@ public class Enchantment {
 	
 	public int getValue(Enchantments enchant){
 		switch(enchant){
-		case AEGIS:
-			return 1;
 		case ASSASSIN:
 			return 1;
 		case BAT_VISION:
@@ -136,8 +132,6 @@ public class Enchantment {
 			return EnchantTypes.BOW;
 		case SNARE:
 			return EnchantTypes.BOW;
-		case AEGIS:
-			return EnchantTypes.SWORD;
 		case WILD_MARK:
 			return EnchantTypes.BOW;
 		case HOLY_SMITE:

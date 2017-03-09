@@ -1,4 +1,4 @@
-package xyz.almia.itemsystem;
+package xyz.almia.utils;
 
 import java.util.HashMap;
 import org.bukkit.Bukkit;
@@ -16,7 +16,6 @@ import net.minecraft.server.v1_11_R1.NBTTagInt;
 import net.minecraft.server.v1_11_R1.NBTTagList;
 import net.minecraft.server.v1_11_R1.NBTTagString;
 import xyz.almia.enchantsystem.Enchantments;
-import xyz.almia.utils.Color;
 
 public class NBTHandler {
 	

@@ -10,9 +10,10 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import xyz.almia.itemblueprints.Weapon;
 import xyz.almia.itemsystem.ItemHandler;
 import xyz.almia.itemsystem.ItemType;
-import xyz.almia.itemsystem.Weapon;
 import xyz.almia.itemsystem.ItemType.ItemTypes;
 
 public class BloodThirst implements Listener{

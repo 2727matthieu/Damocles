@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,11 +20,16 @@ import org.bukkit.plugin.Plugin;
 import mkremins.fanciful.FancyMessage;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.enchantsystem.Enchantment.EnchantTypes;
+import xyz.almia.itemblueprints.Armor;
+import xyz.almia.itemblueprints.Ring;
+import xyz.almia.itemblueprints.Scroll;
+import xyz.almia.itemblueprints.Weapon;
 import xyz.almia.enchantsystem.Enchantments;
 import xyz.almia.enchantsystem.Rune;
 import xyz.almia.itemsystem.ItemType.ArmorTypes;
 import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.itemsystem.ItemType.RuneType;
+import xyz.almia.itemsystem.ItemType.ScrollType;
 import xyz.almia.utils.Message;
 
 public class ItemHandler implements Listener{
@@ -82,11 +88,408 @@ public class ItemHandler implements Listener{
 			
 			ItemType currentType = new ItemType(event.getCurrentItem());
 			
-			if(currentType.getType().equals(ItemTypes.ARMOR) || currentType.getType().equals(ItemTypes.WEAPON)){
+			if(currentType.getType().equals(ItemTypes.RING) || currentType.getType().equals(ItemTypes.ARMOR) || currentType.getType().equals(ItemTypes.WEAPON)){
 				
 				if(event.getCursor() != null){
 					
 					ItemType cursorType = new ItemType(event.getCursor());
+					
+					if(cursorType.getType().equals(ItemTypes.SCROLL)){
+						Scroll scroll = new Scroll(event.getCursor());
+						
+						if(currentType.getType().equals(ItemTypes.RING)){
+							Ring ring = new Ring(event.getCurrentItem());
+							
+							if(ring.getUpgrades() == 0){
+								return;
+							}
+							
+							int amount = scroll.getAmount();
+							
+							if(scroll.getType().equals(ScrollType.DAMAGE)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									ring.setUpgrades(ring.getUpgrades()-1);
+									ring.setDamage(ring.getDamage()+amount);
+									
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(ring.isProtected()){
+											event.setCancelled(true);
+											ring.unprotect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										ring.setUpgrades(ring.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.AGILITY)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									ring.setUpgrades(ring.getUpgrades()-1);
+									ring.setAgi(ring.getAgi()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(ring.isProtected()){
+											event.setCancelled(true);
+											ring.unprotect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										ring.setUpgrades(ring.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.INTELLIGENCE)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									ring.setUpgrades(ring.getUpgrades()-1);
+									ring.setInt(ring.getInt()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(ring.isProtected()){
+											event.setCancelled(true);
+											ring.unprotect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										ring.setUpgrades(ring.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.HITPOINTS)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									ring.setUpgrades(ring.getUpgrades()-1);
+									ring.setHp(ring.getHp()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(ring.isProtected()){
+											event.setCancelled(true);
+											ring.unprotect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										ring.setUpgrades(ring.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.STRENGTH)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									ring.setUpgrades(ring.getUpgrades()-1);
+									ring.setStr(ring.getStr()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(ring.isProtected()){
+											event.setCancelled(true);
+											ring.unprotect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										ring.setUpgrades(ring.getUpgrades()-1);
+									}
+								}
+							}
+							
+							ring.setAppliedUpgrades(ring.getAppliedUpgrades() + 1);
+							ItemStack item = ring.getItemStack();
+							if(ring.getAppliedUpgrades() >= 3){
+								item.addEnchantment(Enchantment.getById(69), 1);
+							}
+							event.setCurrentItem(item);
+							event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+							return;
+						}
+						
+						if(currentType.getType().equals(ItemTypes.ARMOR)){
+							Armor armor = new Armor(event.getCurrentItem());
+							
+							if(armor.getUpgrades() == 0){
+								return;
+							}
+							
+							int amount = scroll.getAmount();
+							if(scroll.getType().equals(ScrollType.ARMOR)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									armor.setUpgrades(armor.getUpgrades()-1);
+									armor.setArmor(armor.getArmor()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(armor.isProtected()){
+											event.setCancelled(true);
+											armor.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										armor.setUpgrades(armor.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.AGILITY)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									armor.setUpgrades(armor.getUpgrades()-1);
+									armor.setAgi(armor.getAgi()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(armor.isProtected()){
+											event.setCancelled(true);
+											armor.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										armor.setUpgrades(armor.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.INTELLIGENCE)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									armor.setUpgrades(armor.getUpgrades()-1);
+									armor.setInt(armor.getInt()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(armor.isProtected()){
+											event.setCancelled(true);
+											armor.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										armor.setUpgrades(armor.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.HITPOINTS)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									armor.setUpgrades(armor.getUpgrades()-1);
+									armor.setHp(armor.getHp()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(armor.isProtected()){
+											event.setCancelled(true);
+											armor.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										armor.setUpgrades(armor.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.STRENGTH)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									armor.setUpgrades(armor.getUpgrades()-1);
+									armor.setStr(armor.getStr()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(armor.isProtected()){
+											event.setCancelled(true);
+											armor.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										armor.setUpgrades(armor.getUpgrades()-1);
+									}
+								}
+							}
+							
+							armor.setAppliedUpgrades(armor.getAppliedUpgrades() + 1);
+							ItemStack item = armor.getItemStack();
+							if(armor.getAppliedUpgrades() >= 3){
+								item.addEnchantment(Enchantment.getById(69), 1);
+							}
+							event.setCurrentItem(item);
+							event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+							return;
+							
+						}
+						
+						if(currentType.getType().equals(ItemTypes.WEAPON)){
+							Weapon weapon = new Weapon(event.getCurrentItem());
+							
+							if(weapon.getUpgrades() == 0){
+								return;
+							}
+							
+							int amount = scroll.getAmount();
+							if(scroll.getType().equals(ScrollType.DAMAGE)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									weapon.setUpgrades(weapon.getUpgrades()-1);
+									weapon.setDamage(weapon.getDamage()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(weapon.isProtected()){
+											event.setCancelled(true);
+											weapon.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										weapon.setUpgrades(weapon.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.AGILITY)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									weapon.setUpgrades(weapon.getUpgrades()-1);
+									weapon.setAgi(weapon.getAgi()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(weapon.isProtected()){
+											event.setCancelled(true);
+											weapon.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										weapon.setUpgrades(weapon.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.INTELLIGENCE)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									weapon.setUpgrades(weapon.getUpgrades()-1);
+									weapon.setInt(weapon.getInt()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(weapon.isProtected()){
+											event.setCancelled(true);
+											weapon.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										weapon.setUpgrades(weapon.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.HITPOINTS)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									weapon.setUpgrades(weapon.getUpgrades()-1);
+									weapon.setHp(weapon.getHp()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(weapon.isProtected()){
+											event.setCancelled(true);
+											weapon.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										weapon.setUpgrades(weapon.getUpgrades()-1);
+									}
+								}
+							}
+							if(scroll.getType().equals(ScrollType.STRENGTH)){
+								if(new Random().nextInt(100) <= scroll.getSuccess()){
+									event.setCancelled(true);
+									weapon.setUpgrades(weapon.getUpgrades()-1);
+									weapon.setStr(weapon.getStr()+amount);
+								}else{
+									if(new Random().nextInt(100) <= scroll.getDestroy()){
+										if(weapon.isProtected()){
+											event.setCancelled(true);
+											weapon.unProtect();
+										}else{
+											event.setCancelled(true);
+											event.setCurrentItem(null);
+											event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+											return;
+										}
+									}else{
+										event.setCancelled(true);
+										weapon.setUpgrades(weapon.getUpgrades()-1);
+									}
+								}
+							}
+							
+							weapon.setAppliedUpgrades(weapon.getAppliedUpgrades() + 1);
+							ItemStack item = weapon.getItemStack();
+							if(weapon.getAppliedUpgrades() >= 3){
+								item.addEnchantment(Enchantment.getById(69), 1);
+							}
+							event.setCurrentItem(item);
+							event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+							return;
+							
+						}
+						return;
+					}
+					
 					
 					if(cursorType.getRuneType().equals(RuneType.PROTECTION)){
 						if(currentType.getType().equals(ItemTypes.ARMOR)){
@@ -100,6 +503,7 @@ public class ItemHandler implements Listener{
 					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have successfully Protected your equip!");
 					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		player.getWorld().spawnParticle(Particle.CRIT_MAGIC, player.getLocation(), 50);
+					    		return;
 							}else{
 					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"Item is already Protected!");
@@ -118,6 +522,26 @@ public class ItemHandler implements Listener{
 					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have successfully Protected your equip!");
 					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		player.getWorld().spawnParticle(Particle.CRIT_MAGIC, player.getLocation(), 50);
+					    		return;
+							}else{
+					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"Item is already Protected!");
+					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+								event.setCancelled(true);
+								return;
+							}
+						}else if(currentType.getType().equals(ItemTypes.RING)){
+							Ring detailItem = new Ring(event.getCurrentItem());
+							if(!(detailItem.isProtected())){
+								event.setCancelled(true);
+								detailItem.protect();
+								event.setCurrentItem(detailItem.getItemStack());
+								event.setCursor(rune.setAmount(event.getCursor(), event.getCursor().getAmount() - 1));
+					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have successfully Protected your equip!");
+					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+					    		player.getWorld().spawnParticle(Particle.CRIT_MAGIC, player.getLocation(), 50);
+					    		return;
 							}else{
 					    		Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		Message.sendCenteredMessage(player, ChatColor.YELLOW+"Item is already Protected!");
@@ -153,6 +577,7 @@ public class ItemHandler implements Listener{
 					    		  FancyMessage.deserialize(item).send(player);				   
 					    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		  player.getWorld().spawnParticle(Particle.CRIT_MAGIC, player.getLocation(), 50);
+					    		  return;
 							}
 						}else if(currentType.getType().equals(ItemTypes.WEAPON)){
 							Weapon detailItem = new Weapon(event.getCurrentItem());
@@ -175,6 +600,7 @@ public class ItemHandler implements Listener{
 					    		  FancyMessage.deserialize(item).send(player);				   
 					    		  Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					    		  player.getWorld().spawnParticle(Particle.CRIT_MAGIC, player.getLocation(), 50);
+					    		  return;
 							}
 						}else{
 							return;
@@ -220,7 +646,6 @@ public class ItemHandler implements Listener{
 							}
 							
 							if(detailItem.getSlots() > 0){
-								
 								
 								if(enchantclass.getType(enchantment).equals(EnchantTypes.ARMOR)){
 									event.setCancelled(true);

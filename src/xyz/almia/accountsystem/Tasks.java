@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,11 +23,11 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.BlockIterator;
 import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.enchantsystem.Enchantments;
-import xyz.almia.itemsystem.Armor;
+import xyz.almia.itemblueprints.Armor;
+import xyz.almia.itemblueprints.Weapon;
 import xyz.almia.itemsystem.ItemType;
 import xyz.almia.itemsystem.ItemType.ItemTypes;
 import xyz.almia.itemsystem.Soul;
-import xyz.almia.itemsystem.Weapon;
 import xyz.almia.menu.AccountMenu;
 import xyz.almia.selectionsystem.Selection;
 import xyz.almia.storagesystem.Equips.Slot;
@@ -36,6 +38,15 @@ public class Tasks{
 	
 	public Tasks(Plugin plugin) {
 		this.plugin = plugin;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public String getItemName(Material material){
+		String s = material.toString();
+		s = s.toLowerCase();
+		s = s.replace("_", " ");
+		s = StringUtils.capitaliseAllWords(s);
+		return s;
 	}
 	
 	public int getDefaultArmor(Material material){
@@ -213,7 +224,7 @@ public class Tasks{
 									int armor = getDefaultArmor(item.getType());
 									int maxdurability = ThreadLocalRandom.current().nextInt(143) + 100;
 									int durability = ThreadLocalRandom.current().nextInt(41) + 50;
-									detailItem.setup(new HashMap<Enchantments, Integer>(), slots, 0, 0, 0, 0, armor, reforges, weight, upgrades, false, durability, maxdurability);
+									detailItem.setup(new HashMap<Enchantments, Integer>(), getItemName(item.getType()), slots, 0, 0, 0, 0, armor, reforges, weight, upgrades, false, durability, maxdurability, 0);
 									for(int i = 0; i < 36; i++){
 										if(p.getInventory().getItem(i) != null){
 											if(p.getInventory().getItem(i).equals(item)){
@@ -234,7 +245,7 @@ public class Tasks{
 									int durability = ThreadLocalRandom.current().nextInt(41) + 50;
 									int weight = getDefaultWeight(ItemTypes.WEAPON);
 									int damage = getDefaultDamage(item.getType());
-									detailItem.setup(new HashMap<Enchantments, Integer>(), slots, 0, 0, 0, 0, damage, reforges, weight, upgrades, false, durability, maxdurability);
+									detailItem.setup(new HashMap<Enchantments, Integer>(), getItemName(item.getType()), slots, 0, 0, 0, 0, damage, reforges, weight, upgrades, false, durability, maxdurability, 0);
 									for(int i = 0; i < 36; i++){
 										if(p.getInventory().getItem(i) != null){
 											if(p.getInventory().getItem(i).equals(item)){

@@ -9,7 +9,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import net.blitzcube.score.secondlineapi.manager.SecondLineManager;
+import net.blitzcube.mlapi.MultiLineAPI;
 import xyz.almia.accountsystem.Account;
 import xyz.almia.accountsystem.AccountStatus;
 import xyz.almia.accountsystem.EventCanceller;
@@ -29,7 +29,7 @@ import xyz.almia.commandsystem.Party;
 import xyz.almia.commandsystem.Potion;
 import xyz.almia.commandsystem.Stats;
 import xyz.almia.commandsystem.Trade;
-import xyz.almia.damagesystem.DamageSystem;
+import xyz.almia.damagesystem.Damage;
 import xyz.almia.enchantsystem.BatVision;
 import xyz.almia.enchantsystem.BlankEnchant;
 import xyz.almia.enchantsystem.BloodThirst;
@@ -37,6 +37,7 @@ import xyz.almia.enchantsystem.Eyepatch;
 import xyz.almia.enchantsystem.Jump;
 import xyz.almia.enchantsystem.Rune;
 import xyz.almia.enchantsystem.Speed;
+import xyz.almia.enchantsystem.Volley;
 import xyz.almia.itemsystem.ItemHandler;
 import xyz.almia.itemsystem.Soul;
 import xyz.almia.menu.ClanMenu;
@@ -95,18 +96,20 @@ public class Cardinal extends JavaPlugin{
 	
 	public void updateNameTag(){
 		try{
-			
-			SecondLineManager.getInstance(getPlugin());
-			
 			new BukkitRunnable(){
 				public void run(){
 					for(Player player : Bukkit.getOnlinePlayers()){
 						Account account = new Account(player);
+						try{
 							if(account.getStatus().equals(AccountStatus.LOGGEDIN)){
-								SecondLineManager.getInstance(getPlugin()).setName(player, account.getLoadedCharacter().getUsername());
+								MultiLineAPI.getName(player).setText(account.getLoadedCharacter().getUsername());
 							}else{
-								SecondLineManager.getInstance(getPlugin()).setName(player, player.getName());
+								MultiLineAPI.getName(player).setText(player.getName());
 							}
+						}catch(IllegalArgumentException e){
+							MultiLineAPI.enable(player);
+							return;
+						}
 					}
 				}
 				
@@ -199,7 +202,7 @@ public class Cardinal extends JavaPlugin{
 		Bukkit.getPluginManager().registerEvents(new Mining(), this);
 		Bukkit.getPluginManager().registerEvents(new Fishing(), this);
 		Bukkit.getPluginManager().registerEvents(new Farming(), this);
-		Bukkit.getPluginManager().registerEvents(new DamageSystem(), this);
+		Bukkit.getPluginManager().registerEvents(new Damage(), this);
 		Bukkit.getPluginManager().registerEvents(new SoulSystem(), this);
 		Bukkit.getPluginManager().registerEvents(new SelectionMenu(), this);
 		Bukkit.getPluginManager().registerEvents(new AnvilHandler(), this);
@@ -207,6 +210,7 @@ public class Cardinal extends JavaPlugin{
 		Bukkit.getPluginManager().registerEvents(new ArrowHandler(), this);
 		Bukkit.getPluginManager().registerEvents(new PotionHandler(), this);
 		Bukkit.getPluginManager().registerEvents(new SplashPotionHandler(), this);
+		Bukkit.getPluginManager().registerEvents(new Volley(), this);
 	}
 	
 	public void registerCommands(){
@@ -263,8 +267,8 @@ public class Cardinal extends JavaPlugin{
 		registerConfig();
 		registerEvents();
 		registerEnchants();
-		task.runTasks();
 		registerGlow();
+		task.runTasks();
 		updateNameTag();
 		updateActionBar();
 	}

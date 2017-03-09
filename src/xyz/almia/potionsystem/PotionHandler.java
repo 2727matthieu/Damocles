@@ -53,6 +53,10 @@ public class PotionHandler implements Listener{
 			return "Weakness";
 		case WITHER:
 			return "Withering";
+		case SOUL:
+			return "Soul";
+		default:
+			break;
 		}
 		return "Nothing";
 	}
@@ -97,6 +101,10 @@ public class PotionHandler implements Listener{
 			return "Weakness";
 		case WITHER:
 			return "Wither";
+		case SOUL:
+			return "Soul";
+		default:
+			break;
 		}
 		return "Nothing";
 	}
@@ -110,6 +118,10 @@ public class PotionHandler implements Listener{
 			xyz.almia.accountsystem.Character character = player.getLoadedCharacter();
 			
 			switch(potion.getType()){
+			case SOUL:
+				if(character.getSouls() != 5)
+					character.setSouls(character.getSouls() + 1);
+				return;
 			case HARM:
 				character.setHealth(character.getHealth() - (4*potion.getAmplifier()));
 				return;

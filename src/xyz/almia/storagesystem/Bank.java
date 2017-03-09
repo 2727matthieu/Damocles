@@ -30,7 +30,7 @@ public class Bank {
 		menu.setItem(2, empty);
 		menu.setItem(3, money);
 		menu.setItem(4, empty);
-		if(bank == null){
+		if(bank == null || bank.getType().equals(Material.AIR)){
 			bank = MenuItem.createItem(ChatColor.GOLD+"Empty Bank", ChatColor.GRAY+"No Bank Equipped.", Material.WHITE_SHULKER_BOX);
 		}
 		menu.setItem(5, bank);

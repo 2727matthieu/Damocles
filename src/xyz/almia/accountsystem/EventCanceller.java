@@ -216,7 +216,7 @@ public class EventCanceller implements Listener{
 					int level = ThreadLocalRandom.current().nextInt(enchantclass.getMaxLevel(ench));
 					if(level == 0)
 						level = 1;
-					event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), new xyz.almia.itemsystem.Rune(ench, level, ThreadLocalRandom.current().nextInt(100), ThreadLocalRandom.current().nextInt(100)).getItemStack());
+					event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), new xyz.almia.itemblueprints.Rune(ench, level, ThreadLocalRandom.current().nextInt(100), ThreadLocalRandom.current().nextInt(100)).getItemStack());
 					Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 					Message.sendCenteredMessage(player, ChatColor.BOLD + "Rune");
 					Message.sendCenteredMessage(player, ChatColor.YELLOW + "You successefuly harvest some runes.");
@@ -229,9 +229,8 @@ public class EventCanceller implements Listener{
 	
 	@EventHandler
 	public void runeCreation(PlayerInteractEntityEvent event){
-		event.setCancelled(true);
 		if(event.getRightClicked() instanceof EnderCrystal){
-			
+			event.setCancelled(true);
 			if(event.getHand().equals(EquipmentSlot.OFF_HAND))
 				return;
 			
@@ -253,7 +252,7 @@ public class EventCanceller implements Listener{
 				int level = ThreadLocalRandom.current().nextInt(enchantclass.getMaxLevel(ench) + 1);
 				if(level == 0)
 					level = 1;
-				event.getRightClicked().getWorld().dropItem(event.getRightClicked().getLocation(), new xyz.almia.itemsystem.Rune(ench, level, ThreadLocalRandom.current().nextInt(100), ThreadLocalRandom.current().nextInt(100)).getItemStack());
+				event.getRightClicked().getWorld().dropItem(event.getRightClicked().getLocation(), new xyz.almia.itemblueprints.Rune(ench, level, ThreadLocalRandom.current().nextInt(100), ThreadLocalRandom.current().nextInt(100)).getItemStack());
 				Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 				Message.sendCenteredMessage(player, ChatColor.BOLD + "Rune");
 				Message.sendCenteredMessage(player, ChatColor.YELLOW + "You successefuly harvest some runes.");

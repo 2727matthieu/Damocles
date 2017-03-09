@@ -22,9 +22,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.almia.accountsystem.Account;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.itemsystem.Armor;
+import xyz.almia.itemblueprints.Armor;
+import xyz.almia.itemblueprints.Weapon;
 import xyz.almia.itemsystem.ItemType;
-import xyz.almia.itemsystem.Weapon;
 import xyz.almia.menu.MenuItem;
 import xyz.almia.storagesystem.Treasury;
 import xyz.almia.utils.Message;
@@ -39,7 +39,7 @@ public class AnvilHandler implements Listener{
 	@EventHandler
 	public void onItemPickup(PlayerPickupItemEvent event){
 		for(Anvil anvil : anvils){
-			if(event.getItem().getItemStack().equals(anvil.getItemStack())){
+			if(anvil.getItem().equals(event.getItem())){
 				event.setCancelled(true);
 			}
 		}

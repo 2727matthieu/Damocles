@@ -1,9 +1,12 @@
 package xyz.almia.commandsystem;
 
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 public class Debug implements CommandExecutor{
@@ -14,7 +17,6 @@ public class Debug implements CommandExecutor{
 		this.plugin = plugin;
 	}
 	
-	@SuppressWarnings("unused")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(!(sender instanceof Player)){
@@ -28,7 +30,12 @@ public class Debug implements CommandExecutor{
 		
 		
 		if(cmd.getName().equalsIgnoreCase("debuging")){
-			
+			ItemStack item = new ItemStack(Material.SHEARS);
+			item.setDurability((short)3);
+			ItemMeta im = item.getItemMeta();
+			im.setUnbreakable(true);
+			item.setItemMeta(im);
+			player.getInventory().addItem(item);
 		}
 		
 		return true;

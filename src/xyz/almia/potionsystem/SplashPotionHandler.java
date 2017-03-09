@@ -72,6 +72,16 @@ public class SplashPotionHandler implements Listener{
 					if(entity instanceof LivingEntity){
 						LivingEntity living = (LivingEntity) entity;
 						switch(effect.getType()){
+						case SOUL:
+							if(entity instanceof Player){
+								try{
+									if(new Account((Player) entity).getLoadedCharacter().getSouls() != 5)
+										new Account((Player) entity).getLoadedCharacter().setSouls(new Account((Player) entity).getLoadedCharacter().getSouls()+1);
+									return;
+								}catch(Exception e) { return; }
+							}else{
+								return;
+							}
 						case HARM:
 							if(entity instanceof Player){
 								try{

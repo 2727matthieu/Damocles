@@ -413,6 +413,10 @@ public class Character {
 		return config.getInt("exp");
 	}
 	
+	public int getExpToNextLevel(){
+		return (getLevel() * 1024);
+	}
+	
 	public void addExp(int value){
 		config.set("exp", getExp()+value);
 		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
@@ -436,7 +440,55 @@ public class Character {
 	public int getAbilityPoints(){
 		return config.getInt("ap");
 	}
-				
+		
+	public void applyShowStats(){
+		int total = getShowStat(Stat.AGILITY) + getShowStat(Stat.HITPOINTS) + getShowStat(Stat.INTELLIGENCE) + getShowStat(Stat.STRENGTH);
+		setAbilityPoints(getAbilityPoints() - total);
+		int intel = getShowStat(Stat.INTELLIGENCE);
+		int agi = getShowStat(Stat.AGILITY);
+		int str = getShowStat(Stat.STRENGTH);
+		int hp = getShowStat(Stat.INTELLIGENCE);
+		setStat(Stat.INTELLIGENCE, getStat(Stat.INTELLIGENCE)+ intel);
+		setStat(Stat.AGILITY, getStat(Stat.AGILITY)+ agi);
+		setStat(Stat.STRENGTH, getStat(Stat.STRENGTH)+ str);
+		setStat(Stat.HITPOINTS, getStat(Stat.HITPOINTS)+ hp);
+		setShowStat(Stat.AGILITY, 0);
+		setShowStat(Stat.HITPOINTS, 0);
+		setShowStat(Stat.STRENGTH, 0);
+		setShowStat(Stat.INTELLIGENCE, 0);
+		return;
+	}
+	
+	public void setShowStat(Stat stat, int value){
+		config.set("stats.show."+stat.toString().toLowerCase(), value);
+		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
+		return;
+	}
+	
+	
+	public int getShowStat(Stat stat){
+		return config.getInt("stats.show."+stat.toString().toLowerCase());
+	}
+	
+	
+	public void subtractShowStat(Stat stat){
+		if(getShowStat(stat) > 0){
+			setShowStat(stat, getShowStat(stat)-1);
+			return;
+		}
+		return;
+	}
+	
+	
+	public void addShowStat(Stat stat){
+		int total = getShowStat(Stat.AGILITY) + getShowStat(Stat.HITPOINTS) + getShowStat(Stat.INTELLIGENCE) + getShowStat(Stat.STRENGTH);
+		if(total < getAbilityPoints()){
+			setShowStat(stat, getShowStat(stat)+1);
+			return;
+		}
+		return;
+	}
+	
 	public void remove(){
 		new Account(player).logout();
 		config.set("username", "UNKNOWN");
@@ -508,6 +560,10 @@ public class Character {
 		config.set("stats.hitpoints", 0);
 		config.set("stats.agility", 0);
 		config.set("stats.intelligence", 0);
+		config.set("stats.show.strength", 0);
+		config.set("stats.show.hitpoints", 0);
+		config.set("stats.show.agility", 0);
+		config.set("stats.show.intelligence", 0);
 		config.set("location", LocationSerializer.locationToString(player.getLocation()));
 		config.set("status", CharacterStatus.CHOOSE_USERNAME.toString());
 		for(Slot slot : Slot.values()){
