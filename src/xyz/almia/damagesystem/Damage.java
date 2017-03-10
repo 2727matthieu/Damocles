@@ -139,7 +139,6 @@ public class Damage implements Listener{
 				loadedDamaged.setHealth(loadedDamaged.getHealth() - damage);
 				
 				//After Enchantments
-				
 				if(enchants.containsKey(Enchantment.FIRE_ASPECT)){
 					damaged.setFireTicks(damaged.getFireTicks()+(enchants.get(Enchantments.FLAME)*80));
 				}
@@ -244,9 +243,11 @@ public class Damage implements Listener{
 		Weapon mweapon = null;
 		HashMap<Enchantments, Integer> enchants = new HashMap<Enchantments, Integer>();
 		
+		
 		if(new ItemType(weapon).getType().equals(ItemTypes.WEAPON)){
 			mweapon = new Weapon(weapon);
 		}
+		
 		
 		Account damagerAccount = new Account(damager);
 		xyz.almia.accountsystem.Character loadedDamager = damagerAccount.getLoadedCharacter();
@@ -266,7 +267,7 @@ public class Damage implements Listener{
 			}else{
 				damage = 0.0 + loadedDamager.getPhysicalDamage();
 			}
-			if(mweapon.getEnchantsAndLevel().containsKey(Enchantments.SHARPENED))
+			if(enchants.containsKey(Enchantments.SHARPENED))
 				damage = applySharpness(damage, mweapon.getEnchantsAndLevel().get(Enchantments.SHARPENED));
 			
 			try{
