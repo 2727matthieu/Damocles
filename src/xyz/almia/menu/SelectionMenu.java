@@ -43,19 +43,18 @@ public class SelectionMenu implements Listener{
 	private ItemStack green = MenuItem.createClanPane(Clans.GREEN);
 	private ItemStack gold = MenuItem.createClanPane(Clans.GOLD);
 	private ItemStack colorless = MenuItem.createClanPane(Clans.COLORLESS);
-	private ItemStack exiled = MenuItem.createClanPane(Clans.EXILED);
 	
 	
 	public Inventory generateSelectionInventory(){
 		Inventory inv = Bukkit.createInventory(null, 9, "Clan Selection");
-		inv.setItem(0, colorless);
-		inv.setItem(1, white);
-		inv.setItem(2, black);
-		inv.setItem(3, gold);
-		inv.setItem(4, green);
-		inv.setItem(5, red);
-		inv.setItem(6, blue);
-		inv.setItem(7, exiled);
+		inv.setItem(0, emp);
+		inv.setItem(1, colorless);
+		inv.setItem(2, white);
+		inv.setItem(3, black);
+		inv.setItem(4, gold);
+		inv.setItem(5, green);
+		inv.setItem(6, red);
+		inv.setItem(7, blue);
 		inv.setItem(8, emp);
 		return inv;
 	}

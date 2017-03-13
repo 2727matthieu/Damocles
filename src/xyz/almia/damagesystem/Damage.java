@@ -132,7 +132,7 @@ public class Damage implements Listener{
 				}else{
 					damage = 0.0 + loadedDamager.getPhysicalDamage();
 				}
-				if(mweapon.getEnchantsAndLevel().containsKey(Enchantments.SHARPENED))
+				if(enchants.containsKey(Enchantments.SHARPENED))
 					damage = applySharpness(damage, mweapon.getEnchantsAndLevel().get(Enchantments.SHARPENED));
 				damage = applyArmor(damage, getArmorValue(damaged));
 				damage = applyProtection(damage, getEPC(damaged));

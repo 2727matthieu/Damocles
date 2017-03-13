@@ -50,6 +50,7 @@ public class EventCanceller implements Listener{
 	@EventHandler
 	public void onRightClickEnder(PlayerInteractEvent event){
 		Player player = event.getPlayer();
+		
 		if(event.getClickedBlock() != null){
 			if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 				if(event.getClickedBlock().getType().equals(Material.ENDER_CHEST)){

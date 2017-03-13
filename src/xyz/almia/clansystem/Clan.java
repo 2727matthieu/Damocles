@@ -2,10 +2,9 @@ package xyz.almia.clansystem;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
-
+import xyz.almia.accountsystem.Character;
 import xyz.almia.accountsystem.PlayerSetup;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.configclasses.ConfigManager;
@@ -34,31 +33,39 @@ public class Clan {
 		ConfigManager.save(clan.toString()+".yml", "clans");
 	}
 	
-	public List<xyz.almia.accountsystem.Character> getClansmen(){
-		List<xyz.almia.accountsystem.Character> characters = new ArrayList<xyz.almia.accountsystem.Character>();
+	public List<Character> getClansmen(){
+		if(clan.equals(Clans.UNCLANNED))
+			return new ArrayList<Character>();
+		
+		List<xyz.almia.accountsystem.Character> characters = new ArrayList<Character>();
 		for(String name : config.getStringList("clansmen")){
 			characters.add(new PlayerSetup().getCharacterFromUsername(name));
 		}
 		return characters;
 	}
 	
-	public void addClansmen(xyz.almia.accountsystem.Character chara){
+	public void addClansmen(Character chara){
+		if(clan.equals(Clans.UNCLANNED))
+			return;
+		
 		List<String> clansmen = config.getStringList("clansmen");
 		clansmen.add(chara.getUsername());
 		config.set("clansmen", clansmen);
 		ConfigManager.save(clan.toString()+".yml", "clans");
+		return;
 	}
 	
-	public void removeClansmen(xyz.almia.accountsystem.Character chara){
+	public void removeClansmen(Character chara){
+		if(clan.equals(Clans.UNCLANNED))
+			return;
 		List<String> clansmen = config.getStringList("clansmen");
 		clansmen.remove(chara.getUsername());
 		config.set("clansmen", clansmen);
 		ConfigManager.save(clan.toString()+".yml", "clans");
+		return;
 	}
 	
-	public xyz.almia.accountsystem.Character getKing(){
-		if(clan.equals(Clans.EXILED))
-			return null;
+	public Character getKing(){
 		if(clan.equals(Clans.UNCLANNED))
 			return null;
 		try{
@@ -72,9 +79,7 @@ public class Clan {
 		return config.getString("king");
 	}
 	
-	public void setKing(xyz.almia.accountsystem.Character chara){
-		if(clan.equals(Clans.EXILED))
-			return;
+	public void setKing(Character chara){
 		if(clan.equals(Clans.UNCLANNED))
 			return;
 		
@@ -90,6 +95,9 @@ public class Clan {
 	}
 	
 	public boolean isThereAKing(){
+		if(clan.equals(Clans.UNCLANNED))
+			return false;
+		
 		if(config.getString("king").equalsIgnoreCase("unknown")){
 			return false;
 		}else{
@@ -97,36 +105,38 @@ public class Clan {
 		}
 	}
 	
-	public List<xyz.almia.accountsystem.Character> getRejected(){
-		if(clan.equals(Clans.EXILED))
-			return null;
+	public List<Character> getRejected(){
 		if(clan.equals(Clans.UNCLANNED))
-			return null;
+			return new ArrayList<Character>();
 		
-		List<xyz.almia.accountsystem.Character> characters = new ArrayList<xyz.almia.accountsystem.Character>();
+		List<xyz.almia.accountsystem.Character> characters = new ArrayList<Character>();
 		for(String name : config.getStringList("rejected")){
 			characters.add(new PlayerSetup().getCharacterFromUsername(name));
 		}
 		return characters;
 	}
 	
-	public void addRejected(xyz.almia.accountsystem.Character chara){
+	public void addRejected(Character chara){
+		if(clan.equals(Clans.UNCLANNED))
+			return;
 		List<String> rejected = config.getStringList("rejected");
 		rejected.add(chara.getUsername());
 		config.set("rejected", rejected);
 		ConfigManager.save(clan.toString()+".yml", "clans");
+		return;
 	}
 	
-	public void removeRejected(xyz.almia.accountsystem.Character chara){
+	public void removeRejected(Character chara){
+		if(clan.equals(Clans.UNCLANNED))
+			return;
 		List<String> rejected = config.getStringList("rejected");
 		rejected.remove(chara.getUsername());
 		config.set("rejected", rejected);
 		ConfigManager.save(clan.toString()+".yml", "clans");
+		return;
 	}
 	
-	public xyz.almia.accountsystem.Character getProposed(){
-		if(clan.equals(Clans.EXILED))
-			return null;
+	public Character getProposed(){
 		if(clan.equals(Clans.UNCLANNED))
 			return null;
 		try{
@@ -136,9 +146,7 @@ public class Clan {
 		}
 	}
 	
-	public void setProposed(xyz.almia.accountsystem.Character chara){
-		if(clan.equals(Clans.EXILED))
-			return;
+	public void setProposed(Character chara){
 		if(clan.equals(Clans.UNCLANNED))
 			return;
 		
@@ -153,6 +161,8 @@ public class Clan {
 	}
 	
 	public boolean isSomeoneProposed(){
+		if(clan.equals(Clans.UNCLANNED))
+			return false;
 		if(config.getString("proposed").equalsIgnoreCase("unknown")){
 			return false;
 		}else{

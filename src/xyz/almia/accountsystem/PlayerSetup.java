@@ -14,11 +14,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
-
 import net.blitzcube.mlapi.MultiLineAPI;
 import xyz.almia.cardinalsystem.Cardinal;
-import xyz.almia.clansystem.Clan;
-import xyz.almia.clansystem.Clans;
 import xyz.almia.utils.Message;
 import xyz.almia.utils.Swears;
 
@@ -28,63 +25,6 @@ public class PlayerSetup implements Listener{
 	Plugin plugin = Cardinal.getPlugin();
 	
 	public PlayerSetup(){}
-	
-	public xyz.almia.clansystem.Rank getClanRank(Character character){
-		Clans clan = getClan(character);
-		Clan clanProfile = new Clan(clan);
-		
-		if(clan.equals(Clans.UNCLANNED))
-			return xyz.almia.clansystem.Rank.NONE;
-		
-		if(clan.equals(Clans.EXILED))
-			return xyz.almia.clansystem.Rank.CLANSMEN;
-		
-		if(clanProfile.getKing() != null){
-			if(clanProfile.getKing().getUsername().equals(character.getUsername())){
-				return xyz.almia.clansystem.Rank.KING;
-			}
-		}
-		
-		for(Character chara : clanProfile.getClansmen()){
-			if(chara.getUsername().equals(character.getUsername())){
-				return xyz.almia.clansystem.Rank.CLANSMEN;
-			}
-		}
-		
-		return xyz.almia.clansystem.Rank.NONE;
-		
-	}
-	
-	public Clans getClan(Character character){
-		for(Clans clan : Clans.values()){
-			Clan clanProfile = new Clan(clan);
-			
-			
-			for(Character chara : clanProfile.getClansmen()){
-				if(chara.getUsername().equals(character.getUsername())){
-					return clan;
-				}
-			}
-			
-			if(!(clan.equals(Clans.UNCLANNED)) || !(clan.equals(Clans.EXILED))){
-				try{
-					if(clanProfile.getKing().getUsername().equals(character.getUsername())){
-						return clan;
-					}
-				}catch(Exception e) {}
-			}
-			
-		}
-		return Clans.UNCLANNED;
-	}
-	
-	public boolean isInClan(Character character){
-		if(getClan(character).equals(Clans.UNCLANNED)){
-			return false;
-		}else{
-			return true;
-		}
-	}
 	
 	public List<Character> getOnlineCharacters(){
 		List<Character> onlinePlayers = new ArrayList<Character>();
@@ -115,7 +55,7 @@ public class PlayerSetup implements Listener{
 	public Character getCharacterFromUsername(String username){
 		if(username.equalsIgnoreCase("unknown"))
 			return null;
-		List<Character> characters = getOnlineCharacters();
+		List<Character> characters = new Players().getCharacters();
 		for(Character character : characters){
 			if(character.getUsername().equalsIgnoreCase(username)){
 				return character;

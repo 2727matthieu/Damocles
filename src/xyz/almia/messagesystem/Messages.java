@@ -32,7 +32,7 @@ public class Messages {
 		Message.sendCenteredMessage(player, ChatColor.BOLD + "Experience Summary");
 		Message.sendCenteredMessage(player, ChatColor.YELLOW + "You are now level " + ChatColor.GOLD + lvl + ChatColor.YELLOW + "!");
 		Message.sendCenteredMessage(player, ChatColor.YELLOW + "You need "+ ChatColor.GOLD + (nextlvl * 1028) + " xp" + ChatColor.YELLOW + " to reach level " + ChatColor.GOLD + nextlvl);
-		Message.sendCenteredMessage(player, ChatColor.YELLOW +"You have "+ChatColor.GOLD+"3" +ChatColor.YELLOW+" available Ability Points!");
+		Message.sendCenteredMessage(player, ChatColor.YELLOW +"You have "+ChatColor.GOLD+"4" +ChatColor.YELLOW+" available Ability Points!");
 		Message.sendCenteredMessage(player, " ");
 		Message.sendCenteredMessage(player, ChatColor.BOLD + "No active xp boost!");
 		Message.sendCenteredMessage(player, ChatColor.GREEN + "-----------------------------------------------------");

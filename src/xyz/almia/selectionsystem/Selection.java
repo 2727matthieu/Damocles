@@ -6,11 +6,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
+import xyz.almia.accountsystem.Character;
 import mkremins.fanciful.FancyMessage;
 import xyz.almia.accountsystem.Account;
 import xyz.almia.accountsystem.AccountStatus;
-import xyz.almia.accountsystem.PlayerSetup;
 import xyz.almia.cardinalsystem.Cardinal;
 import xyz.almia.clansystem.Clan;
 import xyz.almia.clansystem.Clans;
@@ -27,25 +26,27 @@ public class Selection implements Listener{
 				for(Player player : Bukkit.getServer().getOnlinePlayers()){
 					Account account = new Account(player);					
 					if(account.getStatus().equals(AccountStatus.LOGGEDIN)){
+						Character character = account.getLoadedCharacter();
 						
-						if(account.getLoadedCharacter().getLevel() >= 5){
+						if(character.getLevel() >= 5){
+							Clans clan = character.getClan();
+							Clan clanProfile = new Clan(clan);
 							
-							if(new PlayerSetup().isInClan(account.getLoadedCharacter())){
-								
-								Clans clan = new PlayerSetup().getClan(account.getLoadedCharacter());
-								
-								Clan clanProfile = new Clan(clan);
-								
-								xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
-								
-								if(!(clan.equals(Clans.EXILED))){
-								
-								if(!(clanProfile.isThereAKing())){
-									
-									if(!(clanProfile.isSomeoneProposed())){
+							if(clan.equals(Clans.UNCLANNED)){
+								return;
+							}else{
+								if(clanProfile.getKing() == null){
+									if(clanProfile.getProposed() == null){
 										
-										if(!(clanProfile.getRejected().contains(character))){
-											
+										for(Character ch : clanProfile.getRejected()){
+											if(ch.getUsername().equals(character.getUsername())){
+												return;
+											}
+										}
+										
+										if(clanProfile.getRejected().contains(character)){
+											return;
+										}else{
 											clanProfile.setProposed(character);
 											
 	        								if(clan.equals(Clans.COLORLESS)){
@@ -75,18 +76,14 @@ public class Selection implements Listener{
 	        									.send(player);
 	        									Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 	        								}
-											
 										}
-										
 									}
-									
 								}
-								
-							}
-								
 							}
 							
+							
 						}
+						
 						
 					}
 					

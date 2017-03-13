@@ -31,7 +31,7 @@ public class Clan implements CommandExecutor{
 		Player player = (Player)sender;
 		Account account = new Account(player);
 		xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
-		Clans whatClan = playersetup.getClan(character);
+		Clans whatClan = character.getClan();
 		xyz.almia.clansystem.Clan clan = new xyz.almia.clansystem.Clan(whatClan);
 		if(cmd.getName().equalsIgnoreCase("clan")){
 			
@@ -62,32 +62,35 @@ public class Clan implements CommandExecutor{
 		      }
 		      
 		      if(args[0].equalsIgnoreCase("leave")){
-		    	  if(playersetup.isInClan(character)){
+		    	  if(character.isInClan()){
 		    		  
-		    		  if(clan.getProposed().getUsername().equalsIgnoreCase(character.getUsername()))
-		    			  clan.setProposed(null);
+		    		  if(clan.getProposed() != null){
+			    		  if(clan.getProposed().getUsername().equalsIgnoreCase(character.getUsername()))
+			    			  clan.setProposed(null);
+		    		  }
 		    		  
-		    		  xyz.almia.clansystem.Rank rank = playersetup.getClanRank(character);
+		    		  xyz.almia.clansystem.Rank rank = character.getClanRank();
 		    		  switch(rank){
-					case CLANSMEN:
-						clan.removeClansmen(character);
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have left "+whatClan.toString()+" Clan!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    			return true;
-					case KING:
-						clan.setKing(null);
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
-						Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have left "+whatClan.toString()+" Clan!");
-						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
-		    			  return true;
+		    		  		case CLANSMEN:
+							clan.removeClansmen(character);
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
+							Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have left "+whatClan.toString()+" Clan!");
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+							return true;
+						case KING:
+							clan.setKing(null);
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+							Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
+							Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have left "+whatClan.toString()+" Clan!");
+							Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
+							return true;
 					case NONE:
 						break;
 					default:
 						break;
 		    		  }
+		    		  return true;
 		    	  }else{
 						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 						Message.sendCenteredMessage(player, ChatColor.BOLD + "Clan Info");
@@ -152,7 +155,7 @@ public class Clan implements CommandExecutor{
 		      if(args[0].equalsIgnoreCase("choose")){
 		    	  
 		    	  if(character.getLevel() >= 5){
-			    	  if(!(playersetup.isInClan(character))){
+			    	  if(!(character.isInClan())){
 			    		  player.openInventory(SelectionMenu.getInstance().generateSelectionInventory());
 			    		  return true;
 			    	  }else{
@@ -175,9 +178,6 @@ public class Clan implements CommandExecutor{
 		      if(args[0].equalsIgnoreCase("accept")){
 		    	  
 		    	  if(whatClan.equals(Clans.UNCLANNED))
-		    		  return true;
-		    	  
-		    	  if(whatClan.equals(Clans.EXILED))
 		    		  return true;
 		    	  
 		    	  if(clan.getProposed().getUsername().equalsIgnoreCase(character.getUsername())){
@@ -209,13 +209,11 @@ public class Clan implements CommandExecutor{
 		    	  if(whatClan.equals(Clans.UNCLANNED))
 		    		  return true;
 		    	  
-		    	  if(whatClan.equals(Clans.EXILED))
-		    		  return true;
-		    	  
 		    	  if(clan.getProposed().getUsername().equalsIgnoreCase(character.getUsername())){
 		    		  if(clan.getKing() == null){
 		    			  clan.addRejected(character);
-							if(whatClan.equals(Clans.COLORLESS)){
+		    			  clan.setProposed(null);
+		    			  if(whatClan.equals(Clans.COLORLESS)){
 								Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 								Message.sendCenteredMessage(player, ChatColor.BOLD + "Game Info");
 								Message.sendCenteredMessage(player, ChatColor.YELLOW+"You have rejected becoming the " + ChatColor.DARK_GRAY + whatClan.toString().toLowerCase().substring(0, 1).toUpperCase() + whatClan.toString().toLowerCase().substring(1) + ChatColor.YELLOW + " King!");
@@ -298,7 +296,7 @@ public class Clan implements CommandExecutor{
 		     
 		      if(args[0].equalsIgnoreCase("join")){
 		    	  if(args.length == 2){
-			    	  if(!(playersetup.isInClan(character))){
+			    	  if(!(character.isInClan())){
 			    		  try{
 			    			  Clans clanchoice = Clans.valueOf(args[1].toUpperCase());
 			    			  xyz.almia.clansystem.Clan theClan = new xyz.almia.clansystem.Clan(clanchoice);

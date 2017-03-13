@@ -14,6 +14,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import xyz.almia.cardinalsystem.Cardinal;
+import xyz.almia.clansystem.Clan;
+import xyz.almia.clansystem.Clans;
 import xyz.almia.configclasses.ConfigManager;
 import xyz.almia.messagesystem.Messages;
 import xyz.almia.storagesystem.Equips;
@@ -29,6 +31,7 @@ public class Character {
 	public int characterID = 0;
 	FileConfiguration config;
 	Players players = new Players();
+	PlayerSetup playersetup = new PlayerSetup();
 	
 	public Character(Player player, int characterID){
 		this.player = player;
@@ -40,6 +43,7 @@ public class Character {
 	
 	public Character(UUID uuid, int characterID){
 		this.uuid = uuid;
+		this.player = Bukkit.getPlayer(uuid);
 		this.characterID = characterID;
 		ConfigManager.load(uuid+";char;"+characterID+".yml", "players/"+uuid);
 		this.config = ConfigManager.get(uuid+";char;"+characterID+".yml");
@@ -47,6 +51,60 @@ public class Character {
 	
 	public Player getPlayer(){
 		return this.player;
+	}
+	
+	public xyz.almia.clansystem.Rank getClanRank(){
+		Clans clan = getClan();
+		Clan clanProfile = new Clan(clan);
+		
+		if(clan.equals(Clans.UNCLANNED))
+			return xyz.almia.clansystem.Rank.NONE;
+		
+		if(clanProfile.getKing() != null){
+			if(clanProfile.getKing().getUsername().equals(getUsername())){
+				return xyz.almia.clansystem.Rank.KING;
+			}
+		}
+		
+		for(Character chara : clanProfile.getClansmen()){
+			if(chara.getUsername().equals(getUsername())){
+				return xyz.almia.clansystem.Rank.CLANSMEN;
+			}
+		}
+		
+		return xyz.almia.clansystem.Rank.NONE;
+		
+	}
+	
+	public Clans getClan(){
+		for(Clans clan : Clans.values()){
+			
+			if(!(clan.equals(Clans.UNCLANNED))){
+				Clan clanProfile = new Clan(clan);
+				
+				for(Character chara : clanProfile.getClansmen()){
+					if(chara.getUsername().equals(getUsername())){
+						return clan;
+					}
+				}
+				
+				try{
+					if(clanProfile.getKingName().equals(getUsername())){
+						return clan;
+					}
+				}catch(Exception e) {}
+			}
+			
+		}
+		return Clans.UNCLANNED;
+	}
+	
+	public boolean isInClan(){
+		if(getClan().equals(Clans.UNCLANNED)){
+			return false;
+		}else{
+			return true;
+		}
 	}
 	
 	@Deprecated
@@ -487,6 +545,23 @@ public class Character {
 	}
 	
 	public void remove(){
+		
+		Clans whatClan = getClan();
+		xyz.almia.clansystem.Clan clan = new xyz.almia.clansystem.Clan(whatClan);
+		if(isInClan()){
+  		  
+  		  if(clan.getProposed().getUsername().equalsIgnoreCase(getUsername()))
+  			  clan.setProposed(null);
+  		  
+  		  xyz.almia.clansystem.Rank rank = getClanRank();
+  		  if(rank.equals(xyz.almia.clansystem.Rank.CLANSMEN)){
+				clan.removeClansmen(this);
+  		  }
+  		  if(rank.equals(xyz.almia.clansystem.Rank.KING)){
+				clan.setKing(null);
+  		  }
+  	  }
+		
 		new Account(player).logout();
 		config.set("username", "UNKNOWN");
 		config.set("rank", "PLAYER");
@@ -519,7 +594,7 @@ public class Character {
 		config.set("stats.hitpoints", 0);
 		config.set("stats.agility", 0);
 		config.set("stats.intelligence", 0);
-		config.set("location", LocationSerializer.locationToString(player.getLocation()));
+		config.set("location", LocationSerializer.locationToString(player.getLocation().getWorld().getSpawnLocation()));
 		config.set("status", CharacterStatus.CHOOSE_USERNAME.toString());
 		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
 		new Treasury(this).setupBankAccount();

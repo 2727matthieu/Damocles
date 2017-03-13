@@ -77,8 +77,11 @@ public class Stats implements CommandExecutor{
 			)
 				.then("\nRank: "+ StringUtils.capitalize(character.getRank().toString().toLowerCase()))
 				.color(ChatColor.GRAY)
-				.then("\nClan: "+ StringUtils.capitalize(new PlayerSetup().getClan(character).toString()))
+				.then("\nClan: "+ StringUtils.capitalize(character.getClan().toString()))
 				.color(ChatColor.GRAY)
+				.tooltip(ChatColor.GRAY+"Clan: "+character.getClan().toString()+"\n"
+				+ChatColor.GRAY+"Rank: "+ character.getClanRank().toString()+"\n"
+				+ChatColor.GRAY+"Clansmen: "+ new xyz.almia.clansystem.Clan(character.getClan()).getClansmen().size())
 				.then("\n")
 				.then("\nLevel: "+ character.getLevel())
 				.color(ChatColor.DARK_GRAY)

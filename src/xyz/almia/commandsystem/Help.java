@@ -27,6 +27,7 @@ public class Help implements CommandExecutor{
 		Account account = new Account(player);
 		xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
 		if(cmd.getName().equalsIgnoreCase("help")){
+			
 			if(args.length == 1){
 				if(character.getRank().equals(Rank.GAMEMASTER)){
 					if(args[0].equals("admin")){

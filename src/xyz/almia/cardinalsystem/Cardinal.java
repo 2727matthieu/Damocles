@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -51,6 +52,8 @@ import xyz.almia.professionssystem.Mining;
 import xyz.almia.professionssystem.Smelting;
 import xyz.almia.soulsystem.SoulSystem;
 import xyz.almia.storagesystem.EquipHandler;
+import xyz.almia.spellsystem.Target;
+import xyz.almia.spellsystem.Target.TargetOptions;
 
 public class Cardinal extends JavaPlugin{
 	
@@ -76,10 +79,10 @@ public class Cardinal extends JavaPlugin{
 						if(account.getStatus().equals(AccountStatus.LOGGEDIN)){
 							
 							String name = "";
-							if(task.getTarget(player, 30) == null){
+							if(new Target(TargetOptions.ENTITY, 30, player).getTarget() == null){
 								name = ChatColor.GRAY+"No Target";
 							}else{
-								name = task.getName(task.getTarget(player, 30));
+								name = task.getName((Entity)new Target(TargetOptions.ENTITY, 30, player).getTarget());
 							}
 							
 							xyz.almia.accountsystem.Character character = account.getLoadedCharacter();
