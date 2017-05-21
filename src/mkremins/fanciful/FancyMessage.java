@@ -47,6 +47,7 @@ import static mkremins.fanciful.TextualComponent.rawText;
  * optionally initializing it with text. Further property-setting method calls will affect that editing component.
  * </p>
  */
+@SuppressWarnings("deprecation")
 public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<MessagePart>, ConfigurationSerializable {
 
 	static {

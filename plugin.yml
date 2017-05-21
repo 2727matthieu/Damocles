@@ -1,10 +1,12 @@
 name: SevenKings
-version: 1.5.0
+version: 1.9.0
 author: Kowagatte
-main: xyz.almia.cardinalsystem.Cardinal
+main: ca.damocles.cardinalsystem.Cardinal
 commands:
   cardinal:
     description: shows custom weapon menu.
+  spell:
+    description: generates spell related items.
   debuging:
     description: should not be used, will be wiped every update. Used to test specific functions during development.
   balance:
@@ -29,11 +31,13 @@ commands:
   clan:
     description: clan main command.
   stats:
-    description: player stats.
+    description: displays a book menu of the player stats.
   help:
     description: command help.
   logout:
     description: Logs the user out of the character he is currently using.
+  cast:
+    description: Casts spells.
   rune:
     description: Use command for help options.
     aliases: [runes, enchant, enchants]
