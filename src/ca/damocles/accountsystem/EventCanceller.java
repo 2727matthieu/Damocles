@@ -16,22 +16,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-
 import ca.damocles.arrowsystem.CustomArrow;
 import ca.damocles.cardinalsystem.Cardinal;
 import ca.damocles.enchantsystem.Enchantments;
@@ -47,6 +48,16 @@ public class EventCanceller implements Listener{
 	Plugin plugin = Cardinal.getPlugin();
 	ca.damocles.enchantsystem.Enchantment enchantclass = new ca.damocles.enchantsystem.Enchantment();
 	Rune rune = new Rune();
+	
+	@EventHandler
+	public void onMobSpawnEgg(CreatureSpawnEvent event){
+		if(event.getSpawnReason() == SpawnReason.SPAWNER_EGG){
+			if(event.getEntity() instanceof Creature){
+				Creature creature = (Creature) event.getEntity();
+				creature.setAI(false);
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onRightClickEnder(PlayerInteractEvent event){
@@ -280,14 +291,16 @@ public class EventCanceller implements Listener{
 	}
 	
 	@EventHandler
-	public void pickupItemEvent(PlayerPickupItemEvent event){
+	public void pickupItemEvent(EntityPickupItemEvent event){
 		if(event.getItem().getItemStack().getType().equals(Material.EMERALD)){
 			if(event.getItem().getItemStack().getItemMeta().hasDisplayName()){
 				if(event.getItem().getItemStack().getItemMeta().getDisplayName().contains("$")){
-					String name = event.getItem().getItemStack().getItemMeta().getDisplayName();
-					name = name.replace("$", "");
-					new Treasury(new Account(event.getPlayer()).getLoadedCharacter()).deposit(Integer.valueOf(name));
-					event.getPlayer().sendMessage(ChatColor.YELLOW+"You have picked up $"+ Integer.valueOf(name)+" Dollars!");
+					if(event.getEntity() instanceof Player){
+						String name = event.getItem().getItemStack().getItemMeta().getDisplayName();
+						name = name.replace("$", "");
+						new Treasury(new Account((Player)event.getEntity()).getLoadedCharacter()).deposit(Integer.valueOf(name));
+						((Player)event.getEntity()).sendMessage(ChatColor.YELLOW+"You have picked up $"+ Integer.valueOf(name)+" Dollars!");
+					}
 		            event.setCancelled(true);
 		            event.getItem().remove();
 				}

@@ -11,6 +11,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,7 +24,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-
+import ca.damocles.accountsystem.Character;
 import ca.damocles.accountsystem.Account;
 import ca.damocles.accountsystem.AccountStatus;
 import ca.damocles.cardinalsystem.Cardinal;
@@ -43,6 +44,14 @@ public class Damage implements Listener{
 		return damage + (1 + ( (level - 1) * (2 * (1 / 4) ) ) );
 	}
 	
+	public double getMonsterArmorValue(Entity entity){
+		if(entity instanceof LivingEntity){
+			LivingEntity living = (LivingEntity)entity;
+			return living.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue();
+		}
+		return 0;
+	}
+	
 	public double getArmorValue(Player player){
 		return player.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue();
 	}
@@ -51,8 +60,63 @@ public class Damage implements Listener{
 		return damage * ( 1 - Math.min( 20, Math.max( armor / 5, armor - damage / ( 2 + 0 / 4 ) ) ) / 25 );
 	}
 	
+	public int getMonsterEPC(Entity entity) {
+		Armor helm = null;
+		Armor chest = null;
+		Armor legs = null;
+		Armor boots = null;
+
+		if (entity instanceof LivingEntity) {
+			LivingEntity livingentity = (LivingEntity) entity;
+
+			if (livingentity.getEquipment().getHelmet() != null)
+				helm = new Armor(livingentity.getEquipment().getHelmet());
+			if (livingentity.getEquipment().getChestplate() != null)
+				chest = new Armor(livingentity.getEquipment().getChestplate());
+			if (livingentity.getEquipment().getLeggings() != null)
+				legs = new Armor(livingentity.getEquipment().getLeggings());
+			if (livingentity.getEquipment().getBoots() != null)
+				boots = new Armor(livingentity.getEquipment().getBoots());
+			int helmEPF = 0;
+			int chestEPF = 0;
+			int legEPF = 0;
+			int bootsEPF = 0;
+			if (helm != null) {
+				if (helm.getEnchantsAndLevel() != null) {
+					if (helm.getEnchantsAndLevel().containsKey(Enchantments.PROTECTION)) {
+						helmEPF = helm.getEnchantsAndLevel().get(Enchantments.PROTECTION);
+					}
+				}
+			}
+			if (chest != null) {
+				if (chest.getEnchantsAndLevel() != null) {
+					if (chest.getEnchantsAndLevel().containsKey(Enchantments.PROTECTION)) {
+						chestEPF = chest.getEnchantsAndLevel().get(Enchantments.PROTECTION);
+					}
+				}
+			}
+			if (legs != null) {
+				if (legs.getEnchantsAndLevel() != null) {
+					if (legs.getEnchantsAndLevel().containsKey(Enchantments.PROTECTION)) {
+						legEPF = legs.getEnchantsAndLevel().get(Enchantments.PROTECTION);
+					}
+				}
+			}
+			if (boots != null) {
+				if (boots.getEnchantsAndLevel() != null) {
+					if (boots.getEnchantsAndLevel().containsKey(Enchantments.PROTECTION)) {
+						bootsEPF = boots.getEnchantsAndLevel().get(Enchantments.PROTECTION);
+					}
+				}
+			}
+			return helmEPF + chestEPF + legEPF + bootsEPF;
+		}
+		return 0;
+	}
+	
 	public int getEPC(Player player){
-		ca.damocles.accountsystem.Character character = new Account(player).getLoadedCharacter();
+		
+		Character character = new Account(player).getLoadedCharacter();
 		Armor helm = null;
 		Armor chest = null;
 		Armor legs = null;
@@ -345,108 +409,141 @@ public class Damage implements Listener{
 		return;
 	}
 
-	public void playerDamageEntity(Damageable damaged, Player damager, ItemStack weapon, double rawDamage, DamageType cause){
-		damaged.damage(0.1);
-		Weapon mweapon = null;
-		HashMap<Enchantments, Integer> enchants = new HashMap<Enchantments, Integer>();
-		
-		
-		if(new ItemType(weapon).getType().equals(ItemTypes.WEAPON)){
-			mweapon = new Weapon(weapon);
-		}
-		
-		
-		Account damagerAccount = new Account(damager);
-		ca.damocles.accountsystem.Character loadedDamager = damagerAccount.getLoadedCharacter();
-		
-		switch(cause){
-		case ENVIRONMENTAL:
-			break;
-		case MAGICAL:
-			break;
-		case PHYSICAL:
-			double damage = 0.0;
+	public void playerDamageEntity(LivingEntity damaged, Player damager, ItemStack weapon, double rawDamage, DamageType cause){
+		if(damaged instanceof Damageable){
+			((Damageable)damaged).damage(0.1);
+			Weapon mweapon = null;
+			HashMap<Enchantments, Integer> enchants = new HashMap<Enchantments, Integer>();
 			
-			//Damage Application
-			if(mweapon != null){
-				enchants = mweapon.getEnchantsAndLevel();
-				damage = mweapon.getDamage() + loadedDamager.getPhysicalDamage();
-			}else{
-				damage = 0.0 + loadedDamager.getPhysicalDamage();
-			}
-			if(enchants.containsKey(Enchantments.SHARPENED))
-				damage = applySharpness(damage, mweapon.getEnchantsAndLevel().get(Enchantments.SHARPENED));
-			
-			try{
-				damaged.setHealth(damaged.getHealth() - damage);
-			}catch(IllegalArgumentException e){
-				damaged.setHealth(0.0);
+			if(new ItemType(weapon).getType().equals(ItemTypes.WEAPON)){
+				mweapon = new Weapon(weapon);
 			}
 			
-			if(enchants.containsKey(Enchantment.FIRE_ASPECT)){
-				damaged.setFireTicks(damaged.getFireTicks()+(enchants.get(Enchantments.FLAME)*80));
-			}
-			/*if(enchants.containsKey(Enchantments.ASSASSIN)){
-				int chance = 0;
-				int rand = ThreadLocalRandom.current().nextInt(100);
-				int level = enchants.get(Enchantments.ASSASSIN);
-				if(level == 1){
-					chance = 12;
-				}else if(level == 2){
-					chance = 24;
-				}else if(level == 3){
-					chance = 37;
-				}
-				if((rand <= chance)){
-					damaged.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 20*5, 0));
-				}
-			}*/
-			if(enchants.containsKey(Enchantments.LIFESTEAL)){
-				int chance = 0;
-				int rand = ThreadLocalRandom.current().nextInt(100);
-				int level = enchants.get(Enchantments.LIFESTEAL);
-				if(level == 1){
-					chance = 8;
-				}else if(level == 2){
-					chance = 13;
-				}else if(level == 3){
-					chance = 18;
-				}
-				if((rand <= chance)){
-					damaged.getWorld().spawnParticle(Particle.CRIT_MAGIC, damaged.getLocation(), 20);
-					loadedDamager.setHealth(loadedDamager.getHealth()+(damage*.35));
-				}
-			}
+			Account damagerAccount = new Account(damager);
+			Character loadedDamager = damagerAccount.getLoadedCharacter();
 			
-			if(enchants.containsKey(Enchantments.SWIPE)){
-				int chance = 0;
-				int rand = ThreadLocalRandom.current().nextInt(100);
-				int level = enchants.get(Enchantments.SWIPE);
-				if(level == 1){
-					chance = 12;
-				}else if(level == 2){
-					chance = 18;
-				}else if(level == 3){
-					chance = 24;
-				}else if(level == 4){
-					chance = 30;
-				}else if(level == 5){
-					chance = 36;
-				}
-				if((rand <= chance)){
-					new BukkitRunnable(){
-						@Override
-						public void run() {
-							playerDamagePlayer(damager, damager, weapon, 0.0, cause);
+			switch(cause){
+				case MAGICAL:
+					double magicdamage = rawDamage;
+					magicdamage = applyProtection(magicdamage, getMonsterEPC(damaged));
+					damaged.setHealth(damaged.getHealth() - magicdamage);
+					return;
+				case PHYSICAL:
+					
+					double damage = 0.0;
+					
+					//Damage Application
+					if(mweapon != null){
+						enchants = mweapon.getEnchantsAndLevel();
+						damage = mweapon.getDamage() + loadedDamager.getPhysicalDamage();
+					}else{
+						damage = 0.0 + loadedDamager.getPhysicalDamage();
+					}
+					if(enchants.containsKey(Enchantments.SHARPENED))
+						damage = applySharpness(damage, mweapon.getEnchantsAndLevel().get(Enchantments.SHARPENED));
+					damage = applyArmor(damage, getMonsterArmorValue(damaged));
+					damage = applyProtection(damage, getMonsterEPC(damaged));
+					damaged.setHealth(damaged.getHealth() - damage);
+					
+					//After Enchantments
+					if(enchants.containsKey(Enchantment.FIRE_ASPECT)){
+						damaged.setFireTicks(damaged.getFireTicks()+(enchants.get(Enchantments.FLAME)*80));
+					}
+					if(enchants.containsKey(Enchantments.ASSASSIN)){
+						int chance = 0;
+						int rand = ThreadLocalRandom.current().nextInt(100);
+						int level = enchants.get(Enchantments.ASSASSIN);
+						if(level == 1){
+							chance = 12;
+						}else if(level == 2){
+							chance = 24;
+						}else if(level == 3){
+							chance = 37;
 						}
-					}.runTaskLater(plugin, 20);
-				}
+						if((rand <= chance)){
+							damaged.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 20*5, 0));
+						}
+					}
+					if(enchants.containsKey(Enchantments.PETRIFY)){
+						int chance = 0;
+						int rand = ThreadLocalRandom.current().nextInt(100);
+						int level = enchants.get(Enchantments.PETRIFY);
+						if(level == 1){
+							chance = 5;
+						}else if(level == 2){
+							chance = 10;
+						}else if(level == 3){
+							chance = 15;
+						}else if(level == 4){
+							chance = 20;
+						}else if(level == 5){
+							chance = 25;
+						}
+						if((rand <= chance)){
+							
+							damaged.setAI(false);
+							new BukkitRunnable(){
+								@Override
+								public void run() {
+									damaged.setAI(true);
+								}
+							}.runTaskLater(plugin, 30);
+							
+							
+						}
+					}
+					if(enchants.containsKey(Enchantments.LIFESTEAL)){
+						int chance = 0;
+						int rand = ThreadLocalRandom.current().nextInt(100);
+						int level = enchants.get(Enchantments.LIFESTEAL);
+						if(level == 1){
+							chance = 8;
+						}else if(level == 2){
+							chance = 13;
+						}else if(level == 3){
+							chance = 18;
+						}
+						if((rand <= chance)){
+							damaged.getWorld().spawnParticle(Particle.CRIT_MAGIC, damaged.getLocation(), 20);
+							loadedDamager.setHealth(loadedDamager.getHealth()+(damage*.35));
+						}
+					}
+					
+					if(enchants.containsKey(Enchantments.SWIPE)){
+						int chance = 0;
+						int rand = ThreadLocalRandom.current().nextInt(100);
+						int level = enchants.get(Enchantments.SWIPE);
+						if(level == 1){
+							chance = 12;
+						}else if(level == 2){
+							chance = 18;
+						}else if(level == 3){
+							chance = 24;
+						}else if(level == 4){
+							chance = 30;
+						}else if(level == 5){
+							chance = 36;
+						}
+						if((rand <= chance)){
+							new BukkitRunnable(){
+								@Override
+								public void run() {
+									playerDamagePlayer(damager, damager, weapon, 0.0, cause);
+								}
+							}.runTaskLater(plugin, 20);
+						}
+					}
+					
+					return;
+				case ENVIRONMENTAL:
+					break;
+				default:
+					break;
 			}
-			return;
-		default:
-			break;
+			
 		}
 		return;
+		
 	}
 	
 	public void entityDamagePlayer(Player damaged, Entity damager, double rawDamage, DamageType cause){

@@ -12,15 +12,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import ca.damocles.accountsystem.Account;
 import ca.damocles.cardinalsystem.Cardinal;
 import ca.damocles.itemblueprints.Armor;
@@ -38,7 +37,7 @@ public class AnvilHandler implements Listener{
 	Plugin plugin = Cardinal.getPlugin();
 	
 	@EventHandler
-	public void onItemPickup(PlayerPickupItemEvent event){
+	public void onItemPickup(EntityPickupItemEvent event){
 		for(Anvil anvil : anvils){
 			if(anvil.getItem().equals(event.getItem())){
 				event.setCancelled(true);

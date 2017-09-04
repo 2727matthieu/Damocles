@@ -4,7 +4,7 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.ShulkerBox;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -13,18 +13,18 @@ import org.bukkit.potion.PotionEffect;
 
 import ca.damocles.enchantsystem.Enchantments;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_11_R1.NBTBase;
-import net.minecraft.server.v1_11_R1.NBTTagByte;
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
-import net.minecraft.server.v1_11_R1.NBTTagDouble;
-import net.minecraft.server.v1_11_R1.NBTTagInt;
-import net.minecraft.server.v1_11_R1.NBTTagList;
-import net.minecraft.server.v1_11_R1.NBTTagString;
+import net.minecraft.server.v1_12_R1.NBTBase;
+import net.minecraft.server.v1_12_R1.NBTTagByte;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagDouble;
+import net.minecraft.server.v1_12_R1.NBTTagInt;
+import net.minecraft.server.v1_12_R1.NBTTagList;
+import net.minecraft.server.v1_12_R1.NBTTagString;
 
 public class NBTHandler {
 	
 	ItemStack item;
-	net.minecraft.server.v1_11_R1.ItemStack nmsStack;
+	net.minecraft.server.v1_12_R1.ItemStack nmsStack;
 	
 	public NBTHandler(ItemStack item){
 		this.item = item;
@@ -160,7 +160,7 @@ public class NBTHandler {
 	
 	public ItemStack createPotion(){
 		ItemStack splashpotion = new ItemStack(Material.SPLASH_POTION);
-		net.minecraft.server.v1_11_R1.ItemStack nmspotion = CraftItemStack.asNMSCopy(splashpotion);
+		net.minecraft.server.v1_12_R1.ItemStack nmspotion = CraftItemStack.asNMSCopy(splashpotion);
         NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
         
         NBTTagList potioneffect = new NBTTagList();

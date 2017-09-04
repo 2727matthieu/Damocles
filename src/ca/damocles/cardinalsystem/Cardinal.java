@@ -54,6 +54,7 @@ import ca.damocles.professionssystem.Smelting;
 import ca.damocles.soulsystem.SoulSystem;
 import ca.damocles.spellsystem.SpellBookHandler;
 import ca.damocles.storagesystem.EquipHandler;
+import ca.damocles.utils.Data;
 import net.blitzcube.mlapi.MultiLineAPI;
 
 public class Cardinal extends JavaPlugin{
@@ -83,7 +84,7 @@ public class Cardinal extends JavaPlugin{
 							if(character.getTargetEntity(30) == null){
 								name = ChatColor.GRAY+"No Target";
 							}else{
-								name = task.getName(character.getTargetEntity(30));
+								name = Data.getData().getName(character.getTargetEntity(30));
 							}
 							
 							ActionBarAPI.sendActionBar(player, ChatColor.DARK_RED+"❤"+ChatColor.RED+""+Math.round(character.getHealth())+"/"+Math.round(character.getMaxHealth())+
@@ -267,6 +268,11 @@ public class Cardinal extends JavaPlugin{
 		}
 	}
 	
+	public boolean startUp(){
+		task.start();
+		return true;
+	}
+	
 	public void onEnable(){
 		plugin = this;
 		task = new Tasks(plugin);
@@ -275,14 +281,16 @@ public class Cardinal extends JavaPlugin{
 		registerEvents();
 		registerEnchants();
 		registerGlow();
-		task.runTasks();
+		if(!startUp())
+			Bukkit.shutdown();
 		updateNameTag();
 		updateActionBar();
 	}
 	
 	public void onDisable(){
-		plugin = null;
+		task.stop();
 		task.disableRegen();
+		plugin = null;
 	}
 	
 }

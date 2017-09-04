@@ -1,17 +1,11 @@
 package ca.damocles.spells;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import ca.damocles.accountsystem.Account;
 import ca.damocles.accountsystem.Character;
-import ca.damocles.cardinalsystem.Cardinal;
-import ca.damocles.damagesystem.Damage;
-import ca.damocles.damagesystem.DamageType;
 import ca.damocles.spellsystem.Spell;
-import ca.damocles.utils.ParticleUtil;
 
 public class TransfusionSpell extends Spell{
 	
@@ -70,7 +64,17 @@ public class TransfusionSpell extends Spell{
 			if (character.getMana() < getCost()) {
 				return;
 			}
-			character.setMana(character.getMana() - getCost());
+			
+			
+			
+			//Start spell.
+			
+			
+			
+			
+			
+			
+			/*character.setMana(character.getMana() - getCost());
 			if (target instanceof Creature) {
 				for (int i = 0; i < 4; i++) {
 					new BukkitRunnable() {
@@ -97,6 +101,8 @@ public class TransfusionSpell extends Spell{
 					}.runTaskLater(Cardinal.getPlugin(), i * 40);
 				}
 			}
+			
+			*/
 
 		}
 
