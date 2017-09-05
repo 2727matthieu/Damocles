@@ -61,6 +61,7 @@ public class ConfigManager {
      * @param plugin Plugin to load file from if fileName does not exist in
      * Plugins folder
      * @param fileName File to load
+     * @return 
      */
     public static void load(String fileName, String path) {
     	File file;

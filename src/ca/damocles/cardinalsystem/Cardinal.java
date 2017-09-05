@@ -1,5 +1,7 @@
 package ca.damocles.cardinalsystem;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.lang.reflect.Field;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,6 +56,8 @@ import ca.damocles.professionssystem.Smelting;
 import ca.damocles.soulsystem.SoulSystem;
 import ca.damocles.spellsystem.SpellBookHandler;
 import ca.damocles.storagesystem.EquipHandler;
+import ca.damocles.utils.ASCIIArtGenerator;
+import ca.damocles.utils.ASCIIArtGenerator.ASCIIArtFont;
 import ca.damocles.utils.Data;
 import net.blitzcube.mlapi.MultiLineAPI;
 
@@ -285,6 +289,28 @@ public class Cardinal extends JavaPlugin{
 			Bukkit.shutdown();
 		updateNameTag();
 		updateActionBar();
+		
+		ASCIIArtGenerator artGen = new ASCIIArtGenerator();
+
+		
+		try {
+	        Robot robbie = new Robot();
+	        robbie.keyPress(17); // Holds CTRL key.
+	        robbie.keyPress(76); // Holds L key.
+	        robbie.keyRelease(17); // Releases CTRL key.
+	        robbie.keyRelease(76); // Releases L key.
+	    } catch (AWTException ex) {
+	        return;
+	    }
+		
+		System.out.println("--------------------------------------------");
+		try {
+			artGen.printTextArt("Damocles", ASCIIArtGenerator.ART_SIZE_SMALL, ASCIIArtFont.ART_FONT_MONO,"@");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void onDisable(){

@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
-
 import ca.damocles.enchantsystem.Enchantments;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_12_R1.NBTBase;
