@@ -633,4 +633,10 @@ public class Damage implements Listener{
 		}
 	}
 	
+	public enum DamageType{
+		PHYSICAL,
+		MAGICAL,
+		ENVIRONMENTAL;
+	}
+	
 }

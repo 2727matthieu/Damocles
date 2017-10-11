@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
+import ca.damocles.accountsystem.Character.CharacterStatus;
 import ca.damocles.cardinalsystem.Cardinal;
 import ca.damocles.utils.Message;
 import ca.damocles.utils.Swears;

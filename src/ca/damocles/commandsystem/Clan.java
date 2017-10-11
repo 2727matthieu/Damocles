@@ -335,13 +335,13 @@ public class Clan implements CommandExecutor{
 		    	  if(args.length == 2){
 		    		  for(Clans clans : Clans.values()){
 		    			  if(!clan.equals(Clans.UNCLANNED)){
-		    				  if(args[1].equalsIgnoreCase(clan.toString().toLowerCase())){
+		    				  if(args[1].equalsIgnoreCase(clans.toString().toLowerCase())){
 		    					  player.openInventory(ClanMenu.generateClanMenu(clans));
 		  						Message.sendCenteredMessage(player, ChatColor.GREEN+"----------------------------------------------------");
 		    					  new FancyMessage("You have opened the ")
 		    					  .color(ChatColor.YELLOW)
-		    					  .then(clan.toString().toLowerCase())
-		    					  .color(ChatColor.valueOf(clan.toString().toUpperCase()))
+		    					  .then(clans.toString().toLowerCase())
+		    					  .color(ChatColor.valueOf(clans.toString().toUpperCase()))
 		    					  .then("'s Clan Menu. Click ")
 		    					  .color(ChatColor.YELLOW)
 		    					  .then("here")

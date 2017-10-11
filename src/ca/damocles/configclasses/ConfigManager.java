@@ -54,6 +54,7 @@ public class ConfigManager {
     public static boolean isFileLoaded(String fileName) {
         return configs.containsKey(fileName);
     }
+    
 
     /**
      * Loads a files configuration into Memory
@@ -63,10 +64,11 @@ public class ConfigManager {
      * @param fileName File to load
      * @return 
      */
-    public static void load(String fileName, String path) {
+    public static boolean load(String fileName, String path) {
     	File file;
     	String base;
     	String branch;
+    	boolean newFile = false;
     	
     	if(path.contains("/")){
     		String[] s = path.split("/");
@@ -84,11 +86,13 @@ public class ConfigManager {
         if (!file.exists()) {
             try {
             	file.createNewFile();
+            	newFile = true;
             } catch (Exception e) {}
         }
         if (!isFileLoaded(fileName)) {
             configs.put(fileName, YamlConfiguration.loadConfiguration(file));
         }
+        return newFile;
     }
 
     /**

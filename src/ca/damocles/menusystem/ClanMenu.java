@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -65,11 +64,10 @@ public class ClanMenu implements Listener{
 		pages.add(Bukkit.createInventory(null, 54, "Page "+page));
 		List<ca.damocles.accountsystem.Character> clansmen = clanProfile.getClansmen();
 		for(ca.damocles.accountsystem.Character members : clansmen){
-			Player player = members.getPlayer();
 		       ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short)SkullType.PLAYER.ordinal());
-		        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-		        meta.setOwner(player.getName());
-		        skull.setItemMeta(meta);
+		       SkullMeta meta = (SkullMeta) skull.getItemMeta();
+		       meta.setOwningPlayer(Bukkit.getOfflinePlayer(members.uuid));
+		         skull.setItemMeta(meta);
 			if(pages.get(pages.size()-1).firstEmpty() == -1){
 				page = page+1;
 				pages.add(Bukkit.createInventory(null, 54, "Page "+page));
@@ -77,6 +75,7 @@ public class ClanMenu implements Listener{
 			}else{
 				pages.get(pages.size()-1).addItem(skull);
 			}
+			members.getPlayer().updateInventory();
 		}
 		return pages;
 	}

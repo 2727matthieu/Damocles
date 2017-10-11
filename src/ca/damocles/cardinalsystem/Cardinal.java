@@ -1,7 +1,6 @@
 package ca.damocles.cardinalsystem;
 
-import java.awt.AWTException;
-import java.awt.Robot;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,6 +18,7 @@ import ca.damocles.accountsystem.PlayerSetup;
 import ca.damocles.accountsystem.Tasks;
 import ca.damocles.anvilsystem.AnvilHandler;
 import ca.damocles.arrowsystem.ArrowHandler;
+import ca.damocles.cardinalsystem.Options.OptionType;
 import ca.damocles.castsystem.CastingManager;
 import ca.damocles.commandsystem.Arrow;
 import ca.damocles.commandsystem.Balance;
@@ -53,7 +53,6 @@ import ca.damocles.professionssystem.Farming;
 import ca.damocles.professionssystem.Fishing;
 import ca.damocles.professionssystem.Mining;
 import ca.damocles.professionssystem.Smelting;
-import ca.damocles.soulsystem.SoulSystem;
 import ca.damocles.spellsystem.SpellBookHandler;
 import ca.damocles.storagesystem.EquipHandler;
 import ca.damocles.utils.ASCIIArtGenerator;
@@ -66,6 +65,7 @@ public class Cardinal extends JavaPlugin{
 	public BlankEnchant ench = new BlankEnchant(69);
 	public static Plugin plugin;
 	public Tasks task;
+	public Options options;
 	
 	public static Plugin getPlugin() {
 		return plugin;
@@ -128,71 +128,6 @@ public class Cardinal extends JavaPlugin{
 	}
 	
 	public void registerConfig(){
-		getConfig().addDefault("Cardinal", null);
-		getConfig().addDefault("Cardinal.professions.mining.coal", 5);
-		getConfig().addDefault("Cardinal.professions.mining.iron", 15);
-		getConfig().addDefault("Cardinal.professions.mining.gold", 35);
-		getConfig().addDefault("Cardinal.professions.mining.emerald", 40);
-		getConfig().addDefault("Cardinal.professions.mining.diamond", 25);
-		getConfig().addDefault("Cardinal.professions.mining.stone", 1);
-		getConfig().addDefault("Cardinal.professions.forging.coal", 5);
-		getConfig().addDefault("Cardinal.professions.forging.iron", 15);
-		getConfig().addDefault("Cardinal.professions.forging.gold", 35);
-		getConfig().addDefault("Cardinal.professions.forging.emerald", 40);
-		getConfig().addDefault("Cardinal.professions.forging.diamond", 25);
-		getConfig().addDefault("Cardinal.professions.cooking.bacon", 200);
-		getConfig().addDefault("Cardinal.professions.cooking.steak", 200);
-		getConfig().addDefault("Cardinal.professions.cooking.rabbit", 100);
-		getConfig().addDefault("Cardinal.professions.cooking.trout", 150);
-		getConfig().addDefault("Cardinal.professions.cooking.mutton", 100);
-		getConfig().addDefault("Cardinal.professions.cooking.potato", 50);
-		
-		getConfig().addDefault("Cardinal.professions.enchanting.sword", 200);
-		getConfig().addDefault("Cardinal.professions.enchanting.tool", 125);
-		getConfig().addDefault("Cardinal.professions.enchanting.rod", 50);
-		getConfig().addDefault("Cardinal.professions.enchanting.bow", 150);
-		getConfig().addDefault("Cardinal.professions.enchanting.helmet", 200);
-		getConfig().addDefault("Cardinal.professions.enchanting.chestplate", 300);
-		getConfig().addDefault("Cardinal.professions.enchanting.boots", 175);
-		getConfig().addDefault("Cardinal.professions.enchanting.leggings", 300);
-		
-		getConfig().addDefault("Cardinal.professions.farming.sugarcane", 50);
-		getConfig().addDefault("Cardinal.professions.farming.wheat", 50);
-		getConfig().addDefault("Cardinal.professions.farming.carrot", 25);
-		getConfig().addDefault("Cardinal.professions.farming.potato", 25);
-		getConfig().addDefault("Cardinal.professions.farming.pumpkin", 50);
-		getConfig().addDefault("Cardinal.professions.farming.melon", 75);
-		
-		getConfig().addDefault("Cardinal.enchant.ZOMBIE", 120);
-		getConfig().addDefault("Cardinal.enchant.CAVE_SPIDER", 56);
-		getConfig().addDefault("Cardinal.enchant.MUSHROOM_COW", 30);
-		getConfig().addDefault("Cardinal.enchant.ENDERMAN", 140);
-		getConfig().addDefault("Cardinal.enchant.BLAZE", 80);
-		getConfig().addDefault("Cardinal.enchant.CREEPER", 110);
-		getConfig().addDefault("Cardinal.enchant.ENDERMITE", 30);
-		getConfig().addDefault("Cardinal.enchant.GHAST", 60);
-		getConfig().addDefault("Cardinal.enchant.GIANT", 140);
-		getConfig().addDefault("Cardinal.enchant.GUARDIAN", 72);
-		getConfig().addDefault("Cardinal.enchant.IRON_GOLEM", 140);
-		getConfig().addDefault("Cardinal.enchant.MAGMA_CUBE", 74);
-		getConfig().addDefault("Cardinal.enchant.PIG_ZOMBIE", 110);
-		getConfig().addDefault("Cardinal.enchant.SILVERFISH", 48);
-		getConfig().addDefault("Cardinal.enchant.SKELETON", 120);
-		getConfig().addDefault("Cardinal.enchant.SLIME", 45);
-		getConfig().addDefault("Cardinal.enchant.SPIDER", 100);
-		getConfig().addDefault("Cardinal.enchant.SQUID", 60);
-		getConfig().addDefault("Cardinal.enchant.WITCH", 85);
-		getConfig().addDefault("Cardinal.enchant.PIG", 20);
-		getConfig().addDefault("Cardinal.enchant.COW", 20);
-		getConfig().addDefault("Cardinal.enchant.CHICKEN", 17);
-		getConfig().addDefault("Cardinal.enchant.BAT", 17);
-		getConfig().addDefault("Cardinal.enchant.HORSE", 43);
-		getConfig().addDefault("Cardinal.enchant.PLAYER", 70);
-		getConfig().addDefault("Cardinal.enchant.SHEEP", 20);
-		getConfig().addDefault("Cardinal.enchant.RABBIT", 17);
-		
-		getConfig().addDefault("Cardinal.Anvil.rate", 3);
-		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
@@ -211,7 +146,6 @@ public class Cardinal extends JavaPlugin{
 		Bukkit.getPluginManager().registerEvents(new Fishing(), this);
 		Bukkit.getPluginManager().registerEvents(new Farming(), this);
 		Bukkit.getPluginManager().registerEvents(new Damage(), this);
-		Bukkit.getPluginManager().registerEvents(new SoulSystem(), this);
 		Bukkit.getPluginManager().registerEvents(new SelectionMenu(), this);
 		Bukkit.getPluginManager().registerEvents(new AnvilHandler(), this);
 		Bukkit.getPluginManager().registerEvents(new Soul(), this);
@@ -272,8 +206,14 @@ public class Cardinal extends JavaPlugin{
 		}
 	}
 	
-	public boolean startUp(){
-		task.start();
+	public boolean startUpTasks(){
+		task.getSlotChecker().runTaskTimer(plugin, 0, 1);
+		if(options.getOptionEnabled(OptionType.CLANSYSTEM))
+			task.getKingPromoter().runTaskTimer(plugin, 0, 1);
+		task.getPlayerData().runTaskTimer(plugin, 0, 1);
+		task.getPlayerStatusChecker().runTaskTimer(plugin, 0, 20);
+		if(options.getOptionEnabled(OptionType.SOULSYSTEM))
+			task.getSoulUpdater().runTaskTimer(plugin, 0, 1);
 		return true;
 	}
 	
@@ -285,36 +225,47 @@ public class Cardinal extends JavaPlugin{
 		registerEvents();
 		registerEnchants();
 		registerGlow();
-		if(!startUp())
-			Bukkit.shutdown();
 		updateNameTag();
 		updateActionBar();
 		
-		ASCIIArtGenerator artGen = new ASCIIArtGenerator();
-
+		options = new Options();
 		
-		try {
-	        Robot robbie = new Robot();
-	        robbie.keyPress(17); // Holds CTRL key.
-	        robbie.keyPress(76); // Holds L key.
-	        robbie.keyRelease(17); // Releases CTRL key.
-	        robbie.keyRelease(76); // Releases L key.
-	    } catch (AWTException ex) {
-	        return;
-	    }
 		
-		System.out.println("--------------------------------------------");
-		try {
-			artGen.printTextArt("Damocles", ASCIIArtGenerator.ART_SIZE_SMALL, ASCIIArtFont.ART_FONT_MONO,"@");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new BukkitRunnable(){
+			public void run(){
+				ASCIIArtGenerator artGen = new ASCIIArtGenerator();
+				
+				try {
+					new ProcessBuilder("cmd", "/c", "cls", "clear").inheritIO().start().waitFor();
+				} catch (InterruptedException | IOException e1) { e1.printStackTrace(); }
+				
+				System.out.println("----------------------------------------------------------------------------------------");
+				try {
+					artGen.printTextArt("Damocles", ASCIIArtGenerator.ART_SIZE_MEDIUM, ASCIIArtFont.ART_FONT_MONO,"@");
+				} catch (Exception e) { e.printStackTrace(); }
+				System.out.println("----------------------------------------------------------------------------------------");
+				
+				System.out.println("For first time setup please read the README.txt file for detailed usage.");
+				System.out.println(" ");
+				System.out.println("Currently using Spigot Version: " + Bukkit.getBukkitVersion());
+				System.out.println(" ");
+				System.out.println("-Currently Enabled Plugins-");
+				
+				for(Plugin plugin : Bukkit.getPluginManager().getPlugins()){
+					System.out.println("  - " + plugin.getDescription().getName() + " : " + plugin.getDescription().getVersion());
+				}
+				
+				System.out.println("----------------------------------------------------------------------------------------");
+				
+				this.cancel();
+			}
+		}.runTaskLaterAsynchronously(this, 20);
 		
+		if(!startUpTasks())
+			Bukkit.shutdown();
 	}
 	
 	public void onDisable(){
-		task.stop();
 		task.disableRegen();
 		plugin = null;
 	}

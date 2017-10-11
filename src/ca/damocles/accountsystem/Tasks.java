@@ -42,20 +42,13 @@ public class Tasks{
 		return soulupdater;
 	}
 	
-	public void start(){
-		this.getSlotChecker().runTaskTimer(plugin, 0, 1);
-		this.getKingPromoter().runTaskTimer(plugin, 0, 1);
-		this.getPlayerData().runTaskTimer(plugin, 0, 1);
-		this.getPlayerStatusChecker().runTaskTimer(plugin, 0, 20);
-		this.getSoulUpdater().runTaskTimer(plugin, 0, 1);
-	}
-	
 	public void stop(){
 		this.getSlotChecker().cancel();
 		this.getKingPromoter().cancel();
 		this.getPlayerData().cancel();
 		this.getPlayerStatusChecker().cancel();
 		this.getSoulUpdater().cancel();
+		
 	}
 	
 	public void disableRegen(){

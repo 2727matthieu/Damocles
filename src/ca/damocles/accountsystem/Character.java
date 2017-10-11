@@ -638,7 +638,7 @@ public class Character {
 		ca.damocles.clansystem.Clan clan = new ca.damocles.clansystem.Clan(whatClan);
 		if(isInClan()){
   		  
-  		  if(clan.getProposed().getUsername().equalsIgnoreCase(getUsername()))
+  		  if(clan.getProposed() != null && clan.getProposed().getUsername().equalsIgnoreCase(getUsername()))
   			  clan.setProposed(null);
   		  
   		  ca.damocles.clansystem.Rank rank = getClanRank();
@@ -732,5 +732,10 @@ public class Character {
 		ConfigManager.save(uuid+";char;"+characterID+".yml", "players/"+uuid);
 		players.addCharacter(player.getUniqueId()+";char;"+characterID);
 	}
+	
+	public enum CharacterStatus {
+		CHOOSE_USERNAME, NORMAL, EXCEPTION;
+	}
+	
 	
 }

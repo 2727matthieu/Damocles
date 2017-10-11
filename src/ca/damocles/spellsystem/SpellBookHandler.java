@@ -29,6 +29,7 @@ public class SpellBookHandler implements Listener{
 		if(item != null){
 			if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 				if(new ItemType(item).getType().equals(ItemTypes.SPELLBOOK)){
+					event.setCancelled(true);
 					SpellBook book = new SpellBook(item);
 					player.openInventory(book.getSpellventory());
 				}

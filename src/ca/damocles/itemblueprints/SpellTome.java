@@ -2,15 +2,12 @@ package ca.damocles.itemblueprints;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import ca.damocles.itemsystem.ItemType.ItemTypes;
-import ca.damocles.spellsystem.SpellName;
 import ca.damocles.spellsystem.Spell.Spells;
 import ca.damocles.utils.NBTHandler;
 import ca.damocles.utils.RomanNumerals;
@@ -39,12 +36,13 @@ public class SpellTome {
 	
 	public void setup(Spells spell, int level, int exp){
 		ItemMeta im = this.item.getItemMeta();
-		im.setDisplayName(ChatColor.GRAY + "Spell of " + ChatColor.UNDERLINE + StringUtils.capitalize(spell.toString().toLowerCase()) + ChatColor.RESET + " " + ChatColor.YELLOW + RomanNumerals.intToRoman(level));
+		im.setDisplayName(ChatColor.GRAY + "Spell of " + ChatColor.UNDERLINE + spell.getSpellName() + ChatColor.RESET + " " + ChatColor.YELLOW + RomanNumerals.intToRoman(level));
 		List<String> lore = new ArrayList<String>();
 		
 		lore.add(getExpBar(exp, level));
-		lore.add(ChatColor.GOLD + "" + new SpellName().getSpellType(spell) + " Spell");
-		lore.add(ChatColor.GRAY + "Place in spellbook to utilize.");
+		lore.add(ChatColor.GRAY + spell.getCastType().getDesc());
+		lore.add(ChatColor.GRAY + spell.getTriggerType().getDesc());
+		lore.add(ChatColor.DARK_GRAY + "Place in spellbook to utilize.");
 		
 		im.setLore(lore);
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

@@ -23,10 +23,6 @@ public class ArcaneMissileSpell extends Spell{
 		return 0;
 	}
 
-	public SpellType getType() {
-		return SpellType.ACTIVE;
-	}
-
 	public Spells getSpell() {
 		return Spells.ARCANE_MISSILE;
 	}
@@ -64,6 +60,18 @@ public class ArcaneMissileSpell extends Spell{
 		}
 		character.setMana(character.getMana() - getCost());
 		new ParticleUtil().playArcaneMissileEffect(source, (double)getDamage());
+	}
+
+	@Override
+	public TriggerType getTriggerType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CastType getCastType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

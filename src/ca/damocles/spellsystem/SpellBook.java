@@ -25,7 +25,7 @@ import ca.damocles.utils.RomanNumerals;
 public class SpellBook {
 	
 	int slots = 5;
-	ItemStack item = new ItemStack(Material.BOOK);
+	ItemStack item = new ItemStack(Material.KNOWLEDGE_BOOK);
 	UUID uuid;
 	List<SpellTome> spells;
 	FileConfiguration config;

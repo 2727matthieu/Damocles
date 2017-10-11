@@ -11,7 +11,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import ca.damocles.cardinalsystem.Cardinal;
 import ca.damocles.damagesystem.Damage;
-import ca.damocles.damagesystem.DamageType;
 import net.minecraft.server.v1_12_R1.EnumParticle;
 import net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles;
 

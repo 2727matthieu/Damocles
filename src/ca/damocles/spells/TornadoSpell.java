@@ -71,7 +71,6 @@ public class TornadoSpell extends Spell{
 				Entity stand = getLocation().getWorld().spawnEntity(getLocation(), EntityType.ARMOR_STAND);
 				affected = stand.getNearbyEntities(getRange()*2, getRange()*2, getRange()*2);
 				stand.remove();
-				
 				affected = Extra.getNearbyEntitiesFromLocation(location, getRange());
 				
 				for(Entity entity : affected){

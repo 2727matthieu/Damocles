@@ -10,7 +10,7 @@ public class Options {
     boolean firstTimeLoaded;
     
     public Options(){
-        //firstTimeLoaded = ConfigManager.load("options.yml", "");
+        firstTimeLoaded = ConfigManager.load("options.yml", "");
         this.config = ConfigManager.get("options.yml");
         if(firstTimeLoaded)
             firstTimeSetup();

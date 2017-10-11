@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import ca.damocles.accountsystem.Account;
+import ca.damocles.cardinalsystem.Options;
+import ca.damocles.cardinalsystem.Options.OptionType;
 import net.md_5.bungee.api.ChatColor;
 
 public class Soul implements Listener{
@@ -31,13 +33,15 @@ public class Soul implements Listener{
 	
 	@EventHandler
 	public void death(PlayerDeathEvent event){
-		Player player = event.getEntity();
-		Account account = new Account(player);
-		try{
-			ca.damocles.accountsystem.Character character = account.getLoadedCharacter();
-			event.getDrops().remove(soulApple(character));
-			character.setSouls(character.getSouls()-1);
-		}catch(Exception e) {}
+		if(new Options().getOptionEnabled(OptionType.SOULSYSTEM)){
+			Player player = event.getEntity();
+			Account account = new Account(player);
+			try{
+				ca.damocles.accountsystem.Character character = account.getLoadedCharacter();
+				event.getDrops().remove(soulApple(character));
+				character.setSouls(character.getSouls()-1);
+			}catch(Exception e) {}
+		}
 	}
 	
 	@EventHandler
