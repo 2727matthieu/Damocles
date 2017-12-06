@@ -3,14 +3,14 @@ package ca.damocles.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import ca.damocles.cardinalsystem.Cardinal;
-import ca.damocles.damagesystem.Damage;
+import ca.damocles.damagesystem.DamageInstance;
+import ca.damocles.damagesystem.DamageInstance.DamageType;
 import net.minecraft.server.v1_12_R1.EnumParticle;
 import net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles;
 
@@ -206,14 +206,8 @@ public class ParticleUtil {
 				for(Entity e : loc.getChunk().getEntities()){
 					if(e.getLocation().distance(loc) < 2.0){
 						if(!e.equals(source)){
-							if(e instanceof Player){
-								new Damage().playerDamagePlayer((Player)e, source, null, damage, DamageType.MAGICAL);
-							}
 							if(e instanceof LivingEntity){
-								new Damage().playerDamageEntity((LivingEntity)e, source, null, damage, DamageType.MAGICAL);
-							}
-							if(e instanceof Creature){
-								new Damage().playerDamageCreature((Creature)e, source, null, damage, DamageType.MAGICAL);
+								new DamageInstance((LivingEntity)e, source, damage, DamageType.MAGICAL);
 							}
 							this.cancel();
 						}
@@ -242,7 +236,7 @@ public class ParticleUtil {
 				play(EnumParticle.SNOW_SHOVEL, p1, 1);
 				if(p1.toVector().distance(p2.toVector()) <= 0.5){
 					//damage
-					new Damage().playerDamageEntity(target, player, player.getInventory().getItemInMainHand(), damage, DamageType.MAGICAL);
+					new DamageInstance(target, player, damage, DamageType.MAGICAL);
 					playTransfusionEffectPart2(EnumParticle.FLAME, 1, player, p2, 1, 0.1);
 					this.cancel();
 				}
